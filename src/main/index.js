@@ -76,7 +76,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
 
-ipcMain.on('get-users', async () => {
+ipcMain.on('get-entes', async (event) => {
   const ente = await prisma.ente.create({
     data: {
       nombre: 'Ente de Prueba'
@@ -107,6 +107,8 @@ ipcMain.on('get-users', async () => {
   //     ente: true
   //   }
   // })
+
+  event.sender.send('get-entes-reply', ente)
 
   console.log(ente)
 })
