@@ -1,4 +1,4 @@
-import Dash from '../../components/layouts/dash'
+import Dash from '../../components/layouts/Dash'
 
 function Usuarios() {
   return (
