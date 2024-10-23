@@ -1,5 +1,5 @@
 function Login() {
-  const getUsers = () => window.electron.ipcRenderer.send('get-users')
+  const login = () => window.electron.ipcRenderer.send('login')
 
   return (
     <div className=" vh-100 bg-primary flex-column  justify-content-center aling-item-center">
@@ -14,32 +14,36 @@ function Login() {
           <div className="col order-5" width="100%">
             <form>
               <div className="mb-3">
-                <label htmlFor="exampleInputEmail1" className=" text-white form-label ">
+                <label htmlFor="usuario" className=" text-white form-label ">
                   Usuario
                 </label>
                 <input
-                  type="email"
-                  className="form-control"
-                  id="exampleInputEmail1"
-                  aria-describedby="emailHelp"
+                  type="text"
+                  className="form-control focus-ring focus-ring-light "
+                  id="usuario"
+                  aria-describedby="usuarioHelp"
                 />
-                <div id="emailHelp" className="form-text text-white">
-                  We ll never share your email with anyone else.
+                <div id="usuarioHelp" className="form-text text-white">
+                  Primera letra de nombre y apellido.
                 </div>
               </div>
               <div className="mb-3">
                 <label htmlFor="exampleInputPassword1" className="form-label text-white">
                   Contraseña
                 </label>
-                <input type="password" className="form-control" id="exampleInputPassword1" />
+                <input
+                  type="password"
+                  className="form-control focus-ring focus-ring-light "
+                  id="exampleInputPassword1"
+                />
               </div>
               <div className="mb-3 form-check">
                 <input type="checkbox" className="form-check-input" id="exampleCheck1" />
                 <label className="form-check-label text-white" htmlFor="exampleCheck1">
-                  Check me out
+                  Mostrar contraseña.
                 </label>
               </div>
-              <button type="submit" className="btn btn-danger" onClick={getUsers}>
+              <button type="submit" className="btn btn-danger" onClick={login}>
                 Ingresar
               </button>
             </form>
