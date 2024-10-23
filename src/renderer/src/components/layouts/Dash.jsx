@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 function Dash({ children }) {
@@ -12,6 +13,10 @@ function Dash({ children }) {
       {children}
     </>
   )
+}
+
+Dash.propTypes = {
+  children: PropTypes.node
 }
 
 export default Dash

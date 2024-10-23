@@ -1,7 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { PrismaClient } from '@prisma/client'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+const prisma = new PrismaClient()
 
 function createWindow() {
   // Create the browser window.
@@ -72,3 +75,38 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+ipcMain.on('get-users', async () => {
+  const ente = await prisma.ente.create({
+    data: {
+      nombre: 'Ente de Prueba'
+    }
+  })
+
+  // await prisma.usuario.create({
+  //   data: {
+  //     nombres: 'David',
+  //     apellidos: 'Alvarado',
+  //     username: 'davidalvarado',
+  //     password: '123456',
+  //     fecha_nacimiento: Date.now(),
+  //     tipo_cedula: 'V',
+  //     cedula: '27598704',
+  //     correo: 'davicii711@gmail.com',
+  //     telefono: '0412-1234567',
+  //     ente: {
+  //       connect: {
+  //         id: ente.id
+  //       }
+  //     }
+  //   }
+  // })
+
+  // const users = await prisma.usuario.findMany({
+  //   include: {
+  //     ente: true
+  //   }
+  // })
+
+  console.log(ente)
+})
