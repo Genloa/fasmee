@@ -1,8 +1,25 @@
-function Login() {
-  const login = () => window.electron.ipcRenderer.send('login')
+import { useState } from 'react'
+import { useAuth } from '../../hooks/useAuth'
+
+function LoginPage() {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const { login } = useAuth()
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    // // window.electron.ipcRenderer.send('login', { username, password })
+    if (username === 'user' && password === 'password') {
+      // Replace with actual authentication logic
+      await login({ username })
+    } else {
+      alert('Invalid username or password')
+    }
+  }
 
   return (
-    <div className=" vh-100 bg-primary flex-column  justify-content-center aling-item-center">
+    <div className="vh-100 bg-primary flex-column  justify-content-center aling-item-center">
       <div>
         <img src="././src/img/icon.png" className="rounded mx-auto d-block" alt="" />
       </div>
@@ -12,7 +29,7 @@ function Login() {
             <img src="././src/img/imglogin.svg" width="80%" alt="" />
           </div>
           <div className="col order-5" width="100%">
-            <form>
+            <form onSubmit={handleLogin}>
               <div className="mb-3">
                 <label htmlFor="usuario" className=" text-white form-label ">
                   Usuario
@@ -22,6 +39,8 @@ function Login() {
                   className="form-control focus-ring focus-ring-light "
                   id="usuario"
                   aria-describedby="usuarioHelp"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
                 <div id="usuarioHelp" className="form-text text-white">
                   Primera letra de nombre y apellido.
@@ -35,6 +54,8 @@ function Login() {
                   type="password"
                   className="form-control focus-ring focus-ring-light "
                   id="exampleInputPassword1"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
               <div className="mb-3 form-check">
@@ -43,7 +64,7 @@ function Login() {
                   Mostrar contraseña.
                 </label>
               </div>
-              <button type="submit" className="btn btn-danger" onClick={login}>
+              <button type="submit" className="btn btn-danger">
                 Ingresar
               </button>
             </form>
@@ -54,4 +75,4 @@ function Login() {
   )
 }
 
-export default Login
+export default LoginPage
