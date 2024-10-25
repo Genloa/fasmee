@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
-
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
+import './src/css/styleDash.css';
 Dash.propTypes = {
   children: PropTypes.node.isRequired
 }
@@ -64,12 +64,6 @@ function Dash({ children }) {
         <div className="row flex-nowrap">
           <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-primary rounded-top">
             <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
-              <a
-                href="/"
-                className="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none"
-              >
-                <span className="fs-5 d-none d-sm-inline">Menu</span>
-              </a>
               <ul
                 className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
                 id="menu"
@@ -77,7 +71,7 @@ function Dash({ children }) {
                 <li className="nav-item">
                   <NavLink to="/">
                     <a href="#" className="nav-link align-middle px-0 text-white">
-                      <i className="fs-4 bi-house"></i>
+                      <img  src="././src/img/home.png" className="me-1" alt="" width="20" height="20"/>
                       <span className="ms-1 d-none d-sm-inline">Home</span>
                     </a>
                   </NavLink>
