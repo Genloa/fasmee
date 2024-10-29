@@ -1,5 +1,5 @@
 import Dash from '../../components/layouts/Dash'
-function Register() {
+function UsuarioCreate() {
   return (
     <>
       <Dash>
@@ -13,4 +13,4 @@ function Register() {
   )
 }
 
-export default Register
+export default UsuarioCreate

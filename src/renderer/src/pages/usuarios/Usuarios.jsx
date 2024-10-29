@@ -19,7 +19,7 @@ function Usuarios() {
             </div>
             <div className="mt-5">
               <div className="text-end mb-3">
-                <NavLink to="/dash/users/register" className="text-decoration-none">
+                <NavLink to="/dash/users/create" className="text-decoration-none">
                   <button type="button" className="btn btn-primary">
                     Crear Usuario
                   </button>

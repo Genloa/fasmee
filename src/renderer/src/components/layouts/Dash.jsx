@@ -2,12 +2,9 @@ import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 import { useState } from 'react'
 import '../../css/dash.css'
-
-// ./
-
-Dash.propTypes = {
-  children: PropTypes.node.isRequired
-}
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHouse } from '@fortawesome/free-solid-svg-icons'
+import { faUser } from '@fortawesome/free-solid-svg-icons'
 
 function Dash({ children }) {
   return (
@@ -17,6 +14,11 @@ function Dash({ children }) {
     </>
   )
 }
+
+Dash.propTypes = {
+  children: PropTypes.node.isRequired
+}
+
 function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white m-2">
@@ -104,13 +106,7 @@ function Sidebar({ children }) {
               <li className="nav-item">
                 <NavLink to="/" className="text-decoration-none">
                   <a href="#" className="nav-link text-white">
-                    <img
-                      src="../../src/img/home.png"
-                      className="me-1"
-                      alt=""
-                      width="20"
-                      height="20"
-                    />
+                    <FontAwesomeIcon icon={faHouse} className="fs-5" />
                     {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
                   </a>
                 </NavLink>
@@ -118,13 +114,7 @@ function Sidebar({ children }) {
               <li className="nav-item">
                 <NavLink to="/dash/users" className="text-decoration-none">
                   <a href="#" className="nav-link text-white">
-                    <img
-                      src="../../src/img/user.png"
-                      className="me-1"
-                      alt=""
-                      width="20"
-                      height="20"
-                    />
+                    <FontAwesomeIcon icon={faUser} className="fs-5" />
                     {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
                   </a>
                 </NavLink>
@@ -175,4 +165,9 @@ function Sidebar({ children }) {
     </div>
   )
 }
+
+Sidebar.propTypes = {
+  children: PropTypes.node.isRequired
+}
+
 export default Dash
