@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,49 +16,54 @@ datasource db {
 // Tablas maestros
 
 model Usuario {
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  password String
+  Perfil   Perfil?
+
+  @@map("usuarios")
+}
+
+model Perfil {
   id               Int      @id @default(autoincrement())
   nombres          String   @db.Char(100)
   apellidos        String   @db.Char(100)
-  username         String   @db.Char(100)@unique
-  password         String   @db.Char(100)
   fecha_nacimiento DateTime @db.Date
   tipo_cedula      String   @db.Char(100)
   cedula           BigInt   @db.BigInt
   correo           String   @db.Char(100)
   telefono         String?  @db.Char(100)
+  usuario_id       Int      @unique
   ente_id          Int
-  ente             Ente     @relation(fields: [ente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  citas_solicitadas Cita[] @relation("UsuarioCita")
-  citas_paciente    Cita[] @relation("PacienteCita")
-
-  beneficiarios UsuarioOnBeneficiario[] @relation("UsuarioBeneficiario")
-  usuarios      UsuarioOnBeneficiario[] @relation("BeneficiarioUsuario")
-
-  historial          Historia[]     @relation("UsuarioHistoria")
-  historiasPacientes Historia[]     @relation("PacienteHistoria")
-  rolOnUsuario       RolOnUsuario[]
-
-  UsuarioArticulo UsuarioArticulo[]
-
-  UsuarioDetalles       UsuarioDetalles?
-  DepartamentoOnUsuario DepartamentoOnUsuario[]
-  UsuarioOnServicio     UsuarioOnServicio[]
-  ColaPacientes         ColaPacientes[]
+  usuario              Usuario                @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ente                 Ente                   @relation(fields: [ente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  citas_solicitadas    Cita[]                 @relation("PerfilCita")
+  citas_paciente       Cita[]                 @relation("PacienteCita")
+  beneficiarios        PerfilOnBeneficiario[] @relation("PerfilBeneficiario")
+  Perfiles             PerfilOnBeneficiario[] @relation("BeneficiarioPerfil")
+  historial            Historia[]             @relation("PerfilHistoria")
+  historiasPacientes   Historia[]             @relation("PacienteHistoria")
+  rolOnPerfil          RolOnPerfil[]
+  PerfilArticulo       PerfilArticulo[]
+  DepartamentoOnPerfil DepartamentoOnPerfil[]
+  PerfilOnServicio     PerfilOnServicio[]
+  ColaPacientes        ColaPacientes[]
+  PerfilMedico         PerfilMedico?
 
   @@unique([tipo_cedula, cedula])
-  @@map("usuarios")
+  @@map("Perfiles")
 }
 
-model UsuarioDetalles {
+model PerfilMedico {
   id         Int     @id @default(autoincrement())
-  usuario_id Int     @unique
-  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id  Int     @unique
+  Perfil     Perfil  @relation(fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   patologias String?
   alergias   String?
   cirugias   String?
 
-  @@map("usuarios_detalles")
+  @@map("Perfiles_detalles")
 }
 
 model Cita {
@@ -68,11 +72,11 @@ model Cita {
   fecha_cita     DateTime
   estado         String
 
-  usuario_id Int
-  usuario    Usuario @relation("UsuarioCita", fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id Int
+  Perfil    Perfil @relation("PerfilCita", fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   paciente_id Int
-  paciente    Usuario @relation("PacienteCita", fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  paciente    Perfil @relation("PacienteCita", fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   departamento_id Int
   departamento    Departamento @relation(fields: [departamento_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -81,31 +85,31 @@ model Cita {
 }
 
 model Ente {
-  id      Int       @id @default(autoincrement())
-  nombre  String    @db.Char(100)
-  Usuario Usuario[]
+  id     Int      @id @default(autoincrement())
+  nombre String   @db.Char(100)
+  Perfil Perfil[]
 
   @@map("entes")
 }
 
 model Almacen {
-  id              Int                 @id @default(autoincrement())
-  cubiculo        String
-  descripcion     String
-  articulos       ArticuloOnAlmacen[]
-  Ingreso         Ingreso[]
-  UsuarioArticulo UsuarioArticulo[]
+  id             Int                 @id @default(autoincrement())
+  cubiculo       String
+  descripcion    String
+  articulos      ArticuloOnAlmacen[]
+  Ingreso        Ingreso[]
+  PerfilArticulo PerfilArticulo[]
 
   @@map("almacenes")
 }
 
 model Articulo {
-  id              Int                 @id @default(autoincrement())
-  nombre          String
-  cantidad        Int
-  almacenes       ArticuloOnAlmacen[]
-  Ingreso         Ingreso[]
-  UsuarioArticulo UsuarioArticulo[]
+  id             Int                 @id @default(autoincrement())
+  nombre         String
+  cantidad       Int
+  almacenes      ArticuloOnAlmacen[]
+  Ingreso        Ingreso[]
+  PerfilArticulo PerfilArticulo[]
 
   @@map("articulos")
 }
@@ -117,7 +121,7 @@ model Departamento {
 
   Cita          Cita[]
   Historia      Historia[]
-  Usuarios      DepartamentoOnUsuario[]
+  Perfiles      DepartamentoOnPerfil[]
   ColaPacientes ColaPacientes[]
 
   @@map("departamentos")
@@ -126,11 +130,11 @@ model Departamento {
 model Historia {
   id Int @id @default(autoincrement())
 
-  usuario_id Int
-  usuario    Usuario @relation("UsuarioHistoria", fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id Int
+  Perfil    Perfil @relation("PerfilHistoria", fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   paciente_id Int
-  paciente    Usuario @relation("PacienteHistoria", fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  paciente    Perfil @relation("PacienteHistoria", fields: [paciente_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   departamento_id Int
   departamento    Departamento @relation(fields: [departamento_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -166,7 +170,7 @@ model Rol {
   id     Int    @id @default(autoincrement())
   nombre String @db.Char(100)
 
-  usuarios     RolOnUsuario[]
+  Perfiles     RolOnPerfil[]
   RolOnPermiso RolOnPermiso[]
 
   @@map("roles")
@@ -181,18 +185,18 @@ model Permiso {
 }
 
 model Servicio {
-  id                Int                 @id @default(autoincrement())
-  nombre            String              @db.Char(100)
-  UsuarioOnServicio UsuarioOnServicio[]
+  id               Int                @id @default(autoincrement())
+  nombre           String             @db.Char(100)
+  PerfilOnServicio PerfilOnServicio[]
 
   @@map("servicios")
 }
 
-model UsuarioArticulo {
+model PerfilArticulo {
   id Int @id @default(autoincrement())
 
-  usuario_id Int
-  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade)
+  Perfil_id Int
+  Perfil    Perfil @relation(fields: [Perfil_id], references: [id], onDelete: Cascade)
 
   articulo_id Int
   articulo    Articulo @relation(fields: [articulo_id], references: [id], onDelete: Cascade)
@@ -204,13 +208,13 @@ model UsuarioArticulo {
 
   fecha_retiro DateTime @db.Date
 
-  @@map("usuarios_articulos")
+  @@map("Perfiles_articulos")
 }
 
 model ColaPacientes {
   id              Int          @id @default(autoincrement())
-  usuario_id      Int
-  usuario         Usuario      @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id       Int
+  Perfil          Perfil       @relation(fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   departamento_id Int
   departamento    Departamento @relation(fields: [departamento_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -219,24 +223,24 @@ model ColaPacientes {
 
 // Tablas pivotes
 
-model UsuarioOnBeneficiario {
-  usuario_id      Int
-  usuario         Usuario @relation("UsuarioBeneficiario", fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model PerfilOnBeneficiario {
+  Perfil_id       Int
+  Perfil          Perfil @relation("PerfilBeneficiario", fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   beneficiario_id Int
-  beneficiario    Usuario @relation("BeneficiarioUsuario", fields: [beneficiario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  beneficiario    Perfil @relation("BeneficiarioPerfil", fields: [beneficiario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([usuario_id, beneficiario_id])
-  @@map("usuarios_on_beneficiarios")
+  @@id([Perfil_id, beneficiario_id])
+  @@map("Perfiles_on_beneficiarios")
 }
 
-model RolOnUsuario {
-  rol_id     Int
-  rol        Rol     @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  usuario_id Int
-  usuario    Usuario @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model RolOnPerfil {
+  rol_id    Int
+  rol       Rol    @relation(fields: [rol_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id Int
+  Perfil    Perfil @relation(fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([rol_id, usuario_id])
-  @@map("roles_on_usuarios")
+  @@id([rol_id, Perfil_id])
+  @@map("roles_on_Perfiles")
 }
 
 model RolOnPermiso {
@@ -250,19 +254,19 @@ model RolOnPermiso {
   @@map("roles_on_permisos")
 }
 
-model DepartamentoOnUsuario {
+model DepartamentoOnPerfil {
   departamento_id Int
   departamento    Departamento @relation(fields: [departamento_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  usuario_id      Int
-  usuario         Usuario      @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Perfil_id       Int
+  Perfil          Perfil       @relation(fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@id([departamento_id, usuario_id])
-  @@map("departamentos_on_usuarios")
+  @@id([departamento_id, Perfil_id])
+  @@map("departamentos_on_Perfiles")
 }
 
-model UsuarioOnServicio {
-  usuario_id  Int
-  usuario     Usuario  @relation(fields: [usuario_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+model PerfilOnServicio {
+  Perfil_id   Int
+  Perfil      Perfil   @relation(fields: [Perfil_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   servicio_id Int
   servicio    Servicio @relation(fields: [servicio_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
@@ -270,8 +274,8 @@ model UsuarioOnServicio {
   feha_recepcion DateTime? @db.Date
   resultados     String?   @db.Char(1000)
 
-  @@id([usuario_id, servicio_id])
-  @@map("usuarios_on_servicios")
+  @@id([Perfil_id, servicio_id])
+  @@map("Perfiles_on_servicios")
 }
 
 model ArticuloOnAlmacen {
