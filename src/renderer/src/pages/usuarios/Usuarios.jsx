@@ -1,5 +1,5 @@
 import Dash from '../../components/layouts/Dash'
-import { NavLink } from 'react-router-dom'
+
 function Usuarios() {
   return (
     <>
@@ -19,11 +19,7 @@ function Usuarios() {
             </div>
             <div className="mt-5">
               <div className="text-end mb-3">
-                <NavLink to="/dash/users/create" className="text-decoration-none">
-                  <button type="button" className="btn btn-primary">
-                    Crear Usuario
-                  </button>
-                </NavLink>
+                <ModalCreate />
               </div>
               <TableUsers />
             </div>
@@ -34,6 +30,134 @@ function Usuarios() {
   )
 }
 
+function ModalCreate() {
+  return (
+    <>
+      <button
+        type="button"
+        className="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Crear Usuario
+      </button>
+
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Crear Usuario
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body m-2">
+              <form className="row g-3">
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="text"
+                        className="form-control "
+                        id="floatingInput"
+                        placeholder="Nombres"
+                        aria-label="nombres"
+                      />
+                      <label htmlFor="floatingInput">Nombres</label>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="text"
+                        className="form-control "
+                        id="floatingInput"
+                        placeholder="Apellidos"
+                        aria-label="apellidos"
+                      />
+                      <label htmlFor="floatingInput">Apellidos</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="input-group  col">
+                    <select
+                      className="form-select flex-grow-0 bg-light"
+                      style={{ width: '60px' }}
+                      aria-label="Tipo de documento"
+                    >
+                      <option selected>V</option>
+                      <option value="E">E</option>
+                    </select>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Cedula"
+                      aria-label="Cedula"
+                      aria-describedby="basic-addon1"
+                    />
+                  </div>
+
+                  <div className="col">
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Nombre de Usuario"
+                      aria-label="Username"
+                    />
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="floatingPassword"
+                        placeholder="Contraseña"
+                      />
+                      <label htmlFor="floatingPassword"> Contraseña</label>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="password"
+                        className="form-control"
+                        id="floatingPassword"
+                        placeholder="Contraseña"
+                      />
+                      <label htmlFor="floatingPassword">Confirmar Contraseña</label>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Close
+              </button>
+              <button type="button" className="btn btn-primary">
+                Guardar Usuario
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
 function TableUsers() {
   return (
     <div
