@@ -63,7 +63,7 @@ model PerfilMedico {
   alergias   String?
   cirugias   String?
 
-  @@map("Perfiles_detalles")
+  @@map("Perfiles_medicos")
 }
 
 model Cita {
