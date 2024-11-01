@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
 const prisma = new PrismaClient()
 
-ipcMain.on('login', async (event, { username, password }) => {
+ipcMain.handle('login', async (event, { username, password }) => {
   const user = await prisma.usuario.findFirst({
     where: {
       username,
@@ -10,7 +10,5 @@ ipcMain.on('login', async (event, { username, password }) => {
     }
   })
 
-  event.sender.send('login-reply', user)
-
-  console.log(user)
+  return user
 })

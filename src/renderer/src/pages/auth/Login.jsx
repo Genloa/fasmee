@@ -9,8 +9,10 @@ function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault()
-    // // window.electron.ipcRenderer.send('login', { username, password })
-    if (username === 'user' && password === 'password') {
+
+    let user = await window.api.login(username, password)
+
+    if (user !== null && username === user.username && password === user.password) {
       // Replace with actual authentication logic
       await login({ username })
     } else {
