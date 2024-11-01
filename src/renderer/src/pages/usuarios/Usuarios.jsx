@@ -1,5 +1,5 @@
 import Dash from '../../components/layouts/Dash'
-
+import { useState } from 'react'
 function Usuarios() {
   return (
     <>
@@ -31,6 +31,22 @@ function Usuarios() {
 }
 
 function ModalCreate() {
+  const [nombres, setNombres] = useState('')
+  const [apellidos, setApellidos] = useState('')
+  const [tipoCedula, setTipoCedula] = useState('')
+  const [cedula, setCedula] = useState('')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [fechaNacimiento, setFechaNacimiento] = useState('')
+  const [correo, setCorreo] = useState('')
+  /*   const [telefono, setTelefono] = useState('')
+   */
+
+  const handleCrearUsuario = async (e) => {
+    console.log(e)
+    alert('Usuario creado correctamente')
+  }
+
   return (
     <>
       <button
@@ -63,30 +79,34 @@ function ModalCreate() {
               ></button>
             </div>
             <div className="modal-body m-2">
-              <form className="row g-3">
+              <form onSubmit={handleCrearUsuario} className="row g-3">
                 <div className="row mt-4">
                   <div className="col">
                     <div className="form-floating ">
                       <input
                         type="text"
                         className="form-control "
-                        id="floatingInput"
+                        id="nombres"
                         placeholder="Nombres"
                         aria-label="nombres"
+                        value={nombres}
+                        onChange={(e) => setNombres(e.target.value)}
                       />
-                      <label htmlFor="floatingInput">Nombres</label>
+                      <label htmlFor="nombres">Nombres</label>
                     </div>
                   </div>
                   <div className="col">
                     <div className="form-floating ">
                       <input
                         type="text"
-                        className="form-control "
-                        id="floatingInput"
-                        placeholder="Apellidos"
+                        className="form-control"
+                        id="apellidos"
+                        placeholder="apellidos"
                         aria-label="apellidos"
+                        value={apellidos}
+                        onChange={(e) => setApellidos(e.target.value)}
                       />
-                      <label htmlFor="floatingInput">Apellidos</label>
+                      <label htmlFor="apellidos">Apellidos</label>
                     </div>
                   </div>
                 </div>
@@ -96,25 +116,33 @@ function ModalCreate() {
                       className="form-select flex-grow-0 bg-light"
                       style={{ width: '60px' }}
                       aria-label="Tipo de documento"
+                      value={tipoCedula}
+                      onChange={(e) => setTipoCedula(e.target.value)}
                     >
-                      <option selected>V</option>
+                      <option value="V">V</option>
                       <option value="E">E</option>
                     </select>
                     <input
                       type="text"
                       className="form-control"
+                      id="cedula"
                       placeholder="Cedula"
                       aria-label="Cedula"
                       aria-describedby="basic-addon1"
+                      value={cedula}
+                      onChange={(e) => setCedula(e.target.value)}
                     />
                   </div>
 
                   <div className="col">
                     <input
                       type="text"
+                      id="username"
                       className="form-control"
                       placeholder="Nombre de Usuario"
                       aria-label="Username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                     />
                   </div>
                 </div>
@@ -126,6 +154,8 @@ function ModalCreate() {
                         className="form-control"
                         id="floatingPassword"
                         placeholder="Contraseña"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                       />
                       <label htmlFor="floatingPassword"> Contraseña</label>
                     </div>
@@ -142,13 +172,62 @@ function ModalCreate() {
                     </div>
                   </div>
                 </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="floatingDate"
+                        placeholder="fechaNacimiento"
+                        value={fechaNacimiento}
+                        onChange={(e) => setFechaNacimiento(e.target.value)}
+                      />
+                      <label htmlFor="floatingDate"> fecha de nacimiento</label>
+                    </div>
+                  </div>
+                  <div className="input-group  col">
+                    <select
+                      className="form-select flex-grow-0 bg-light"
+                      style={{ width: '90px' }}
+                      aria-label="Tipo de documento"
+                    >
+                      <option selected>0416</option>
+                      <option value="1">0426</option>
+                      <option value="2">0424</option>
+                      <option value="3">0414</option>
+                      <option value="4">0412</option>
+                    </select>
+                    <input
+                      type="phone"
+                      className="form-control"
+                      aria-label="Telefono"
+                      aria-describedby="basic-addon1"
+                    />
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="correo"
+                        placeholder="Contraseña"
+                        value={correo}
+                        onChange={(e) => setCorreo(e.target.value)}
+                      />
+                      <label htmlFor="correo">Correo</label>
+                    </div>
+                  </div>
+                </div>
               </form>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary">
                 Guardar Usuario
               </button>
             </div>

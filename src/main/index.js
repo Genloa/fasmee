@@ -75,4 +75,4 @@ app.on('window-all-closed', () => {
 
 // Modules
 
-import './modules/auth'
+import './modules/auth/auth'
