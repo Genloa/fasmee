@@ -39,11 +39,12 @@ function ModalCreate() {
   const [password, setPassword] = useState('')
   const [fechaNacimiento, setFechaNacimiento] = useState('')
   const [correo, setCorreo] = useState('')
-  /*   const [telefono, setTelefono] = useState('')
-   */
+  const [extension, setExtension] = useState('')
+  const [telefono, setTelefono] = useState('')
 
   const handleCrearUsuario = async (e) => {
-    console.log(e)
+    e.preventDefault()
+    console.log(extension + '-' + telefono)
     alert('Usuario creado correctamente')
   }
 
@@ -79,7 +80,7 @@ function ModalCreate() {
               ></button>
             </div>
             <div className="modal-body m-2">
-              <form onSubmit={handleCrearUsuario} className="row g-3">
+              <form onSubmit={handleCrearUsuario} className="row g-3" id="form-create-user">
                 <div className="row mt-4">
                   <div className="col">
                     <div className="form-floating ">
@@ -119,7 +120,9 @@ function ModalCreate() {
                       value={tipoCedula}
                       onChange={(e) => setTipoCedula(e.target.value)}
                     >
-                      <option value="V">V</option>
+                      <option selected value="V">
+                        V
+                      </option>
                       <option value="E">E</option>
                     </select>
                     <input
@@ -191,18 +194,22 @@ function ModalCreate() {
                       className="form-select flex-grow-0 bg-light"
                       style={{ width: '90px' }}
                       aria-label="Tipo de documento"
+                      value={extension}
+                      onChange={(e) => setExtension(e.target.value)}
                     >
-                      <option selected>0416</option>
-                      <option value="1">0426</option>
-                      <option value="2">0424</option>
-                      <option value="3">0414</option>
-                      <option value="4">0412</option>
+                      <option value="0416">0416</option>
+                      <option value="0426">0426</option>
+                      <option value="0424">0424</option>
+                      <option value="0414">0414</option>
+                      <option value="0412">0412</option>
                     </select>
                     <input
                       type="phone"
                       className="form-control"
                       aria-label="Telefono"
                       aria-describedby="basic-addon1"
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
                     />
                   </div>
                 </div>
@@ -227,7 +234,7 @@ function ModalCreate() {
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Close
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary" form="form-create-user">
                 Guardar Usuario
               </button>
             </div>
