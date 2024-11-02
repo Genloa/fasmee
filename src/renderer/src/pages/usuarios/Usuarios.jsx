@@ -37,15 +37,45 @@ function ModalCreate() {
   const [cedula, setCedula] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [fechaNacimiento, setFechaNacimiento] = useState('')
   const [correo, setCorreo] = useState('')
   const [extension, setExtension] = useState('')
   const [telefono, setTelefono] = useState('')
-
-  const handleCrearUsuario = async (e) => {
+  const [formErrors, setFormErrors] = useState({})
+  /* const handleCrearUsuario = async (e) => {
     e.preventDefault()
     console.log(extension + '-' + telefono)
     alert('Usuario creado correctamente')
+  }*/
+
+  const validateForm = () => {
+    const errors = {}
+    if (!nombres.trim()) errors.nombres = 'El nombre es requerido'
+    if (!apellidos.trim()) errors.apellidos = 'Los apellidos son requeridos'
+    if (!cedula.trim()) errors.cedula = 'La cédula es requerida'
+    if (!username.trim()) errors.username = 'El nombre de usuario es requerido'
+    if (!password) errors.password = 'La contraseña es requerida'
+    if (password !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden'
+    if (!fechaNacimiento) errors.fechaNacimiento = 'La fecha de nacimiento es requerida'
+    if (!correo.trim()) errors.correo = 'El correo es requerido'
+    if (!telefono.trim()) errors.telefono = 'El teléfono es requerido'
+
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
+  const handleCrearUsuario = async (e) => {
+    e.preventDefault()
+    if (validateForm()) {
+      console.log(extension + '-' + telefono)
+      alert('Usuario creado correctamente')
+      // Aquí iría la lógica para enviar los datos al servidor
+    }
+  }
+
+  const getInputClassName = (fieldName) => {
+    return `form-control ${formErrors[fieldName] ? 'is-invalid' : fieldName ? 'is-valid' : ''}`
   }
 
   return (
@@ -86,7 +116,7 @@ function ModalCreate() {
                     <div className="form-floating ">
                       <input
                         type="text"
-                        className="form-control "
+                        className={getInputClassName('nombres')}
                         id="nombres"
                         placeholder="Nombres"
                         aria-label="nombres"
@@ -94,13 +124,16 @@ function ModalCreate() {
                         onChange={(e) => setNombres(e.target.value)}
                       />
                       <label htmlFor="nombres">Nombres</label>
+                      {formErrors.nombres && (
+                        <div className="invalid-feedback">{formErrors.nombres}</div>
+                      )}
                     </div>
                   </div>
                   <div className="col">
                     <div className="form-floating ">
                       <input
                         type="text"
-                        className="form-control"
+                        className={getInputClassName('apellidos')}
                         id="apellidos"
                         placeholder="apellidos"
                         aria-label="apellidos"
@@ -108,6 +141,9 @@ function ModalCreate() {
                         onChange={(e) => setApellidos(e.target.value)}
                       />
                       <label htmlFor="apellidos">Apellidos</label>
+                      {formErrors.apellidos && (
+                        <div className="invalid-feedback">{formErrors.apellidos}</div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -127,7 +163,7 @@ function ModalCreate() {
                     </select>
                     <input
                       type="text"
-                      className="form-control"
+                      className={getInputClassName('cedula')}
                       id="cedula"
                       placeholder="Cedula"
                       aria-label="Cedula"
@@ -135,6 +171,9 @@ function ModalCreate() {
                       value={cedula}
                       onChange={(e) => setCedula(e.target.value)}
                     />
+                    {formErrors.cedula && (
+                      <div className="invalid-feedback">{formErrors.cedula}</div>
+                    )}
                   </div>
 
                   <div className="col">
@@ -170,6 +209,8 @@ function ModalCreate() {
                         className="form-control"
                         id="floatingPassword"
                         placeholder="Contraseña"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                       <label htmlFor="floatingPassword">Confirmar Contraseña</label>
                     </div>
