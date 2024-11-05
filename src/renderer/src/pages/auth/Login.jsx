@@ -4,7 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
+  const [showPassword, setShowPassword] = useState(false)
   const { login } = useAuth()
 
   const handleLogin = async (e) => {
@@ -53,7 +53,7 @@ function LoginPage() {
                   Contraseña
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   className="form-control focus-ring focus-ring-light "
                   id="exampleInputPassword1"
                   value={password}
@@ -61,7 +61,13 @@ function LoginPage() {
                 />
               </div>
               <div className="mb-3 form-check">
-                <input type="checkbox" className="form-check-input" id="exampleCheck1" />
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="exampleCheck1"
+                  checked={showPassword}
+                  onChange={() => setShowPassword(!showPassword)}
+                />
                 <label className="form-check-label text-white" htmlFor="exampleCheck1">
                   Mostrar contraseña.
                 </label>

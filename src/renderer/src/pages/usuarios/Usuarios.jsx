@@ -1,5 +1,11 @@
 import Dash from '../../components/layouts/Dash'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { userSchema } from '../../validations/userSchema'
 import { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { faEye } from '@fortawesome/free-solid-svg-icons'
 function Usuarios() {
   return (
     <>
@@ -31,51 +37,28 @@ function Usuarios() {
 }
 
 function ModalCreate() {
-  const [nombres, setNombres] = useState('')
-  const [apellidos, setApellidos] = useState('')
-  const [tipoCedula, setTipoCedula] = useState('')
-  const [cedula, setCedula] = useState('')
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-  const [fechaNacimiento, setFechaNacimiento] = useState('')
-  const [correo, setCorreo] = useState('')
-  const [extension, setExtension] = useState('')
-  const [telefono, setTelefono] = useState('')
-  const [formErrors, setFormErrors] = useState({})
-  /* const handleCrearUsuario = async (e) => {
-    e.preventDefault()
-    console.log(extension + '-' + telefono)
-    alert('Usuario creado correctamente')
-  }*/
-
-  const validateForm = () => {
-    const errors = {}
-    if (!nombres.trim()) errors.nombres = 'El nombre es requerido'
-    if (!apellidos.trim()) errors.apellidos = 'Los apellidos son requeridos'
-    if (!cedula.trim()) errors.cedula = 'La cédula es requerida'
-    if (!username.trim()) errors.username = 'El nombre de usuario es requerido'
-    if (!password) errors.password = 'La contraseña es requerida'
-    if (password !== confirmPassword) errors.confirmPassword = 'Las contraseñas no coinciden'
-    if (!fechaNacimiento) errors.fechaNacimiento = 'La fecha de nacimiento es requerida'
-    if (!correo.trim()) errors.correo = 'El correo es requerido'
-    if (!telefono.trim()) errors.telefono = 'El teléfono es requerido'
-
-    setFormErrors(errors)
-    return Object.keys(errors).length === 0
-  }
-
-  const handleCrearUsuario = async (e) => {
-    e.preventDefault()
-    if (validateForm()) {
-      console.log(extension + '-' + telefono)
-      alert('Usuario creado correctamente')
-      // Aquí iría la lógica para enviar los datos al servidor
-    }
-  }
+  const [showPassword, setShowPassword] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, dirtyFields }
+  } = useForm({
+    resolver: zodResolver(userSchema)
+  })
 
   const getInputClassName = (fieldName) => {
-    return `form-control ${formErrors[fieldName] ? 'is-invalid' : fieldName ? 'is-valid' : ''}`
+    if (!dirtyFields[fieldName]) {
+      return 'form-control'
+    }
+    return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
+  }
+
+  const onSubmit = async (data) => {
+    let usuario = await window.api.createUsuario(data)
+    console.log(usuario)
+
+    reset()
   }
 
   return (
@@ -103,29 +86,28 @@ function ModalCreate() {
                 Crear Usuario
               </h1>
               <button
-                type="button"
+                type="submit"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
               ></button>
             </div>
             <div className="modal-body m-2">
-              <form onSubmit={handleCrearUsuario} className="row g-3" id="form-create-user">
+              <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
                 <div className="row mt-4">
                   <div className="col">
                     <div className="form-floating ">
                       <input
                         type="text"
-                        className={getInputClassName('nombres')}
                         id="nombres"
+                        className={getInputClassName('nombres')}
                         placeholder="Nombres"
                         aria-label="nombres"
-                        value={nombres}
-                        onChange={(e) => setNombres(e.target.value)}
+                        {...register('nombres')}
                       />
                       <label htmlFor="nombres">Nombres</label>
-                      {formErrors.nombres && (
-                        <div className="invalid-feedback">{formErrors.nombres}</div>
+                      {errors.nombres?.message && (
+                        <div className="invalid-feedback">{errors.nombres?.message}</div>
                       )}
                     </div>
                   </div>
@@ -134,15 +116,13 @@ function ModalCreate() {
                       <input
                         type="text"
                         className={getInputClassName('apellidos')}
-                        id="apellidos"
                         placeholder="apellidos"
                         aria-label="apellidos"
-                        value={apellidos}
-                        onChange={(e) => setApellidos(e.target.value)}
+                        {...register('apellidos')}
                       />
                       <label htmlFor="apellidos">Apellidos</label>
-                      {formErrors.apellidos && (
-                        <div className="invalid-feedback">{formErrors.apellidos}</div>
+                      {errors.apellidos?.message && (
+                        <div className="invalid-feedback">{errors.apellidos?.message}</div>
                       )}
                     </div>
                   </div>
@@ -150,29 +130,25 @@ function ModalCreate() {
                 <div className="row mt-4">
                   <div className="input-group  col">
                     <select
-                      className="form-select flex-grow-0 bg-light"
+                      className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
                       style={{ width: '60px' }}
                       aria-label="Tipo de documento"
-                      value={tipoCedula}
-                      onChange={(e) => setTipoCedula(e.target.value)}
+                      {...register('tipoCedula')}
                     >
-                      <option selected value="V">
-                        V
-                      </option>
+                      <option value="V">V</option>
                       <option value="E">E</option>
                     </select>
                     <input
                       type="text"
-                      className={getInputClassName('cedula')}
                       id="cedula"
+                      className={getInputClassName('cedula')}
                       placeholder="Cedula"
                       aria-label="Cedula"
                       aria-describedby="basic-addon1"
-                      value={cedula}
-                      onChange={(e) => setCedula(e.target.value)}
+                      {...register('cedula')}
                     />
-                    {formErrors.cedula && (
-                      <div className="invalid-feedback">{formErrors.cedula}</div>
+                    {errors.cedula?.message && (
+                      <div className="invalid-feedback">{errors.cedula?.message}</div>
                     )}
                   </div>
 
@@ -180,40 +156,62 @@ function ModalCreate() {
                     <input
                       type="text"
                       id="username"
-                      className="form-control"
+                      className={getInputClassName('username')}
                       placeholder="Nombre de Usuario"
                       aria-label="Username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      {...register('username')}
                     />
+                    {errors.username?.message && (
+                      <div className="invalid-feedback">{errors.username?.message}</div>
+                    )}
                   </div>
                 </div>
                 <div className="row mt-4">
                   <div className="col">
                     <div className="form-floating ">
                       <input
-                        type="password"
-                        className="form-control"
+                        type={showPassword ? 'text' : 'password'}
                         id="floatingPassword"
-                        placeholder="Contraseña"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        className={` ${getInputClassName('password')}`}
+                        placeholder="password"
+                        {...register('password')}
                       />
-                      <label htmlFor="floatingPassword"> Contraseña</label>
+                      <label htmlFor="floatingPassword">Contraseña</label>
+
+                      {errors.password?.message && (
+                        <div className="invalid-feedback">{errors.password?.message}</div>
+                      )}
                     </div>
                   </div>
+
                   <div className="col">
                     <div className="form-floating ">
                       <input
-                        type="password"
-                        className="form-control"
+                        type={showPassword ? 'text' : 'password'}
                         id="floatingPassword"
-                        placeholder="Contraseña"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className={getInputClassName('confirmtPassword')}
+                        placeholder="password"
+                        {...register('confirmtPassword')}
                       />
-                      <label htmlFor="floatingPassword">Confirmar Contraseña</label>
+                      <label htmlFor="floatingPassword">Confirmar contraseña</label>
+                      {errors.confirmtPassword?.message && (
+                        <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
+                      )}
                     </div>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className=" col ">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="exampleCheck1"
+                      checked={showPassword}
+                      onChange={() => setShowPassword(!showPassword)}
+                    />
+                    <label className="form-check-label ms-2" htmlFor="exampleCheck1">
+                      Mostrar contraseña.
+                    </label>
                   </div>
                 </div>
                 <div className="row mt-4">
@@ -221,22 +219,23 @@ function ModalCreate() {
                     <div className="form-floating ">
                       <input
                         type="date"
-                        className="form-control"
+                        className={getInputClassName('fechaNacimiento')}
                         id="floatingDate"
                         placeholder="fechaNacimiento"
-                        value={fechaNacimiento}
-                        onChange={(e) => setFechaNacimiento(e.target.value)}
+                        {...register('fechaNacimiento')}
                       />
                       <label htmlFor="floatingDate"> fecha de nacimiento</label>
+                      {errors.fechaNacimiento?.message && (
+                        <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
+                      )}
                     </div>
                   </div>
                   <div className="input-group  col">
                     <select
-                      className="form-select flex-grow-0 bg-light"
+                      className={`form-select flex-grow-0 bg-light ${errors.extension ? 'is-invalid' : ''}`}
                       style={{ width: '90px' }}
                       aria-label="Tipo de documento"
-                      value={extension}
-                      onChange={(e) => setExtension(e.target.value)}
+                      {...register('extension')}
                     >
                       <option value="0416">0416</option>
                       <option value="0426">0426</option>
@@ -246,12 +245,14 @@ function ModalCreate() {
                     </select>
                     <input
                       type="phone"
-                      className="form-control"
+                      className={getInputClassName('telefono')}
                       aria-label="Telefono"
                       aria-describedby="basic-addon1"
-                      value={telefono}
-                      onChange={(e) => setTelefono(e.target.value)}
+                      {...register('telefono')}
                     />
+                    {errors.telefono?.message && (
+                      <div className="invalid-feedback">{errors.telefono?.message}</div>
+                    )}
                   </div>
                 </div>
                 <div className="row mt-4">
@@ -259,13 +260,15 @@ function ModalCreate() {
                     <div className="form-floating ">
                       <input
                         type="email"
-                        className="form-control"
+                        className={getInputClassName('correo')}
                         id="correo"
-                        placeholder="Contraseña"
-                        value={correo}
-                        onChange={(e) => setCorreo(e.target.value)}
+                        placeholder="correo"
+                        {...register('correo')}
                       />
                       <label htmlFor="correo">Correo</label>
+                      {errors.correo?.message && (
+                        <div className="invalid-feedback">{errors.correo?.message}</div>
+                      )}
                     </div>
                   </div>
                 </div>

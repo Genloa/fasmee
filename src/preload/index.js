@@ -3,7 +3,13 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
-  login: (username, password) => ipcRenderer.invoke('login', { username, password })
+  // Casos de uso para la authentication
+  login: (username, password) => ipcRenderer.invoke('login', { username, password }),
+
+  // Casos de uso para usuarios
+  createUsuario: (data) => ipcRenderer.invoke('createUsuario', data)
+
+  // Casos de uso para ...
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
