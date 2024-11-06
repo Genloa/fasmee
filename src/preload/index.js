@@ -9,8 +9,10 @@ const api = {
   // Casos de uso para usuarios
   createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
   // Casos de uso para seleccionar usuarios
-  getUsuarios: () => ipcRenderer.invoke('getUsuarios')
-  // Casos de uso para ...
+  getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
+  // Casos de uso para eleminar usuario
+  deleteUsuario: (dato) => ipcRenderer.invoke('createUsuario', dato)
+    // Casos de uso para ...
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

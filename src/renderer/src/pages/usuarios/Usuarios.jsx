@@ -3,6 +3,9 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { userSchema } from '../../validations/userSchema'
 import { useEffect, useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {  faTrashCan, faUserGear, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
+
 
 function Usuarios() {
   return (
@@ -274,7 +277,7 @@ function ModalCreate() {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Close
+                Cancelar
               </button>
               <button type="submit" className="btn btn-primary" form="form-create-user">
                 Guardar Usuario
@@ -288,6 +291,7 @@ function ModalCreate() {
 }
 function TableUsers() {
   const [users, setUsers] = useState([])
+ 
   useEffect(() => {
     const fetchUsers = async () => {
       const users = await window.api.getUsuarios()
@@ -296,6 +300,16 @@ function TableUsers() {
     }
     fetchUsers()
   }, [])
+
+  const onDelete = async (dato) => {
+
+       const usuario = await window.api.deleteUsuario(dato)
+  
+      alert(`Se ha eliminado el usuario`);
+    
+  };
+
+
   return (
     <div
       className="scrollspy-example bg-light-tertiary p-3 rounded-2"
@@ -307,6 +321,7 @@ function TableUsers() {
             <th scope="col">id</th>
             <th scope="col">Nombre y Apellido</th>
             <th scope="col">Usuario</th>
+            <th scope="col">Rol</th>
           </tr>
         </thead>
         <tbody>
@@ -317,12 +332,98 @@ function TableUsers() {
                 {user.Perfil.nombres} {user.Perfil.apellidos}
               </td>
               <td>{user.username}</td>
+              <td></td>
+              <td> 
+                <div className='d-flex flex-row mb-3s'>
+                <div class="p-2">
+                <a href="" 
+                  data-bs-toggle="modal"
+                  data-bs-target="#editarUsuarioModal" >
+                    <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+                  </a> 
+                  </div>
+                  <div class="p-2">
+                  <a href="" 
+                  data-bs-toggle="modal"
+                  data-bs-target="#rolUsuarioModal" >
+                    <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
+                  </a> 
+                  </div>
+                  <div class="p-2">
+                  <a href="" 
+                  data-bs-toggle="modal"
+                  data-bs-target={`#eliminarUsuarioModal-${user.id}`}> 
+                    <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+                  </a> 
+                  <div class="modal fade" tabindex="-1"  id={`eliminarUsuarioModal-${user.id}`}>
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Eliminar Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>Seguro que quiero eliminar el usuario {user.Perfil.nombres} {user.Perfil.apellidos}</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" onClick={() => onDelete(user.id)} class="btn btn-primary">Eliminar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+              </td>
             </tr>
+            
           ))}
         </tbody>
       </table>
+      <div
+        className="modal fade"
+        id="editarUsuarioModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Editar Usuario
+              </h1>
+            </div>
+         </div>
+        </div>
+     </div>
+     <div
+        className="modal fade"
+        id="rolUsuarioModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">
+                Rol Usuario
+              </h1>
+            </div>
+         </div>
+        </div>
+     </div>
+    
+     
+
     </div>
   )
+}
+
+
+function editarUsuarioModal(){
+  
 }
 
 export default Usuarios

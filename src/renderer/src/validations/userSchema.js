@@ -22,16 +22,16 @@ export const userSchema = z
     tipoCedula: z.enum(tipo, {
       errorMap: () => ({ message: 'Please select a plan' })
     }),
-    cedula: z.string().min(3, {
+    cedula: z.string().min(6, {
       message: 'Debe colocar su cedula'
     }),
     username: z.string().min(4, {
       message: 'Ingresa tu nombre de usuario'
     }),
-    password: z.string().min(10, {
+    password: z.string().min(6, {
       message: 'La contraseña debe tener al menos 10 caracteres'
     }),
-    confirmtPassword: z.string().min(10, {
+    confirmtPassword: z.string().min(6, {
       message: 'La contraseña debe tener al menos 10 caracteres'
     }),
     fechaNacimiento: z.string().min(1, { message: 'Ingresa tu fecha de nacimiento' }).date(),

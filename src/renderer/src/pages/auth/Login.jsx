@@ -4,6 +4,7 @@ import { useAuth } from '../../hooks/useAuth'
 function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showAlert, setShowAlert] = useState(false);
   const [showPassword, setShowPassword] = useState(false)
   const { login } = useAuth()
 
@@ -15,23 +16,26 @@ function LoginPage() {
     if (user !== null && username === user.username && password === user.password) {
       // Replace with actual authentication logic
       await login({ username })
+      setShowAlert(false);
     } else {
-      alert('Invalid username or password')
+      setShowAlert(true);
+
     }
   }
 
   return (
     <div className="vh-100 bg-primary flex-column  justify-content-center aling-item-center">
-      <div>
+      <div className='pt-4'>
         <img src="././src/img/icon.png" className="rounded mx-auto d-block" alt="" />
       </div>
       <div className="container flex-fill">
-        <div className="row">
+        <div className="row ">
           <div className="col">
             <img src="././src/img/imglogin.svg" width="80%" alt="" />
           </div>
+          
           <div className="col order-5" width="100%">
-            <form onSubmit={handleLogin}>
+            <form onSubmit={handleLogin} className='pt-3'>
               <div className="mb-3">
                 <label htmlFor="usuario" className=" text-white form-label ">
                   Usuario
@@ -59,7 +63,13 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+               
               </div>
+              {showAlert && (
+                  <div className="alert alert-danger p-1" role="alert">
+                      Usuario o Contraseña invalidos
+                </div>
+               )}
               <div className="mb-3 form-check">
                 <input
                   type="checkbox"
