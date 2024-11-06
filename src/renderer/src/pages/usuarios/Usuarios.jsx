@@ -2,10 +2,8 @@ import Dash from '../../components/layouts/Dash'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { userSchema } from '../../validations/userSchema'
-import { useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { useEffect, useState } from 'react'
+
 function Usuarios() {
   return (
     <>
@@ -289,6 +287,15 @@ function ModalCreate() {
   )
 }
 function TableUsers() {
+  const [users, setUsers] = useState([])
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await window.api.getUsuarios()
+      setUsers(users)
+      console.log(users)
+    }
+    fetchUsers()
+  }, [])
   return (
     <div
       className="scrollspy-example bg-light-tertiary p-3 rounded-2"
@@ -297,62 +304,21 @@ function TableUsers() {
       <table className="table table-striped">
         <thead>
           <tr>
-            <th scope="col">Nombre</th>
+            <th scope="col">id</th>
+            <th scope="col">Nombre y Apellido</th>
             <th scope="col">Usuario</th>
-            <th scope="col">Rol</th>
-            <th scope="col">Estado</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">Genesis Delgado</th>
-            <td>gdelgado</td>
-            <td>Admin</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">David Alvarado</th>
-            <td>dalvarado</td>
-            <td>Usuario</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Ana Martínez</th>
-            <td>amartinez</td>
-            <td>Usuario</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Carlos Ruiz</th>
-            <td>cruiz</td>
-            <td>Admin</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Laura Gómez</th>
-            <td>lgomez</td>
-            <td>Usuario</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Ana Martínez</th>
-            <td>amartinez</td>
-            <td>Usuario</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Carlos Ruiz</th>
-            <td>cruiz</td>
-            <td>Admin</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          <tr>
-            <th scope="row">Laura Gómez</th>
-            <td>lgomez</td>
-            <td>Usuario</td>
-            <td className="text-primary">Activo</td>
-          </tr>
-          {/* Puedes agregar más filas aquí */}
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>
+                {user.Perfil.nombres} {user.Perfil.apellidos}
+              </td>
+              <td>{user.username}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

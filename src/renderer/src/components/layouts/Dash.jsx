@@ -63,9 +63,11 @@ function Navbar() {
                 </a>
               </li>
               <li>
-                <a className="dropdown-item" href="#">
-                  Cerrar
-                </a>
+                <NavLink to="/" className="text-decoration-none">
+                  <a className="dropdown-item" href="#">
+                    Cerrar
+                  </a>
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -104,7 +106,7 @@ function Sidebar({ children }) {
             </div>
             <ul className="nav nav-pills flex-column mt-5">
               <li className="nav-item">
-                <NavLink to="/" className="text-decoration-none">
+                <NavLink to="/home" className="text-decoration-none">
                   <a href="#" className="nav-link text-white">
                     <FontAwesomeIcon icon={faHouse} className="fs-5" />
                     {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
