@@ -1,12 +1,12 @@
-import Dash from '../../components/layouts/Dash'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { userSchema } from '../../validations/userSchema'
-import { useEffect, useState } from 'react'
+import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faTrashCan, faUserGear, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal } from 'bootstrap'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Navigate } from 'react-router-dom'
+import Dash from '../../components/layouts/Dash'
+import { userSchema } from '../../validations/userSchema'
 function Usuarios() {
   return (
     <>
@@ -38,7 +38,6 @@ function Usuarios() {
 }
 
 function ModalCreate() {
-
   const [showPassword, setShowPassword] = useState(false)
 
   const {
@@ -57,11 +56,9 @@ function ModalCreate() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
-
   const handleCloseAndNavigate = () => {
-   return(<Navigate to="/dash/users" replace={true} />)
-  };
-
+    return <Navigate to="/dash/users" replace={true} />
+  }
 
   const onSubmit = async (data) => {
     try {
@@ -69,17 +66,15 @@ function ModalCreate() {
       console.log(usuario)
       reset()
 
-      
       // Cerrar el modal actual
-      const currentModal = Modal.getInstance(document.getElementById('exampleModal'));
-      currentModal.hide();
-      
-      // Abrir el nuevo modal
-      const successModal = new Modal(document.getElementById('exampleModal2'));
-      successModal.show();
-    } catch (error) {
-      console.error("Error al crear usuario:", error);
+      const currentModal = Modal.getInstance(document.getElementById('exampleModal'))
+      currentModal.hide()
 
+      // Abrir el nuevo modal
+      const successModal = new Modal(document.getElementById('exampleModal2'))
+      successModal.show()
+    } catch (error) {
+      console.error('Error al crear usuario:', error)
     }
   }
   return (
@@ -299,27 +294,50 @@ function ModalCreate() {
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-primary"  data-bs-target="#exampleModal2"  form="form-create-user">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                data-bs-target="#exampleModal2"
+                form="form-create-user"
+              >
                 Guardar Usuario
               </button>
             </div>
           </div>
         </div>
-  
-        
       </div>
-      <div class="modal fade" id="exampleModal2" aria-hidden="true" aria-labelledby="exampleModal2" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Usuario Creado</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div
+        className="modal fade"
+        id="exampleModal2"
+        aria-hidden="true"
+        aria-labelledby="exampleModal2"
+        tabIndex="-1"
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
+                Usuario Creado
+              </h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
             </div>
-            <div class="modal-body">
-              <p class="text-center">El Usuario fue creado correctamente.</p>
+            <div className="modal-body">
+              <p className="text-center">El Usuario fue creado correctamente.</p>
             </div>
-            <div class="modal-footer">
-              <button type="button" onClick={handleCloseAndNavigate} class="btn btn-primary" data-bs-toggle="modal">Cerrar</button>
+            <div className="modal-footer">
+              <button
+                type="button"
+                onClick={handleCloseAndNavigate}
+                className="btn btn-primary"
+                data-bs-toggle="modal"
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>
@@ -327,141 +345,169 @@ function ModalCreate() {
     </>
   )
 }
+
 function TableUsers() {
   const [users, setUsers] = useState([])
- 
+  const [userSelected, setUserSelected] = useState(null)
+
+  const fetchUsers = async () => {
+    const fetchedUsers = await window.api.getUsuarios()
+    setUsers(fetchedUsers)
+    setUserSelected(fetchedUsers[0])
+  }
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      const users = await window.api.getUsuarios()
-      setUsers(users)
-      console.log(users)
-    }
     fetchUsers()
   }, [])
 
-  const onDelete = async (dato) => {
-    console.log(dato)
-       const usuario = await window.api.deleteUsuario(dato)
-  
-      alert('Se ha eliminado el usuario')
-    
+  function handleEditUser(id) {
+    let user = users.find((user) => user.id === id)
+    setUserSelected(user)
+    let modal = new Modal(document.getElementById('modal-edit-user'))
+    modal.show()
   }
 
+  function handleDeleteUser(id) {
+    let user = users.find((user) => user.id === id)
+    setUserSelected(user)
+    let modal = new Modal(document.getElementById('modal-delete-user'))
+    modal.show()
+  }
 
   return (
     <div
-      className="scrollspy-example bg-light-tertiary p-3 rounded-2"
+      className="scrollspy-example bg-light-tertiary rounded-2"
       style={{ maxHeight: '300px', overflowY: 'auto' }}
     >
-      <table className="table table-striped">
+      {/* Modals */}
+
+      {userSelected && (
+        <div
+          className="modal fade"
+          id="modal-edit-user"
+          tabIndex="-1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="modalTitleId"
+          aria-hidden="true"
+        >
+          <div
+            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+            role="document"
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="modalTitleId">
+                  Editar Usuario
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">{userSelected.Perfil.nombres}</div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {userSelected && (
+        <div
+          className="modal fade"
+          id="modal-delete-user"
+          tabIndex="-1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="modalTitleId"
+          aria-hidden="true"
+        >
+          <div
+            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+            role="document"
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="modalTitleId">
+                  Eliminar usuario
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">{userSelected.Perfil.nombres}</div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Close
+                </button>
+                <button type="button" className="btn btn-primary">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Table */}
+      <table className="table table-sm table-hover align-middle">
         <thead>
           <tr>
-            <th scope="col">id</th>
             <th scope="col">Nombre y Apellido</th>
             <th scope="col">Usuario</th>
             <th scope="col">Rol</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.id}</td>
               <td>
                 {user.Perfil.nombres} {user.Perfil.apellidos}
               </td>
               <td>{user.username}</td>
-              <td></td>
-              <td> 
-                <div className='d-flex flex-row mb-3s'>
-                <div class="p-2">
-                <a href="" 
-                  data-bs-toggle="modal"
-                  data-bs-target="#editarUsuarioModal" >
+              <td>ROL</td>
+              <td className="text-end">
+                <button type="button" className="btn btn-sm btn-primary me-2">
+                  <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
+                </button>
+                <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => handleEditUser(user.id)}
+                  >
                     <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-                  </a> 
-                  </div>
-                  <div class="p-2">
-                  <a href="" 
-                  data-bs-toggle="modal"
-                  data-bs-target="#rolUsuarioModal" >
-                    <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
-                  </a> 
-                  </div>
-                  <div class="p-2">
-                  <a href="" 
-                  data-bs-toggle="modal"
-                  data-bs-target={`#eliminarUsuarioModal-${user.id}`}> 
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
                     <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-                  </a> 
-                  <div class="modal fade" tabindex="-1"  id={`eliminarUsuarioModal-${user.id}`}>
-                        <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title">Eliminar Usuario</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body">
-                            <p>Seguro que quiero eliminar el usuario {user.Perfil.nombres} {user.Perfil.apellidos}</p>
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="button" onClick={() => onDelete(user.id)} class="btn btn-primary">Eliminar</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  </div>
+                  </button>
+                </div>
               </td>
             </tr>
-            
           ))}
         </tbody>
       </table>
-      <div
-        className="modal fade"
-        id="editarUsuarioModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Editar Usuario
-              </h1>
-            </div>
-         </div>
-        </div>
-     </div>
-     <div
-        className="modal fade"
-        id="rolUsuarioModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Rol Usuario
-              </h1>
-            </div>
-         </div>
-        </div>
-     </div>
-    
-     
-
     </div>
   )
-}
-
-
-function editarUsuarioModal(){
-  
 }
 
 export default Usuarios

@@ -12,7 +12,7 @@ const api = {
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   // Casos de uso para eleminar usuario
   deleteUsuario: (dato) => ipcRenderer.invoke('deleteUsuario', dato)
-    // Casos de uso para ...
+  // Casos de uso para ...
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
