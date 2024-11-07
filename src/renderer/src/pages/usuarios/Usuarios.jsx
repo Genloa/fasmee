@@ -397,7 +397,7 @@ function TableUsers() {
             role="document"
           >
             <div className="modal-content">
-              <div className="modal-header">
+              <div className="modal-header bg-primary text-white">
                 <h5 className="modal-title" id="modalTitleId">
                   Editar Usuario
                 </h5>
@@ -438,7 +438,7 @@ function TableUsers() {
             role="document"
           >
             <div className="modal-content">
-              <div className="modal-header">
+              <div className="modal-header bg-danger text-white">
                 <h5 className="modal-title" id="modalTitleId">
                   Eliminar usuario
                 </h5>
