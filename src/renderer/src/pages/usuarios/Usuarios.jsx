@@ -2,42 +2,15 @@ import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal } from 'bootstrap'
-import { useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Navigate } from 'react-router-dom'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
-function Usuarios() {
-  return (
-    <>
-      <Dash>
-        <div className="card border-white">
-          <div className="card-body">
-            <h5 className="card-title">Usuarios</h5>
-            <div className="form-floating mb-3 mt-5">
-              <input
-                type="search"
-                className="form-control"
-                id="floatingInput"
-                placeholder="Buscar"
-                aria-label="Buscar"
-              />
-              <label htmlFor="floatingInput">Buscar Usuario</label>
-            </div>
-            <div className="mt-5">
-              <div className="text-end mb-3">
-                <ModalCreate />
-              </div>
-              <TableUsers />
-            </div>
-          </div>
-        </div>
-      </Dash>
-    </>
-  )
-}
 
-function ModalCreate() {
+const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
+
+function Usuarios() {
+  const [usuarios, setUsuarios] = useState([])
   const [showPassword, setShowPassword] = useState(false)
 
   const {
@@ -56,322 +29,306 @@ function ModalCreate() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
-  const handleCloseAndNavigate = () => {
-    return <Navigate to="/dash/users" replace={true} />
-  }
-
   const onSubmit = async (data) => {
-    try {
-      let usuario = await window.api.createUsuario(data)
-      console.log(usuario)
-      reset()
-
-      // Cerrar el modal actual
-      const currentModal = Modal.getInstance(document.getElementById('exampleModal'))
-      currentModal.hide()
-
-      // Abrir el nuevo modal
-      const successModal = new Modal(document.getElementById('exampleModal2'))
-      successModal.show()
-    } catch (error) {
-      console.error('Error al crear usuario:', error)
-    }
+    let usuario = await window.api.createUsuario(data)
+    setUsuarios([...usuarios, usuario])
+    reset()
   }
+
   return (
-    <>
-      <button
-        type="button"
-        className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
-      >
-        Crear Usuario
-      </button>
-
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex="-1"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Crear Usuario
-              </h1>
-              <button
-                type="submit"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body m-2">
-              <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
-                <div className="row mt-4">
-                  <div className="col">
-                    <div className="form-floating ">
+    <Dash>
+      <UsuariosContext.Provider value={{ usuarios, setUsuarios }}>
+        {/* Modal Create User */}
+        <div
+          className="modal fade"
+          id="modal-create-usuario"
+          tabIndex="-1"
+          aria-labelledby="modal-create-usuario-label"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog modal-lg modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="modal-create-usuario-label">
+                  Crear Usuario
+                </h1>
+                <button
+                  type="submit"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body m-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="nombres"
+                          className={getInputClassName('nombres')}
+                          placeholder="Nombres"
+                          aria-label="nombres"
+                          {...register('nombres')}
+                        />
+                        <label htmlFor="nombres">Nombres</label>
+                        {errors.nombres?.message && (
+                          <div className="invalid-feedback">{errors.nombres?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          className={getInputClassName('apellidos')}
+                          placeholder="apellidos"
+                          aria-label="apellidos"
+                          {...register('apellidos')}
+                        />
+                        <label htmlFor="apellidos">Apellidos</label>
+                        {errors.apellidos?.message && (
+                          <div className="invalid-feedback">{errors.apellidos?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="input-group  col">
+                      <select
+                        className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
+                        style={{ width: '60px' }}
+                        aria-label="Tipo de documento"
+                        {...register('tipoCedula')}
+                      >
+                        <option value="V">V</option>
+                        <option value="E">E</option>
+                      </select>
                       <input
                         type="text"
-                        id="nombres"
-                        className={getInputClassName('nombres')}
-                        placeholder="Nombres"
-                        aria-label="nombres"
-                        {...register('nombres')}
+                        id="cedula"
+                        className={getInputClassName('cedula')}
+                        placeholder="Cedula"
+                        aria-label="Cedula"
+                        aria-describedby="basic-addon1"
+                        {...register('cedula')}
                       />
-                      <label htmlFor="nombres">Nombres</label>
-                      {errors.nombres?.message && (
-                        <div className="invalid-feedback">{errors.nombres?.message}</div>
+                      {errors.cedula?.message && (
+                        <div className="invalid-feedback">{errors.cedula?.message}</div>
                       )}
                     </div>
-                  </div>
-                  <div className="col">
-                    <div className="form-floating ">
+
+                    <div className="col">
                       <input
                         type="text"
-                        className={getInputClassName('apellidos')}
-                        placeholder="apellidos"
-                        aria-label="apellidos"
-                        {...register('apellidos')}
+                        id="username"
+                        className={getInputClassName('username')}
+                        placeholder="Nombre de Usuario"
+                        aria-label="Username"
+                        {...register('username')}
                       />
-                      <label htmlFor="apellidos">Apellidos</label>
-                      {errors.apellidos?.message && (
-                        <div className="invalid-feedback">{errors.apellidos?.message}</div>
+                      {errors.username?.message && (
+                        <div className="invalid-feedback">{errors.username?.message}</div>
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="row mt-4">
-                  <div className="input-group  col">
-                    <select
-                      className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
-                      style={{ width: '60px' }}
-                      aria-label="Tipo de documento"
-                      {...register('tipoCedula')}
-                    >
-                      <option value="V">V</option>
-                      <option value="E">E</option>
-                    </select>
-                    <input
-                      type="text"
-                      id="cedula"
-                      className={getInputClassName('cedula')}
-                      placeholder="Cedula"
-                      aria-label="Cedula"
-                      aria-describedby="basic-addon1"
-                      {...register('cedula')}
-                    />
-                    {errors.cedula?.message && (
-                      <div className="invalid-feedback">{errors.cedula?.message}</div>
-                    )}
-                  </div>
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          id="floatingPassword"
+                          className={` ${getInputClassName('password')}`}
+                          placeholder="password"
+                          {...register('password')}
+                        />
+                        <label htmlFor="floatingPassword">Contraseña</label>
 
-                  <div className="col">
-                    <input
-                      type="text"
-                      id="username"
-                      className={getInputClassName('username')}
-                      placeholder="Nombre de Usuario"
-                      aria-label="Username"
-                      {...register('username')}
-                    />
-                    {errors.username?.message && (
-                      <div className="invalid-feedback">{errors.username?.message}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="row mt-4">
-                  <div className="col">
-                    <div className="form-floating ">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        id="floatingPassword"
-                        className={` ${getInputClassName('password')}`}
-                        placeholder="password"
-                        {...register('password')}
-                      />
-                      <label htmlFor="floatingPassword">Contraseña</label>
+                        {errors.password?.message && (
+                          <div className="invalid-feedback">{errors.password?.message}</div>
+                        )}
+                      </div>
+                    </div>
 
-                      {errors.password?.message && (
-                        <div className="invalid-feedback">{errors.password?.message}</div>
-                      )}
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          id="floatingPassword"
+                          className={getInputClassName('confirmtPassword')}
+                          placeholder="password"
+                          {...register('confirmtPassword')}
+                        />
+                        <label htmlFor="floatingPassword">Confirmar contraseña</label>
+                        {errors.confirmtPassword?.message && (
+                          <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="col">
-                    <div className="form-floating ">
+                  <div className="row mt-4">
+                    <div className=" col ">
                       <input
-                        type={showPassword ? 'text' : 'password'}
-                        id="floatingPassword"
-                        className={getInputClassName('confirmtPassword')}
-                        placeholder="password"
-                        {...register('confirmtPassword')}
+                        type="checkbox"
+                        className="form-check-input"
+                        id="exampleCheck1"
+                        checked={showPassword}
+                        onChange={() => setShowPassword(!showPassword)}
                       />
-                      <label htmlFor="floatingPassword">Confirmar contraseña</label>
-                      {errors.confirmtPassword?.message && (
-                        <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
-                      )}
+                      <label className="form-check-label ms-2" htmlFor="exampleCheck1">
+                        Mostrar contraseña.
+                      </label>
                     </div>
                   </div>
-                </div>
-                <div className="row mt-4">
-                  <div className=" col ">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="exampleCheck1"
-                      checked={showPassword}
-                      onChange={() => setShowPassword(!showPassword)}
-                    />
-                    <label className="form-check-label ms-2" htmlFor="exampleCheck1">
-                      Mostrar contraseña.
-                    </label>
-                  </div>
-                </div>
-                <div className="row mt-4">
-                  <div className="col">
-                    <div className="form-floating ">
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="date"
+                          className={getInputClassName('fechaNacimiento')}
+                          id="floatingDate"
+                          placeholder="fechaNacimiento"
+                          {...register('fechaNacimiento')}
+                        />
+                        <label htmlFor="floatingDate"> fecha de nacimiento</label>
+                        {errors.fechaNacimiento?.message && (
+                          <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="input-group  col">
+                      <select
+                        className={`form-select flex-grow-0 bg-light ${errors.extension ? 'is-invalid' : ''}`}
+                        style={{ width: '90px' }}
+                        aria-label="Tipo de documento"
+                        {...register('extension')}
+                      >
+                        <option value="0416">0416</option>
+                        <option value="0426">0426</option>
+                        <option value="0424">0424</option>
+                        <option value="0414">0414</option>
+                        <option value="0412">0412</option>
+                      </select>
                       <input
-                        type="date"
-                        className={getInputClassName('fechaNacimiento')}
-                        id="floatingDate"
-                        placeholder="fechaNacimiento"
-                        {...register('fechaNacimiento')}
+                        type="phone"
+                        className={getInputClassName('telefono')}
+                        aria-label="Telefono"
+                        aria-describedby="basic-addon1"
+                        {...register('telefono')}
                       />
-                      <label htmlFor="floatingDate"> fecha de nacimiento</label>
-                      {errors.fechaNacimiento?.message && (
-                        <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
+                      {errors.telefono?.message && (
+                        <div className="invalid-feedback">{errors.telefono?.message}</div>
                       )}
                     </div>
                   </div>
-                  <div className="input-group  col">
-                    <select
-                      className={`form-select flex-grow-0 bg-light ${errors.extension ? 'is-invalid' : ''}`}
-                      style={{ width: '90px' }}
-                      aria-label="Tipo de documento"
-                      {...register('extension')}
-                    >
-                      <option value="0416">0416</option>
-                      <option value="0426">0426</option>
-                      <option value="0424">0424</option>
-                      <option value="0414">0414</option>
-                      <option value="0412">0412</option>
-                    </select>
-                    <input
-                      type="phone"
-                      className={getInputClassName('telefono')}
-                      aria-label="Telefono"
-                      aria-describedby="basic-addon1"
-                      {...register('telefono')}
-                    />
-                    {errors.telefono?.message && (
-                      <div className="invalid-feedback">{errors.telefono?.message}</div>
-                    )}
-                  </div>
-                </div>
-                <div className="row mt-4">
-                  <div className="col">
-                    <div className="form-floating ">
-                      <input
-                        type="email"
-                        className={getInputClassName('correo')}
-                        id="correo"
-                        placeholder="correo"
-                        {...register('correo')}
-                      />
-                      <label htmlFor="correo">Correo</label>
-                      {errors.correo?.message && (
-                        <div className="invalid-feedback">{errors.correo?.message}</div>
-                      )}
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="email"
+                          className={getInputClassName('correo')}
+                          id="correo"
+                          placeholder="correo"
+                          {...register('correo')}
+                        />
+                        <label htmlFor="correo">Correo</label>
+                        {errors.correo?.message && (
+                          <div className="invalid-feedback">{errors.correo?.message}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </form>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                data-bs-target="#exampleModal2"
-                form="form-create-user"
-              >
-                Guardar Usuario
-              </button>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  form="form-create-user"
+                  data-bs-dismiss="modal"
+                >
+                  Guardar Usuario
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        className="modal fade"
-        id="exampleModal2"
-        aria-hidden="true"
-        aria-labelledby="exampleModal2"
-        tabIndex="-1"
-      >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalToggleLabel2">
-                Usuario Creado
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
+
+        {/* Card */}
+        <div className="card border-white">
+          <div className="card-body">
+            <h5 className="card-title">Usuarios</h5>
+            <div className="form-floating mb-3 mt-5">
+              <input
+                type="search"
+                className="form-control"
+                id="floatingInput"
+                placeholder="Buscar"
+                aria-label="Buscar"
+              />
+              <label htmlFor="floatingInput">Buscar Usuario</label>
             </div>
-            <div className="modal-body">
-              <p className="text-center">El Usuario fue creado correctamente.</p>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                onClick={handleCloseAndNavigate}
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-              >
-                Cerrar
-              </button>
+            <div className="mt-5">
+              <div className="text-end mb-3">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modal-create-usuario"
+                >
+                  Crear Usuario
+                </button>
+              </div>
+              <TableUsers />
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </UsuariosContext.Provider>
+    </Dash>
   )
 }
 
 function TableUsers() {
-  const [users, setUsers] = useState([])
-  const [userSelected, setUserSelected] = useState(null)
+  const { usuarios, setUsuarios } = useContext(UsuariosContext)
+  const [usuarioSelected, setUsuarioSelected] = useState(null)
+
+  const modalEditUserRef = document.getElementById('modal-edit-user')
+  const modalDeleteUserRef = document.getElementById('modal-delete-user')
 
   const fetchUsers = async () => {
     const fetchedUsers = await window.api.getUsuarios()
-    setUsers(fetchedUsers)
-    setUserSelected(fetchedUsers[0])
+    setUsuarios(fetchedUsers)
+    setUsuarioSelected(fetchedUsers[0])
   }
 
   useEffect(() => {
     fetchUsers()
   }, [])
 
-  function handleEditUser(id) {
-    let user = users.find((user) => user.id === id)
-    setUserSelected(user)
-    let modal = new Modal(document.getElementById('modal-edit-user'))
+  function openModalEditUser(id) {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalEditUserRef)
     modal.show()
   }
 
-  function handleDeleteUser(id) {
-    let user = users.find((user) => user.id === id)
-    setUserSelected(user)
-    let modal = new Modal(document.getElementById('modal-delete-user'))
+  function openModalDeleteUser(id) {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalDeleteUserRef)
     modal.show()
+  }
+
+  function closeModalEditUser() {}
+
+  function closeModalDeleteUser() {
+    window.api.deleteUsuario(usuarioSelected.id)
+    setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
+    new Modal(modalDeleteUserRef).hide()
   }
 
   return (
@@ -381,87 +338,93 @@ function TableUsers() {
     >
       {/* Modals */}
 
-      {userSelected && (
+      <div
+        className="modal fade"
+        id="modal-edit-user"
+        tabIndex="-1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="modalTitleId"
+        aria-hidden="true"
+      >
         <div
-          className="modal fade"
-          id="modal-edit-user"
-          tabIndex="-1"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          role="dialog"
-          aria-labelledby="modalTitleId"
-          aria-hidden="true"
+          className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+          role="document"
         >
-          <div
-            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-            role="document"
-          >
-            <div className="modal-content">
-              <div className="modal-header bg-primary text-white">
-                <h5 className="modal-title" id="modalTitleId">
-                  Editar Usuario
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">{userSelected.Perfil.nombres}</div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Close
-                </button>
-                <button type="button" className="btn btn-primary">
-                  Save
-                </button>
-              </div>
+          <div className="modal-content">
+            <div className="modal-header bg-primary text-white">
+              <h5 className="modal-title" id="modalTitleId">
+                Editar Usuario
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">{usuarioSelected?.Perfil.nombres}</div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => closeModalEditUser()}
+              >
+                Actualizar
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {userSelected && (
+      <div
+        className="modal fade"
+        id="modal-delete-user"
+        tabIndex="-1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="modalTitleId"
+        aria-hidden="true"
+      >
         <div
-          className="modal fade"
-          id="modal-delete-user"
-          tabIndex="-1"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          role="dialog"
-          aria-labelledby="modalTitleId"
-          aria-hidden="true"
+          className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+          role="document"
         >
-          <div
-            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-            role="document"
-          >
-            <div className="modal-content">
-              <div className="modal-header bg-danger text-white">
-                <h5 className="modal-title" id="modalTitleId">
-                  Eliminar usuario
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body">{userSelected.Perfil.nombres}</div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Close
-                </button>
-                <button type="button" className="btn btn-primary">
-                  Save
-                </button>
-              </div>
+          <div className="modal-content">
+            <div className="modal-header bg-danger text-white">
+              <h5 className="modal-title" id="modalTitleId">
+                Eliminar usuario
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">{usuarioSelected?.Perfil.nombres}</div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-bs-dismiss="modal"
+                onClick={() => closeModalDeleteUser()}
+              >
+                Confirmar
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* Table */}
       <table className="table table-sm table-hover align-middle">
@@ -474,7 +437,7 @@ function TableUsers() {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {usuarios.map((user) => (
             <tr key={user.id}>
               <td>
                 {user.Perfil.nombres} {user.Perfil.apellidos}
@@ -489,14 +452,14 @@ function TableUsers() {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={() => handleEditUser(user.id)}
+                    onClick={() => openModalEditUser(user.id)}
                   >
                     <FontAwesomeIcon icon={faUserPen} className="fs-5" />
                   </button>
                   <button
                     type="button"
                     className="btn btn-danger"
-                    onClick={() => handleDeleteUser(user.id)}
+                    onClick={() => openModalDeleteUser(user.id)}
                   >
                     <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
                   </button>

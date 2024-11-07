@@ -10,7 +10,7 @@ const api = {
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
   // updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
-  deleteUsuario: (dato) => ipcRenderer.invoke('deleteUsuario', dato)
+  deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id)
 
   // Casos de uso para ...
 }
