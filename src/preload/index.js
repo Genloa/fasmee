@@ -6,12 +6,12 @@ const api = {
   // Casos de uso para la authentication
   login: (username, password) => ipcRenderer.invoke('login', { username, password }),
 
-  // Casos de uso para usuarios
-  createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
-  // Casos de uso para seleccionar usuarios
+  // Casos de uso para CRUD de usuarios
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
-  // Casos de uso para eleminar usuario
+  createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
+  // updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
   deleteUsuario: (dato) => ipcRenderer.invoke('deleteUsuario', dato)
+
   // Casos de uso para ...
 }
 
