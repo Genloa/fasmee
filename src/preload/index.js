@@ -11,7 +11,7 @@ const api = {
   // Casos de uso para seleccionar usuarios
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   // Casos de uso para eleminar usuario
-  deleteUsuario: (dato) => ipcRenderer.invoke('createUsuario', dato)
+  deleteUsuario: (dato) => ipcRenderer.invoke('deleteUsuario', dato)
     // Casos de uso para ...
 }
 

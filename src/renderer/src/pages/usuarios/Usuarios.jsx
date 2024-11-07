@@ -5,8 +5,8 @@ import { userSchema } from '../../validations/userSchema'
 import { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faTrashCan, faUserGear, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
-
-
+import { Modal } from 'bootstrap'
+import { Navigate, useNavigate } from 'react-router-dom';
 function Usuarios() {
   return (
     <>
@@ -38,7 +38,9 @@ function Usuarios() {
 }
 
 function ModalCreate() {
+
   const [showPassword, setShowPassword] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -55,13 +57,31 @@ function ModalCreate() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
+
+  const handleCloseAndNavigate = () => {
+   return(<Navigate to="/dash/users" replace={true} />)
+  };
+
+
   const onSubmit = async (data) => {
-    let usuario = await window.api.createUsuario(data)
-    console.log(usuario)
+    try {
+      let usuario = await window.api.createUsuario(data)
+      console.log(usuario)
+      reset()
 
-    reset()
+      
+      // Cerrar el modal actual
+      const currentModal = Modal.getInstance(document.getElementById('exampleModal'));
+      currentModal.hide();
+      
+      // Abrir el nuevo modal
+      const successModal = new Modal(document.getElementById('exampleModal2'));
+      successModal.show();
+    } catch (error) {
+      console.error("Error al crear usuario:", error);
+
+    }
   }
-
   return (
     <>
       <button
@@ -279,9 +299,27 @@ function ModalCreate() {
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-primary" form="form-create-user">
+              <button type="submit" className="btn btn-primary"  data-bs-target="#exampleModal2"  form="form-create-user">
                 Guardar Usuario
               </button>
+            </div>
+          </div>
+        </div>
+  
+        
+      </div>
+      <div class="modal fade" id="exampleModal2" aria-hidden="true" aria-labelledby="exampleModal2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Usuario Creado</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p class="text-center">El Usuario fue creado correctamente.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" onClick={handleCloseAndNavigate} class="btn btn-primary" data-bs-toggle="modal">Cerrar</button>
             </div>
           </div>
         </div>
@@ -302,12 +340,12 @@ function TableUsers() {
   }, [])
 
   const onDelete = async (dato) => {
-
+    console.log(dato)
        const usuario = await window.api.deleteUsuario(dato)
   
-      alert(`Se ha eliminado el usuario`);
+      alert('Se ha eliminado el usuario')
     
-  };
+  }
 
 
   return (
