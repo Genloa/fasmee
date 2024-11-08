@@ -1,17 +1,19 @@
 import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Modal } from 'bootstrap'
+import { Modal, Toast } from 'bootstrap'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 
-const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
+
+const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => { } })
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([])
   const [showPassword, setShowPassword] = useState(false)
+  const modalCrearUserRef = document.getElementById('modal-create-usuario')
 
   const {
     register,
@@ -29,10 +31,22 @@ function Usuarios() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
+ function openModalCrearUser(){
+  let modal = new Modal(modalCrearUserRef)
+    modal.show()
+ 
+ }
+
   const onSubmit = async (data) => {
+    let validar = true
     let usuario = await window.api.createUsuario(data)
     setUsuarios([...usuarios, usuario])
     reset()
+    const modal = Modal.getInstance(modalCrearUserRef);
+      modal.hide();
+      const toastElement = document.getElementById('liveToastCrear');
+      const toastcrear = new Toast(toastElement);
+      toastcrear.show();
   }
 
   return (
@@ -242,34 +256,19 @@ function Usuarios() {
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  form="form-create-user"
-                  data-bs-dismiss="modal"
-                >
-                  Guardar Usuario
-                </button>
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"> Cancelar </button>
+                <button type="submit" className="btn btn-primary" form="form-create-user" 
+                id="liveToastBtnCrear" >Guardar Usuario </button>
               </div>
             </div>
           </div>
         </div>
-
         {/* Card */}
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title">Usuarios</h5>
             <div className="form-floating mb-3 mt-5">
-              <input
-                type="search"
-                className="form-control"
-                id="floatingInput"
-                placeholder="Buscar"
-                aria-label="Buscar"
-              />
+              <input type="search" className="form-control" id="floatingInput" placeholder="Buscar" aria-label="Buscar" />
               <label htmlFor="floatingInput">Buscar Usuario</label>
             </div>
             <div className="mt-5">
@@ -277,8 +276,7 @@ function Usuarios() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  data-bs-toggle="modal"
-                  data-bs-target="#modal-create-usuario"
+                  onClick={() => openModalCrearUser()}
                 >
                   Crear Usuario
                 </button>
@@ -287,7 +285,20 @@ function Usuarios() {
             </div>
           </div>
         </div>
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToastCrear" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div className="toast-header">
+            <strong className="me-auto">Notificacion</strong>
+            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div className="toast-body">
+            Usuario creado con éxito.
+          </div>
+        </div>
+      </div>
+
       </UsuariosContext.Provider>
+
     </Dash>
   )
 }
@@ -323,12 +334,28 @@ function TableUsers() {
     modal.show()
   }
 
-  function closeModalEditUser() {}
+  function closeModalEditUser() { }
 
-  function closeModalDeleteUser() {
-    window.api.deleteUsuario(usuarioSelected.id)
-    setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
-    new Modal(modalDeleteUserRef).hide()
+  async function closeModalDeleteUser() {
+    try {
+      // Eliminar el usuario
+      await window.api.deleteUsuario(usuarioSelected.id);
+
+      // Actualizar el estado de usuarios
+      setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id));
+
+      // Cerrar el modal
+      const modal = Modal.getInstance(modalDeleteUserRef);
+      modal.hide();
+
+      // Mostrar el toast
+      const toastElement = document.getElementById('liveToast');
+      const toast = new Toast(toastElement);
+      toast.show();
+    } catch (error) {
+      console.error('Error al eliminar el usuario:', error);
+      // Aquí podrías mostrar un toast de error si lo deseas
+    }
   }
 
   return (
@@ -418,6 +445,7 @@ function TableUsers() {
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
                 onClick={() => closeModalDeleteUser()}
+                id='liveToastBtn'
               >
                 Confirmar
               </button>
@@ -469,6 +497,18 @@ function TableUsers() {
           ))}
         </tbody>
       </table>
+      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div className="toast-header">
+            <strong className="me-auto">notificacion</strong>
+            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div className="toast-body">
+            Usuario eliminado con éxito.
+          </div>
+        </div>
+      </div>
+
     </div>
   )
 }
