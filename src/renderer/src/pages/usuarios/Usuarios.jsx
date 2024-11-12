@@ -6,13 +6,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
+import PropTypes from 'prop-types'
 
-
-const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => { } })
+const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([])
   const [showPassword, setShowPassword] = useState(false)
+
   const modalCrearUserRef = document.getElementById('modal-create-usuario')
 
   const {
@@ -31,22 +32,20 @@ function Usuarios() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
- function openModalCrearUser(){
-  let modal = new Modal(modalCrearUserRef)
+  function openModalCrearUser() {
+    let modal = new Modal(modalCrearUserRef)
     modal.show()
- 
- }
+  }
 
   const onSubmit = async (data) => {
-    let validar = true
     let usuario = await window.api.createUsuario(data)
     setUsuarios([...usuarios, usuario])
     reset()
-    const modal = Modal.getInstance(modalCrearUserRef);
-      modal.hide();
-      const toastElement = document.getElementById('liveToastCrear');
-      const toastcrear = new Toast(toastElement);
-      toastcrear.show();
+    const modal = Modal.getInstance(modalCrearUserRef)
+    modal.hide()
+    const toastElement = document.getElementById('liveToastCrear')
+    const toastcrear = new Toast(toastElement)
+    toastcrear.show()
   }
 
   return (
@@ -256,19 +255,35 @@ function Usuarios() {
                 </form>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"> Cancelar </button>
-                <button type="submit" className="btn btn-primary" form="form-create-user" 
-                id="liveToastBtnCrear" >Guardar Usuario </button>
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  {' '}
+                  Cancelar{' '}
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  form="form-create-user"
+                  id="liveToastBtnCrear"
+                >
+                  Guardar Usuario{' '}
+                </button>
               </div>
             </div>
           </div>
         </div>
+
         {/* Card */}
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title">Usuarios</h5>
             <div className="form-floating mb-3 mt-5">
-              <input type="search" className="form-control" id="floatingInput" placeholder="Buscar" aria-label="Buscar" />
+              <input
+                type="search"
+                className="form-control"
+                id="floatingInput"
+                placeholder="Buscar"
+                aria-label="Buscar"
+              />
               <label htmlFor="floatingInput">Buscar Usuario</label>
             </div>
             <div className="mt-5">
@@ -285,20 +300,29 @@ function Usuarios() {
             </div>
           </div>
         </div>
+
+        {/* Toast */}
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToastCrear" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
-            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div className="toast-body">
-            Usuario creado con éxito.
+          <div
+            id="liveToastCrear"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificacion</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">Usuario creado con éxito.</div>
           </div>
         </div>
-      </div>
-
       </UsuariosContext.Provider>
-
     </Dash>
   )
 }
@@ -334,26 +358,37 @@ function TableUsers() {
     modal.show()
   }
 
-  function closeModalEditUser() { }
+  const closeModalEditUser = async (data) => {
+    console.log(data)
+    // let usuario = await window.api.updateUsuario(data)
+    // setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
+    // console.log(usuario)
+    // const modal = Modal.getInstance(modalEditUserRef)
+    // modal.hide()
+    /*
+    const toastElement = document.getElementById('liveToastCrear')
+    const toastcrear = new Toast(toastElement)
+    toastcrear.show()*/
+  }
 
   async function closeModalDeleteUser() {
     try {
       // Eliminar el usuario
-      await window.api.deleteUsuario(usuarioSelected.id);
+      await window.api.deleteUsuario(usuarioSelected.id)
 
       // Actualizar el estado de usuarios
-      setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id));
+      setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
 
       // Cerrar el modal
-      const modal = Modal.getInstance(modalDeleteUserRef);
-      modal.hide();
+      const modal = Modal.getInstance(modalDeleteUserRef)
+      modal.hide()
 
       // Mostrar el toast
-      const toastElement = document.getElementById('liveToast');
-      const toast = new Toast(toastElement);
-      toast.show();
+      const toastElement = document.getElementById('liveToast')
+      const toast = new Toast(toastElement)
+      toast.show()
     } catch (error) {
-      console.error('Error al eliminar el usuario:', error);
+      console.error('Error al eliminar el usuario:', error)
       // Aquí podrías mostrar un toast de error si lo deseas
     }
   }
@@ -375,14 +410,11 @@ function TableUsers() {
         aria-labelledby="modalTitleId"
         aria-hidden="true"
       >
-        <div
-          className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-          role="document"
-        >
+        <div className="modal-dialog modal-dialog-lg modal-dialog-centered" role="document">
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title" id="modalTitleId">
-                Editar Usuario
+                Editar Usuario {usuarioSelected?.Perfil.nombres} {usuarioSelected?.Perfil.apellidos}
               </h5>
               <button
                 type="button"
@@ -391,17 +423,14 @@ function TableUsers() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">{usuarioSelected?.Perfil.nombres}</div>
+            <div className="modal-body">
+              <ActualizarUsuarioForm userData={usuarioSelected} onSubmit={closeModalEditUser} />
+            </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => closeModalEditUser()}
-              >
+              <button type="submit" className="btn btn-primary" form="form-update-user">
                 Actualizar
               </button>
             </div>
@@ -445,7 +474,7 @@ function TableUsers() {
                 className="btn btn-primary"
                 data-bs-dismiss="modal"
                 onClick={() => closeModalDeleteUser()}
-                id='liveToastBtn'
+                id="liveToastBtn"
               >
                 Confirmar
               </button>
@@ -501,16 +530,256 @@ function TableUsers() {
         <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
           <div className="toast-header">
             <strong className="me-auto">notificacion</strong>
-            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
           </div>
-          <div className="toast-body">
-            Usuario eliminado con éxito.
-          </div>
+          <div className="toast-body">Usuario eliminado con éxito.</div>
         </div>
       </div>
-
     </div>
   )
 }
 
+function ActualizarUsuarioForm({ userData, onSubmit }) {
+  const [showPassword, setShowPassword] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, dirtyFields }
+  } = useForm({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      nombres: '',
+      apellidos: '',
+      tipoCedula: 'V',
+      cedula: '',
+      username: '',
+      password: '',
+      confirmtPassword: '',
+      fechaNacimiento: '',
+      extension: '',
+      telefono: '',
+      correo: ''
+    }
+  })
+
+  useEffect(() => {
+    if (userData) {
+      reset({
+        nombres: userData?.Perfil?.nombres || '',
+        apellidos: userData.Perfil?.apellidos || '',
+        tipoCedula: userData.Perfil?.tipo_cedula || 'V',
+        cedula: userData.Perfil?.cedula || '',
+        username: userData.username || '',
+        password: userData?.password || '',
+        confirmtPassword: userData?.password || '',
+        fechaNacimiento: userData.Perfil?.fecha_nacimiento
+          ? new Date(userData.Perfil.fecha_nacimiento).toISOString().split('T')[0]
+          : '',
+        telefono: userData.Perfil?.telefono || '',
+        correo: userData.Perfil?.correo || ''
+      })
+    }
+  }, [userData, reset])
+
+  const getInputClassName = (fieldName) => {
+    if (!dirtyFields[fieldName]) {
+      return 'form-control'
+    }
+    return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
+      <div className="row mt-4">
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type="text"
+              id="nombres"
+              className={getInputClassName('nombres')}
+              placeholder="Nombres"
+              aria-label="nombres"
+              {...register('nombres')}
+            />
+            <label htmlFor="nombres">Nombres</label>
+            {errors.nombres?.message && (
+              <div className="invalid-feedback">{errors.nombres?.message}</div>
+            )}
+          </div>
+        </div>
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type="text"
+              className={getInputClassName('apellidos')}
+              placeholder="apellidos"
+              aria-label="apellidos"
+              {...register('apellidos')}
+            />
+            <label htmlFor="apellidos">Apellidos</label>
+            {errors.apellidos?.message && (
+              <div className="invalid-feedback">{errors.apellidos?.message}</div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="input-group  col">
+          <select
+            className={`form-select flex-grow-0 bg-light ${errors.tipoCedula ? 'is-invalid' : ''}`}
+            style={{ width: '60px' }}
+            aria-label="Tipo de documento"
+            {...register('tipoCedula')}
+          >
+            <option value="V">V</option>
+            <option value="E">E</option>
+          </select>
+          <input
+            type="text"
+            id="cedula"
+            className={getInputClassName('cedula')}
+            placeholder="Cedula"
+            aria-label="Cedula"
+            aria-describedby="basic-addon1"
+            {...register('cedula')}
+          />
+          {errors.cedula?.message && (
+            <div className="invalid-feedback">{errors.cedula?.message}</div>
+          )}
+        </div>
+
+        <div className="col">
+          <input
+            type="text"
+            id="username"
+            className={getInputClassName('username')}
+            placeholder="Nombre de Usuario"
+            aria-label="Username"
+            {...register('username')}
+          />
+          {errors.username?.message && (
+            <div className="invalid-feedback">{errors.username?.message}</div>
+          )}
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="floatingPassword"
+              className={` ${getInputClassName('password')}`}
+              placeholder="password"
+              {...register('password')}
+            />
+            <label htmlFor="floatingPassword">Contraseña</label>
+
+            {errors.password?.message && (
+              <div className="invalid-feedback">{errors.password?.message}</div>
+            )}
+          </div>
+        </div>
+
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              id="floatingPassword"
+              className={getInputClassName('confirmtPassword')}
+              placeholder="password"
+              {...register('confirmtPassword')}
+            />
+            <label htmlFor="floatingPassword">Confirmar contraseña</label>
+            {errors.confirmtPassword?.message && (
+              <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className=" col ">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="exampleCheck1"
+            checked={showPassword}
+            onChange={() => setShowPassword(!showPassword)}
+          />
+          <label className="form-check-label ms-2" htmlFor="exampleCheck1">
+            Mostrar contraseña.
+          </label>
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type="date"
+              className={getInputClassName('fechaNacimiento')}
+              id="floatingDate"
+              placeholder="fechaNacimiento"
+              {...register('fechaNacimiento')}
+            />
+            <label htmlFor="floatingDate"> fecha de nacimiento</label>
+            {errors.fechaNacimiento?.message && (
+              <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
+            )}
+          </div>
+        </div>
+        <div className="input-group  col">
+          <input
+            type="phone"
+            className={getInputClassName('telefono')}
+            aria-label="Telefono"
+            aria-describedby="basic-addon1"
+            {...register('telefono')}
+          />
+          {errors.telefono?.message && (
+            <div className="invalid-feedback">{errors.telefono?.message}</div>
+          )}
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
+          <div className="form-floating ">
+            <input
+              type="email"
+              className={getInputClassName('correo')}
+              id="correo"
+              placeholder="correo"
+              {...register('correo')}
+            />
+            <label htmlFor="correo">Correo</label>
+            {errors.correo?.message && (
+              <div className="invalid-feedback">{errors.correo?.message}</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </form>
+  )
+}
+
+ActualizarUsuarioForm.propTypes = {
+  userData: PropTypes.shape({
+    Perfil: PropTypes.shape({
+      nombres: PropTypes.string,
+      apellidos: PropTypes.string,
+      tipo_cedula: PropTypes.string,
+      cedula: PropTypes.string,
+      fecha_nacimiento: PropTypes.date,
+      telefono: PropTypes.string,
+      correo: PropTypes.string
+    }),
+    username: PropTypes.string,
+    password: PropTypes.string
+  }),
+  onSubmit: PropTypes.func.isRequired
+}
 export default Usuarios

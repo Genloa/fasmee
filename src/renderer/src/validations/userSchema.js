@@ -41,12 +41,14 @@ export const userSchema = z
     extension: z.enum(extns, {
       errorMap: () => ({ message: 'selecione la extension' })
     }),
-    telefono: z.string().min(7, {
-      message: 'Minimo 7 caracteres'
-    })
-    .max(7, {
-      message: 'Maximo 7 caracteres'
-    }),
+    telefono: z
+      .string()
+      .min(7, {
+        message: 'Minimo 7 caracteres'
+      })
+      .max(7, {
+        message: 'Maximo 7 caracteres'
+      })
   })
   .refine((data) => data.password === data.confirmtPassword, {
     message: 'Las contraseña no coinciden',
