@@ -5,7 +5,7 @@ import '../../css/dash.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse } from '@fortawesome/free-solid-svg-icons'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
-
+import { faHospitalUser } from '@fortawesome/free-solid-svg-icons'
 function Dash({ children }) {
   return (
     <>
@@ -106,19 +106,21 @@ function Sidebar({ children }) {
             </div>
             <ul className="nav nav-pills flex-column mt-5">
               <li className="nav-item">
-                <NavLink to="/home" className="text-decoration-none">
-                  <a href="#" className="nav-link text-white">
-                    <FontAwesomeIcon icon={faHouse} className="fs-5" />
-                    {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
-                  </a>
+                <NavLink to="/home" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faHouse} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/dash/users" className="text-decoration-none">
-                  <a href="#" className="nav-link text-white">
-                    <FontAwesomeIcon icon={faUser} className="fs-5" />
-                    {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
-                  </a>
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faUser} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
+                </NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink to="/dash/pacientes" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faHospitalUser} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Pacientes</span>}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
