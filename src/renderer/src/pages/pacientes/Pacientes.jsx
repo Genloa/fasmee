@@ -31,12 +31,14 @@ function Pacientes() {
               <div className="col">
                 <div className="card border-primary">
                   <img
-                    src="/src/renderer/src/pages/pacientes/imgPacientes/paciente.jpg"
-                    className="card-img-top"
-                    alt="..."
+                    src="../../src/img/paciente.jpg"
+                    alt="Logo"
+                    height="90"
+                    width="auto"
+                    className="d-inline-block align-text-top "
                   />
                   <div className="card-body">
-                    <h5 className="card-title">Card title</h5>
+                    <h5 className="card-title">Card title 1</h5>
                     <p className="card-text">
                       This is a longer card with supporting text below as a natural lead-in to
                       additional content. This content is a little bit longer.
