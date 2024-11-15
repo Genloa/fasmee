@@ -1,6 +1,21 @@
 import Dash from '../../components/layouts/Dash'
+import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { useEffect, useState } from 'react'
 
 function Pacientes() {
+  const { usuarios, setUsuarios } = useState([])
+
+  const fetchUsers = async () => {
+    const fetchedUsers = await window.api.getUsuarios()
+    setUsuarios(fetchedUsers)
+    console.log(fetchUsers)
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   return (
     <>
       <Dash>
@@ -27,61 +42,50 @@ function Pacientes() {
               />
               <label htmlFor="floatingInput">Buscar Paciente</label>
             </div>
-            <div className="row row-cols-1 row-cols-md-2 g-4 mt-2">
-              <div className="col">
-                <div className="card border-primary">
-                  <img
-                    src="../../src/img/paciente.jpg"
-                    alt="Logo"
-                    height="90"
-                    width="auto"
-                    className="d-inline-block align-text-top "
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Card title 1</h5>
-                    <p className="card-text">
-                      This is a longer card with supporting text below as a natural lead-in to
-                      additional content. This content is a little bit longer.
-                    </p>
+            <div className="row row-cols-1 row-cols-md-4 g-4 mt-2">
+              {usuarios.map((user) => (
+                <div className="col" key={user.id}>
+                  <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <div className="text-center">
+                      <img
+                        src="../../src/img/paciente.jpg"
+                        width="60%"
+                        height="60%"
+                        alt="Logo"
+                        className="d-inline-block align-text-top rounded-circle mt-3"
+                      />
+                    </div>
+                    <div className="card-body">
+                      <h5 className="card-title">
+                        {user.Perfil.nombres} {user.Perfil.apellidos}
+                      </h5>
+                      <p className="card-text">Trabajador MPPE</p>
+                      <div>
+                        <div
+                          className="btn-group btn-group-sm"
+                          role="group"
+                          aria-label="Button group name"
+                        >
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            //onClick={() => openModalEditUser(user.id)}
+                          >
+                            <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-danger"
+                            //onClick={() => openModalDeleteUser(user.id)}
+                          >
+                            <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col">
-                <div className="card border-primary">
-                  <img src="..." className="card-img-top" alt="..." />
-                  <div className="card-body">
-                    <h5 className="card-title">Card title</h5>
-                    <p className="card-text">
-                      This is a longer card with supporting text below as a natural lead-in to
-                      additional content. This content is a little bit longer.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card border-primary">
-                  <img src="..." className="card-img-top" alt="..." />
-                  <div className="card-body">
-                    <h5 className="card-title">Card title</h5>
-                    <p className="card-text">
-                      This is a longer card with supporting text below as a natural lead-in to
-                      additional content.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card border-primary">
-                  <img src="..." className="card-img-top" alt="..." />
-                  <div className="card-body">
-                    <h5 className="card-title">Card title</h5>
-                    <p className="card-text">
-                      This is a longer card with supporting text below as a natural lead-in to
-                      additional content. This content is a little bit longer.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
