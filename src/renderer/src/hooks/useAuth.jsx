@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import { createContext, useContext, useMemo } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useLocalStorage } from './useLocalStorage'
 
 const AuthContext = createContext()
@@ -31,20 +31,8 @@ export const AuthProvider = ({ children }) => {
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
+
 AuthProvider.propTypes = {
-  children: PropTypes.node.isRequired
-}
-
-export const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth()
-  if (!user) {
-    // user is not authenticated
-    return <Navigate to="/login" />
-  }
-  return children
-}
-
-ProtectedRoute.propTypes = {
   children: PropTypes.node.isRequired
 }
 

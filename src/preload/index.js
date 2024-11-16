@@ -9,9 +9,8 @@ const api = {
   // Casos de uso para CRUD de usuarios
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
-  // updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
-  deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
-  updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data)
+  updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
+  deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id)
 
   // Casos de uso para ...
 }

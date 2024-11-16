@@ -4,22 +4,26 @@ import { useAuth } from '../../hooks/useAuth'
 function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
   const [showAlert, setShowAlert] = useState(false)
+  const [message, setMessage] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+
   const { login } = useAuth()
 
   const handleLogin = async (e) => {
     e.preventDefault()
 
-    let user = await window.api.login(username, password)
+    let message = await window.api.login(username, password)
 
-    if (user !== null && username === user.username && password === user.password) {
-      // Replace with actual authentication logic
-      await login({ username })
+    if (!message.error) {
+      let user = message.user
+      await login({ user })
       setShowAlert(false)
-    } else {
-      setShowAlert(true)
     }
+
+    setMessage(message.message)
+    setShowAlert(true)
   }
 
   return (
@@ -65,7 +69,7 @@ function LoginPage() {
               </div>
               {showAlert && (
                 <div className="alert alert-danger p-1" role="alert">
-                  Usuario o Contraseña invalidos
+                  {message}
                 </div>
               )}
               <div className="mb-3 form-check">

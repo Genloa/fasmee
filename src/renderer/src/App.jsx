@@ -1,18 +1,40 @@
 import { Route, Routes } from 'react-router-dom'
+import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './hooks/useAuth'
 import Login from './pages/auth/Login'
 import Home from './pages/home/home'
-import Usuarios from './pages/usuarios/Usuarios'
 import Pacientes from './pages/pacientes/Pacientes'
+import Usuarios from './pages/usuarios/Usuarios'
 
 function App() {
   return (
     <AuthProvider>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/dash/users" element={<Usuarios />} />
-        <Route path="/dash/pacientes" element={<Pacientes />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dash/users"
+          element={
+            <ProtectedRoute>
+              <Usuarios />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dash/pacientes"
+          element={
+            <ProtectedRoute>
+              <Pacientes />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </AuthProvider>
   )

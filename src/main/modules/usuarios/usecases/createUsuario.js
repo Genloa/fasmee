@@ -1,8 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
+import hashPassword from '../../../utils/hashPassword'
 const prisma = new PrismaClient()
 
 ipcMain.handle('createUsuario', async (event, data) => {
+  // Cifrando la contraseña
+  data.password = await hashPassword(data.password)
+
   const usuario = await prisma.usuario.create({
     data: {
       username: data.username,
