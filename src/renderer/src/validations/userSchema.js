@@ -28,11 +28,11 @@ export const userSchema = z
     username: z.string().min(4, {
       message: 'Ingresa tu nombre de usuario'
     }),
-    password: z.string().min(6, {
-      message: 'La contraseña debe tener al menos 10 caracteres'
+    password: z.string().min(5, {
+      message: 'La contraseña debe tener al menos 6 caracteres'
     }),
-    confirmtPassword: z.string().min(6, {
-      message: 'La contraseña debe tener al menos 10 caracteres'
+    confirmtPassword: z.string().min(5, {
+      message: 'La contraseña debe tener al menos 6 caracteres'
     }),
     fechaNacimiento: z.string().min(1, { message: 'Ingresa tu fecha de nacimiento' }).date(),
     correo: z.string().email({

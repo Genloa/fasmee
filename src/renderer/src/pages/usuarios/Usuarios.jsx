@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 import PropTypes from 'prop-types'
-
+import * as zod from 'zod'
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
 function Usuarios() {
@@ -330,10 +330,45 @@ function Usuarios() {
 function TableUsers() {
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
-
+  const [roles, setRoles] = useState([])
   const modalEditUserRef = document.getElementById('modal-edit-user')
   const modalDeleteUserRef = document.getElementById('modal-delete-user')
 
+  const rolSchema = zod.object({
+    rol: zod
+      .string()
+      .min(1, 'El rol es requerido')
+      .max(50, 'El rol debe tener máximo 50 caracteres')
+  })
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(rolSchema),
+    defaultValues: {
+      rol: '1'
+    }
+  })
+
+  const fetchRoles = async () => {
+    const fetchedRoles = await window.api.getRoles()
+    setRoles(fetchedRoles)
+  }
+
+  const onSubmitRol = async (data) => {
+    console.log(data) //
+    // let rol = await window.api.createRol(data)
+    // setRoles((prevRoles) => [...prevRoles, rol])
+    // console.log(rol)
+    // const modal = Modal.getInstance(modalEditUserRef)
+    // modal.hide()
+    /*
+    const toastElement = document.getElementById('liveToastCrear')
+    const toastcrear = new Toast(toastElement)
+    toastcrear.show()*/
+  }
   const fetchUsers = async () => {
     const fetchedUsers = await window.api.getUsuarios()
     setUsuarios(fetchedUsers)
@@ -342,6 +377,7 @@ function TableUsers() {
 
   useEffect(() => {
     fetchUsers()
+    fetchRoles()
   }, [])
 
   function openModalEditUser(id) {
@@ -399,6 +435,59 @@ function TableUsers() {
       style={{ maxHeight: '300px', overflowY: 'auto' }}
     >
       {/* Modals */}
+      <div
+        className="modal fade"
+        id="modal-rol-user"
+        tabIndex="-1"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        role="dialog"
+        aria-labelledby="modalTitleId"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog modal-dialog-lg modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header bg-primary text-white">
+              <h5 className="modal-title" id="modalTitleId">
+                Asignar Rol Usuario {usuarioSelected?.Perfil.nombres}{' '}
+                {usuarioSelected?.Perfil.apellidos}
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form onSubmit={handleSubmit(onSubmitRol)} className="row g-3" id="form-create-user">
+                <div className="input-group  col">
+                  <select
+                    className={`form-select flex-grow-0 bg-light ${errors.rol ? 'is-invalid' : ''}`}
+                    style={{ width: '60px' }}
+                    aria-label="rol"
+                    {...register('rol')}
+                  >
+                    {roles.map((rol) => (
+                      <option key={rol.id} value={rol.id}>
+                        {rol.nombre}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                Cancelar
+              </button>
+              <button type="submit" className="btn btn-primary" form="form-update-user">
+                Asignar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div
         className="modal fade"
