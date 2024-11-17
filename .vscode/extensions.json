@@ -1,3 +1,30 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint"]
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "aaron-bond.better-comments",
+    "anbuselvanrocky.bootstrap5-vscode",
+    "adpyke.codesnap",
+    "kamikillerto.vscode-colorize",
+    "intellsmi.comment-translate",
+    "wallabyjs.console-ninja",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+    "usernamehw.errorlens",
+    "donjayamanne.githistory",
+    "eamodio.gitlens",
+    "vincaslt.highlight-matching-tag",
+    "ecmel.vscode-html-css",
+    "zignd.html-css-class-completion",
+    "kisstkondoros.vscode-gutter-preview",
+    "xabikos.javascriptsnippets",
+    "pkief.material-icon-theme",
+    "pkief.material-product-icons",
+    "christian-kohler.path-intellisense",
+    "esbenp.prettier-vscode",
+    "mrmlnc.vscode-scss",
+    "simonsiefke.svg-preview",
+    "ms-ceintl.vscode-language-pack-es"
+  ]
 }
