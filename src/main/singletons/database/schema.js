@@ -209,7 +209,7 @@ const Cita = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -294,7 +294,7 @@ const Historia = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -471,7 +471,7 @@ const PerfilOnArticulo = sequelize.define(
       }
     },
 
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -504,7 +504,7 @@ const ColaPacientes = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -512,7 +512,7 @@ const ColaPacientes = sequelize.define(
         key: 'id'
       }
     },
-    DepartamentoId: {
+    departamentoId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
@@ -535,7 +535,7 @@ const PerfilOnBeneficiario = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
@@ -569,7 +569,7 @@ const RolOnPerfil = sequelize.define(
         key: 'id'
       }
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
@@ -637,7 +637,7 @@ const DepartamentoOnPerfil = sequelize.define(
         key: 'id'
       }
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
@@ -660,7 +660,7 @@ const PerfilOnServicio = sequelize.define(
       primaryKey: true,
       autoIncrement: true
     },
-    PerfilId: {
+    perfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       references: {
@@ -733,35 +733,35 @@ Usuario.hasOne(Perfil, { foreignKey: 'usuarioId' })
 Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId' })
 Perfil.belongsTo(Ente, { foreignKey: 'enteId' })
 Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId' })
-Perfil.hasMany(Cita, { foreignKey: 'PerfilId', as: 'citasPendientes' })
+Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
 Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
-Perfil.hasMany(Historia, { foreignKey: 'PerfilId', as: 'pacientesAtendidos' })
+Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
 Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
-Perfil.hasMany(ColaPacientes, { foreignKey: 'PerfilId' })
+Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId' })
 Perfil.belongsToMany(Perfil, {
   through: PerfilOnBeneficiario,
   as: 'beneficiarios',
-  foreignKey: 'PerfilId',
+  foreignKey: 'perfilId',
   otherKey: 'beneficiarioId'
 })
 
-Perfil.belongsToMany(Rol, { through: RolOnPerfil, foreignKey: 'PerfilId' })
-Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 'PerfilId' })
-Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'PerfilId' })
-Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'PerfilId' })
+Perfil.belongsToMany(Rol, { through: RolOnPerfil, foreignKey: 'perfilId' })
+Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 'perfilId' })
+Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
+Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })
 
 PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId' })
 
-Cita.belongsTo(Perfil, { foreignKey: 'PerfilId', as: 'solicitante' })
+Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'solicitante' })
 Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
 Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
 
-Historia.belongsTo(Perfil, { foreignKey: 'PerfilId', as: 'medico' })
+Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'medico' })
 Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
 Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
 
 Departamento.hasMany(Cita, { foreignKey: 'departamentoId' })
-Departamento.hasMany(ColaPacientes, { foreignKey: 'DepartamentoId' })
+Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId' })
 Departamento.hasMany(Historia, { foreignKey: 'departamentoId' })
 Departamento.belongsToMany(Perfil, { through: DepartamentoOnPerfil, foreignKey: 'departamentoId' })
 
@@ -775,8 +775,8 @@ Articulo.belongsToMany(Almacen, { through: ArticuloOnAlmacen, foreignKey: 'artic
 Almacen.hasMany(Ingreso, { foreignKey: 'almacenId' })
 Almacen.belongsToMany(Articulo, { through: ArticuloOnAlmacen, foreignKey: 'almacenId' })
 
-ColaPacientes.belongsTo(Perfil, { foreignKey: 'PerfilId' })
-ColaPacientes.belongsTo(Departamento, { foreignKey: 'DepartamentoId' })
+ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId' })
+ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId' })
 
 Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId' })
 Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId' })
