@@ -1,7 +1,12 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
-const prisma = new PrismaClient()
+import { Usuario } from '../../../singletons/database/schema'
+
 ipcMain.handle('getUsuarios', async () => {
-  const users = await prisma.usuario.findMany({ include: { Perfil: true } })
-  return users
+  return await Usuario.findAll({
+    include: [
+      {
+        association: Usuario.Perfil
+      }
+    ]
+  })
 })

@@ -1,11 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
-const prisma = new PrismaClient()
+import { Usuario } from '../../../singletons/database/schema'
 
 ipcMain.handle('deleteUsuario', async (event, id) => {
-  await prisma.usuario.delete({
-    where: {
-      id: id
-    }
-  })
+  await Usuario.destroy({ where: { id: id } })
 })

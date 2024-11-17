@@ -1,31 +1,26 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
-const prisma = new PrismaClient()
+import { Usuario } from '../../../singletons/database/schema'
 
 ipcMain.handle('updateUsuario', async (event, data) => {
-  const updateUsuario = await prisma.usuario.update({
-    where: {
-      id: data.id
-    },
-    data: {
-      username: data.username,
-      password: data.password,
-      Perfil: {
-        update: {
-          nombres: data.nombres,
-          apellidos: data.apellidos,
-          fecha_nacimiento: new Date(data.fechaNacimiento),
-          tipo_cedula: data.tipoCedula,
-          cedula: data.cedula,
-          correo: data.correo,
-          telefono: data.telefono
-        }
+  const usuario = await Usuario.findByPk(data.id, {
+    include: [
+      {
+        association: Usuario.Perfil
       }
-    },
-    include: {
-      Perfil: true
-    }
+    ]
   })
 
-  return updateUsuario
+  usuario.username = data.username
+  usuario.password = data.password
+  usuario.Perfil.nombres = data.nombres
+  usuario.Perfil.apellidos = data.apellidos
+  usuario.Perfil.fecha_nacimiento = new Date(data.fechaNacimiento)
+  usuario.Perfil.tipo_cedula = data.tipoCedula
+  usuario.Perfil.cedula = data.cedula
+  usuario.Perfil.correo = data.correo
+  usuario.Perfil.telefono = data.telefono
+
+  await usuario.save()
+
+  return usuario
 })

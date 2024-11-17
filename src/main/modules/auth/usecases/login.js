@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
+import { Usuario } from '../../../singletons/database/schema'
 import comparePassword from '../../../utils/comparePassword'
-const prisma = new PrismaClient()
 
 ipcMain.handle('login', async (event, { username, password }) => {
   let message = {
@@ -10,7 +9,7 @@ ipcMain.handle('login', async (event, { username, password }) => {
     user: null
   }
 
-  const user = await prisma.usuario.findFirst({
+  const user = await Usuario.findOne({
     where: {
       username
     }
