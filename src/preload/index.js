@@ -3,16 +3,22 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
+  // Casos de uso para la conexion
+  checkConnection: () => ipcRenderer.invoke('checkConnection'),
+  testConnection: (data) => ipcRenderer.invoke('testConnection', data),
+
   // Casos de uso para la authentication
   login: (username, password) => ipcRenderer.invoke('login', { username, password }),
 
-  // Casos de uso para CRUD de usuarios
+  // Casos de uso para usuarios
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
   updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
+
   // Casos de uso para pacientes
   createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
+
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles')
 }
