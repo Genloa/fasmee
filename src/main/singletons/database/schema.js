@@ -28,6 +28,26 @@ const Usuario = sequelize.define(
   }
 )
 
+const Ente = sequelize.define(
+  'ente',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  },
+  {
+    tableName: 'entes',
+    timestamps: true
+  }
+)
+
 const Perfil = sequelize.define(
   'perfil',
   {
@@ -146,6 +166,29 @@ const PerfilMedico = sequelize.define(
   }
 )
 
+const Departamento = sequelize.define(
+  'departamento',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    nombre: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    cubiculo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    }
+  },
+  {
+    tableName: 'departamentos',
+    timestamps: true
+  }
+)
+
 const Cita = sequelize.define(
   'cita',
   {
@@ -197,26 +240,6 @@ const Cita = sequelize.define(
   }
 )
 
-const Ente = sequelize.define(
-  'ente',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  },
-  {
-    tableName: 'entes',
-    timestamps: true
-  }
-)
-
 const Almacen = sequelize.define(
   'almacen',
   {
@@ -259,29 +282,6 @@ const Articulo = sequelize.define(
   },
   {
     tableName: 'articulos',
-    timestamps: true
-  }
-)
-
-const Departamento = sequelize.define(
-  'departamento',
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    nombre: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    cubiculo: {
-      type: DataTypes.STRING,
-      allowNull: false
-    }
-  },
-  {
-    tableName: 'departamentos',
     timestamps: true
   }
 )
@@ -453,9 +453,88 @@ const Servicio = sequelize.define(
   }
 )
 
+const PerfilOnArticulo = sequelize.define(
+  'perfil_on_articulo',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+
+    articuloId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Articulo,
+        key: 'id'
+      }
+    },
+
+    PerfilId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Perfil,
+        key: 'id'
+      }
+    },
+
+    cantidad: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+
+    fecha_retiro: {
+      type: DataTypes.DATE,
+      allowNull: false
+    }
+  },
+  {
+    tableName: 'perfiles_on_articulos',
+    timestamps: true
+  }
+)
+
+const ColaPacientes = sequelize.define(
+  'cola_pacientes',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    PerfilId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Perfil,
+        key: 'id'
+      }
+    },
+    DepartamentoId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Departamento,
+        key: 'id'
+      }
+    }
+  },
+  {
+    tableName: 'colas_pacientes',
+    timestamps: true
+  }
+)
+
 const PerfilOnBeneficiario = sequelize.define(
   'perfil_on_beneficiario',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     PerfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -545,6 +624,11 @@ const RolOnPermiso = sequelize.define(
 const DepartamentoOnPerfil = sequelize.define(
   'departamento_on_perfil',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     departamentoId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -571,6 +655,11 @@ const DepartamentoOnPerfil = sequelize.define(
 const PerfilOnServicio = sequelize.define(
   'perfil_on_servicio',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     PerfilId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -609,6 +698,11 @@ const PerfilOnServicio = sequelize.define(
 const ArticuloOnAlmacen = sequelize.define(
   'articulo_on_almacen',
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     almacenId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -633,20 +727,17 @@ const ArticuloOnAlmacen = sequelize.define(
 )
 
 Ente.hasMany(Perfil, { foreignKey: 'enteId' })
+
 Usuario.hasOne(Perfil, { foreignKey: 'usuarioId' })
+
 Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId' })
 Perfil.belongsTo(Ente, { foreignKey: 'enteId' })
-PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId' })
-
-Perfil.hasMany(Cita, { foreignKey: 'PerfilId', as: 'citasSolicitadas' })
-Cita.belongsTo(Perfil, { foreignKey: 'PerfilId', as: 'solicitante' })
-
-Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasPaciente' })
-Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-
-Departamento.hasMany(Cita, { foreignKey: 'departamentoId' })
-Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
-
+Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId' })
+Perfil.hasMany(Cita, { foreignKey: 'PerfilId', as: 'citasPendientes' })
+Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
+Perfil.hasMany(Historia, { foreignKey: 'PerfilId', as: 'pacientesAtendidos' })
+Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
+Perfil.hasMany(ColaPacientes, { foreignKey: 'PerfilId' })
 Perfil.belongsToMany(Perfil, {
   through: PerfilOnBeneficiario,
   as: 'beneficiarios',
@@ -655,25 +746,51 @@ Perfil.belongsToMany(Perfil, {
 })
 
 Perfil.belongsToMany(Rol, { through: RolOnPerfil, foreignKey: 'PerfilId' })
-Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId' })
-
-Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId' })
-Permiso.belongsToMany(Rol, { through: RolOnPermiso, foreignKey: 'permisoId' })
-
 Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 'PerfilId' })
+Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'PerfilId' })
+Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'PerfilId' })
+
+PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId' })
+
+Cita.belongsTo(Perfil, { foreignKey: 'PerfilId', as: 'solicitante' })
+Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
+Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+
+Historia.belongsTo(Perfil, { foreignKey: 'PerfilId', as: 'medico' })
+Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
+Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+
+Departamento.hasMany(Cita, { foreignKey: 'departamentoId' })
+Departamento.hasMany(ColaPacientes, { foreignKey: 'DepartamentoId' })
+Departamento.hasMany(Historia, { foreignKey: 'departamentoId' })
 Departamento.belongsToMany(Perfil, { through: DepartamentoOnPerfil, foreignKey: 'departamentoId' })
 
-Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'PerfilId' })
-Servicio.belongsToMany(Perfil, { through: PerfilOnServicio, foreignKey: 'servicioId' })
+Ingreso.belongsTo(Articulo, { foreignKey: 'articuloId' })
+Ingreso.belongsTo(Almacen, { foreignKey: 'almacenId' })
 
+Articulo.hasMany(Ingreso, { foreignKey: 'articuloId' })
+Articulo.belongsToMany(Perfil, { through: PerfilOnArticulo, foreignKey: 'articuloId' })
 Articulo.belongsToMany(Almacen, { through: ArticuloOnAlmacen, foreignKey: 'articuloId' })
+
+Almacen.hasMany(Ingreso, { foreignKey: 'almacenId' })
 Almacen.belongsToMany(Articulo, { through: ArticuloOnAlmacen, foreignKey: 'almacenId' })
+
+ColaPacientes.belongsTo(Perfil, { foreignKey: 'PerfilId' })
+ColaPacientes.belongsTo(Departamento, { foreignKey: 'DepartamentoId' })
+
+Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId' })
+Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId' })
+
+Permiso.belongsToMany(Rol, { through: RolOnPermiso, foreignKey: 'permisoId' })
+
+Servicio.belongsToMany(Perfil, { through: PerfilOnServicio, foreignKey: 'servicioId' })
 
 export {
   Almacen,
   Articulo,
   ArticuloOnAlmacen,
   Cita,
+  ColaPacientes,
   Departamento,
   DepartamentoOnPerfil,
   Ente,
@@ -681,6 +798,7 @@ export {
   Ingreso,
   Perfil,
   PerfilMedico,
+  PerfilOnArticulo,
   PerfilOnBeneficiario,
   PerfilOnServicio,
   Permiso,
