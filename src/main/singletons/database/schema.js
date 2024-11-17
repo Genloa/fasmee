@@ -579,7 +579,7 @@ const RolOnPerfil = sequelize.define(
     }
   },
   {
-    tableName: 'roles_on_Perfiles',
+    tableName: 'roles_on_perfiles',
     timestamps: true
   }
 )
