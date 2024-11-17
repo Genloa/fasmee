@@ -690,7 +690,7 @@ const PerfilOnServicio = sequelize.define(
     }
   },
   {
-    tableName: 'Perfiles_on_servicios',
+    tableName: 'perfiles_on_servicios',
     timestamps: true
   }
 )
