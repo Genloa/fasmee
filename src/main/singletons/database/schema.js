@@ -647,7 +647,7 @@ const DepartamentoOnPerfil = sequelize.define(
     }
   },
   {
-    tableName: 'departamentos_on_Perfiles',
+    tableName: 'departamentos_on_perfiles',
     timestamps: true
   }
 )
