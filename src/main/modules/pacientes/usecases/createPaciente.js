@@ -1,11 +1,9 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
-
-const prisma = new PrismaClient()
+import { Perfil, PerfilMedico } from '../../../singletons/database/schema'
 
 ipcMain.handle('createPaciente', async (event, data) => {
   try {
-    const paciente = await prisma.perfil.create({
+    const paciente = await Perfil.create({
       data: {
         nombres: data.nombres,
         apellidos: data.apellidos,
@@ -18,7 +16,7 @@ ipcMain.handle('createPaciente', async (event, data) => {
       }
     })
 
-    const PerfilMedico = await prisma.perfilMedico.create({
+    const perfilMedico = await PerfilMedico.create({
       data: {
         Perfil_id: paciente.id,
         patologias: paciente.patologias,
@@ -27,7 +25,7 @@ ipcMain.handle('createPaciente', async (event, data) => {
         // ,peso: paciente.peso, altura: paciente.altura
       }
     })
-    return { paciente, PerfilMedico }
+    return { paciente, perfilMedico }
   } catch (error) {
     console.error('Error creating paciente and perfil:', error)
   }

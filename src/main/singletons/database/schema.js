@@ -158,6 +158,16 @@ const PerfilMedico = sequelize.define(
     cirugias: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+
+    peso: {
+      type: DataTypes.FLOAT,
+      allowNull: true
+    },
+
+    altura: {
+      type: DataTypes.FLOAT,
+      allowNull: true
     }
   },
   {
@@ -728,9 +738,9 @@ const ArticuloOnAlmacen = sequelize.define(
 
 Ente.hasMany(Perfil, { foreignKey: 'enteId' })
 
-Usuario.hasOne(Perfil, { foreignKey: 'usuarioId' })
+Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
 
-Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId' })
+Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' })
 Perfil.belongsTo(Ente, { foreignKey: 'enteId' })
 Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId' })
 Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })

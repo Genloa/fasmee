@@ -8,7 +8,7 @@ class database {
 
   getConnection() {
     if (!this.connection) {
-      this.connect('fasmee1', 'postgres', '27598704.Con', 'localhost', '5432', 'public')
+      this.connect('fasmee', 'postgres', '27831884', 'localhost', '5433', 'public')
     }
 
     return this.connection
@@ -37,7 +37,7 @@ class database {
   async syncModels() {
     try {
       import('./schema')
-      await this.connection.sync({ force: true })
+      await this.connection.sync({ alter: true })
       Logger.info('All models were synchronized successfully.')
     } catch (error) {
       Logger.error('Unable to sync models:', error)

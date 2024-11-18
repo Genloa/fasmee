@@ -1,11 +1,11 @@
 import { Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './hooks/useAuth'
-import Login from './pages/auth/Login'
+// import Login from './pages/auth/Login'
 import Home from './pages/home/home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
-
+import Login from './pages/auth/Login'
 function App() {
   return (
     <AuthProvider>

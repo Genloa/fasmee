@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 import PropTypes from 'prop-types'
-import * as zod from 'zod'
+
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
 function Usuarios() {
@@ -46,6 +46,7 @@ function Usuarios() {
     const toastElement = document.getElementById('liveToastCrear')
     const toastcrear = new Toast(toastElement)
     toastcrear.show()
+    console.log(usuarios)
   }
 
   return (
@@ -330,54 +331,19 @@ function Usuarios() {
 function TableUsers() {
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
-  const [roles, setRoles] = useState([])
+
   const modalEditUserRef = document.getElementById('modal-edit-user')
   const modalDeleteUserRef = document.getElementById('modal-delete-user')
 
-  const rolSchema = zod.object({
-    rol: zod
-      .string()
-      .min(1, 'El rol es requerido')
-      .max(50, 'El rol debe tener máximo 50 caracteres')
-  })
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm({
-    resolver: zodResolver(rolSchema),
-    defaultValues: {
-      rol: '1'
-    }
-  })
-
-  const fetchRoles = async () => {
-    const fetchedRoles = await window.api.getRoles()
-    setRoles(fetchedRoles)
-  }
-
-  const onSubmitRol = async (data) => {
-    console.log(data) //
-    // let rol = await window.api.createRol(data)
-    // setRoles((prevRoles) => [...prevRoles, rol])
-    // console.log(rol)
-    // const modal = Modal.getInstance(modalEditUserRef)
-    // modal.hide()
-    /*
-    const toastElement = document.getElementById('liveToastCrear')
-    const toastcrear = new Toast(toastElement)
-    toastcrear.show()*/
-  }
   const fetchUsers = async () => {
     const fetchedUsers = await window.api.getUsuarios()
     setUsuarios(fetchedUsers)
     setUsuarioSelected(fetchedUsers[0])
+    console.log(fetchedUsers)
   }
 
   useEffect(() => {
     fetchUsers()
-    fetchRoles()
   }, [])
 
   function openModalEditUser(id) {
@@ -449,8 +415,7 @@ function TableUsers() {
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title" id="modalTitleId">
-                Asignar Rol Usuario {usuarioSelected?.Perfil.nombres}{' '}
-                {usuarioSelected?.Perfil.apellidos}
+                Asignar Rol Usuario
               </h5>
               <button
                 type="button"
@@ -459,24 +424,7 @@ function TableUsers() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">
-              <form onSubmit={handleSubmit(onSubmitRol)} className="row g-3" id="form-create-user">
-                <div className="input-group  col">
-                  <select
-                    className={`form-select flex-grow-0 bg-light ${errors.rol ? 'is-invalid' : ''}`}
-                    style={{ width: '60px' }}
-                    aria-label="rol"
-                    {...register('rol')}
-                  >
-                    {roles.map((rol) => (
-                      <option key={rol.id} value={rol.id}>
-                        {rol.nombre}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </form>
-            </div>
+            <div className="modal-body"></div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
@@ -503,7 +451,7 @@ function TableUsers() {
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title" id="modalTitleId">
-                Editar Usuario {usuarioSelected?.Perfil.nombres} {usuarioSelected?.Perfil.apellidos}
+                Editar Usuario {usuarioSelected?.perfil.nombres} {usuarioSelected?.perfil.apellidos}
               </h5>
               <button
                 type="button"
@@ -553,7 +501,7 @@ function TableUsers() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">{usuarioSelected?.Perfil.nombres}</div>
+            <div className="modal-body">{usuarioSelected?.perfil.nombres}</div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
@@ -586,7 +534,7 @@ function TableUsers() {
           {usuarios.map((user) => (
             <tr key={user.id}>
               <td>
-                {user.Perfil.nombres} {user.Perfil.apellidos}
+                {user.perfil.nombres} {user.perfil.apellidos}
               </td>
               <td>{user.username}</td>
               <td>ROL</td>
@@ -660,18 +608,18 @@ function ActualizarUsuarioForm({ userData, onSubmit }) {
   useEffect(() => {
     if (userData) {
       reset({
-        nombres: userData?.Perfil?.nombres || '',
-        apellidos: userData.Perfil?.apellidos || '',
-        tipoCedula: userData.Perfil?.tipo_cedula || 'V',
-        cedula: userData.Perfil?.cedula || '',
+        nombres: userData?.perfil?.nombres || '',
+        apellidos: userData.perfil?.apellidos || '',
+        tipoCedula: userData.perfil?.tipo_cedula || 'V',
+        cedula: userData.perfil?.cedula || '',
         username: userData.username || '',
         password: userData?.password || '',
         confirmtPassword: userData?.password || '',
-        fechaNacimiento: userData.Perfil?.fecha_nacimiento
-          ? new Date(userData.Perfil.fecha_nacimiento).toISOString().split('T')[0]
+        fechaNacimiento: userData.perfil?.fecha_nacimiento
+          ? new Date(userData.perfil.fecha_nacimiento).toISOString().split('T')[0]
           : '',
-        telefono: userData.Perfil?.telefono || '',
-        correo: userData.Perfil?.correo || ''
+        telefono: userData.perfil?.telefono || '',
+        correo: userData.perfil?.correo || ''
       })
     }
   }, [userData, reset])
@@ -857,7 +805,7 @@ function ActualizarUsuarioForm({ userData, onSubmit }) {
 
 ActualizarUsuarioForm.propTypes = {
   userData: PropTypes.shape({
-    Perfil: PropTypes.shape({
+    perfil: PropTypes.shape({
       nombres: PropTypes.string,
       apellidos: PropTypes.string,
       tipo_cedula: PropTypes.string,

@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client'
 import { ipcMain } from 'electron'
-const prisma = new PrismaClient()
+import { Rol } from '../../../singletons/database/schema'
+
 ipcMain.handle('getRoles', async () => {
-  const roles = await prisma.rol.findMany()
+  const roles = await Rol.findMany()
   return roles
 })
