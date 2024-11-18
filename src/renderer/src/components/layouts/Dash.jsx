@@ -1,11 +1,9 @@
-import PropTypes from 'prop-types'
-import { NavLink } from 'react-router-dom'
-import { useState } from 'react'
-import '../../css/dash.css'
+import { faHospitalUser, faHouse, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse } from '@fortawesome/free-solid-svg-icons'
-import { faUser } from '@fortawesome/free-solid-svg-icons'
-import { faHospitalUser } from '@fortawesome/free-solid-svg-icons'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+import '../../css/dash.css'
 function Dash({ children }) {
   return (
     <>

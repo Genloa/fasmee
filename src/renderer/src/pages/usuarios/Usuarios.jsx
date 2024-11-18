@@ -2,11 +2,12 @@ import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal, Toast } from 'bootstrap'
+import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import * as zod from 'zod'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
-import PropTypes from 'prop-types'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 

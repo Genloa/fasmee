@@ -1,7 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AuthProvider } from './hooks/useAuth'
-// import Login from './pages/auth/Login'
+import Login from './pages/auth/Login'
+import Conexion from './pages/conexion/Conexion'
 import Home from './pages/home/home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
@@ -10,7 +11,8 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Conexion />} />
+        <Route path="/login" element={<Login />} />
         <Route
           path="/home"
           element={
