@@ -5,7 +5,6 @@ import { Modal, Toast } from 'bootstrap'
 import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import * as zod from 'zod'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 

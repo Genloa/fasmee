@@ -6,7 +6,6 @@ import Conexion from './pages/conexion/Conexion'
 import Home from './pages/home/home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
-import Login from './pages/auth/Login'
 function App() {
   return (
     <AuthProvider>
