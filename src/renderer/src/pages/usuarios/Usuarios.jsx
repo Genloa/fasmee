@@ -810,7 +810,7 @@ ActualizarUsuarioForm.propTypes = {
       apellidos: PropTypes.string,
       tipo_cedula: PropTypes.string,
       cedula: PropTypes.string,
-      fecha_nacimiento: PropTypes.date,
+      fecha_nacimiento: PropTypes.instanceOf(Date),
       telefono: PropTypes.string,
       correo: PropTypes.string
     }),

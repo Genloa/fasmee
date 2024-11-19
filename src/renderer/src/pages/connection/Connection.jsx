@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import connectionSchema from '../../validations/connectionSchema'
 
-function Connection() {
+const Connection = () => {
+  const [toastMessage, setToastMessage] = useState('')
+
+  const [showToast, setShowToast] = useState(false)
+
   const {
     register,
     handleSubmit,
@@ -22,15 +26,14 @@ function Connection() {
     }
   })
 
-  const [toastMessage, setToastMessage] = useState('')
-  const [showToast, setShowToast] = useState(false)
+  // async function checkConnection() {
+  //   let result = await window.api.checkConnection()
+  //   if (result) {
+  //     Navigate('/home')
+  //   }
+  // }
 
-  useEffect(async () => {
-    let result = await window.api.checkConnection()
-    if (result) {
-      Navigator.push('/login')
-    }
-  })
+  // checkConnection()
 
   useEffect(() => {
     if (showToast) {

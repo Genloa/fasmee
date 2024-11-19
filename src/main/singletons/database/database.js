@@ -1,6 +1,5 @@
 import Logger from 'electron-log'
 import { Sequelize } from 'sequelize'
-import file from '../../services/fileService'
 
 class Database {
   constructor() {
@@ -12,20 +11,21 @@ class Database {
     Database.instance = this
   }
 
-  async getConnection() {
+  getConnection() {
     if (!this.connection) {
-      let data = await file.read()
+      // let data = await file.read()
+      // if (data.postgre) {
+      //   this.connect(
+      //     data.postgre.database,
+      //     data.postgre.username,
+      //     data.postgre.password,
+      //     data.postgre.host,
+      //     data.postgre.port,
+      //     data.postgre.schema
+      //   )
+      // }
 
-      if (data.postgre) {
-        this.connection = this.connect(
-          data.postgre.database,
-          data.postgre.username,
-          data.postgre.password,
-          data.postgre.host,
-          data.postgre.port,
-          data.postgre.schema
-        )
-      }
+      this.connect('fasmee1', 'postgres', '27598704.Con', 'localhost', '5432', 'public')
     }
 
     return this.connection

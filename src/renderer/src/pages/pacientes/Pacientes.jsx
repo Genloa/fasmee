@@ -1,11 +1,11 @@
-import Dash from '../../components/layouts/Dash'
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Modal } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Dash from '../../components/layouts/Dash'
 import { pacienteSchema } from '../../validations/pacienteSchema'
-import { Modal } from 'bootstrap'
-import { zodResolver } from '@hookform/resolvers/zod'
 
 function Pacientes() {
   const modalCrearPacienteRef = document.getElementById('modal-create-paciente')

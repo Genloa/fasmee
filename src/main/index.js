@@ -73,5 +73,5 @@ app.on('window-all-closed', () => {
 // Módulos
 
 import './modules/auth/auth'
-import './modules/conexion/conexion'
+import './modules/connection/connection'
 import './modules/usuarios/usuarios'

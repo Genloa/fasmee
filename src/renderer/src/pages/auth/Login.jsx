@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 
-function LoginPage() {
+function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -95,4 +95,4 @@ function LoginPage() {
   )
 }
 
-export default LoginPage
+export default Login

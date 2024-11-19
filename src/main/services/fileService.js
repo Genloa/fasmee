@@ -1,5 +1,5 @@
 import superFs from '@supercharge/fs'
-import Logger from 'electron-Logger'
+import Logger from 'electron-log'
 import path from 'path'
 
 class FileService {

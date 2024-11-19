@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize'
-import database from './database'
+import db from './database'
 
-let sequelize = database.getConnection()
+let sequelize = db.getConnection()
 
 const Usuario = sequelize.define(
   'usuario',
