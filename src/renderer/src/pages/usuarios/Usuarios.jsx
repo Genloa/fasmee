@@ -2,7 +2,6 @@ import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal, Toast } from 'bootstrap'
-//import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
@@ -227,18 +226,6 @@ function Usuarios() {
                       </div>
                     </div>
                     <div className="input-group  col">
-                      <select
-                        className={`form-select flex-grow-0 bg-light ${errors.extension ? 'is-invalid' : ''}`}
-                        style={{ width: '90px' }}
-                        aria-label="Tipo de documento"
-                        {...register('extension')}
-                      >
-                        <option value="0416">0416</option>
-                        <option value="0426">0426</option>
-                        <option value="0424">0424</option>
-                        <option value="0414">0414</option>
-                        <option value="0412">0412</option>
-                      </select>
                       <input
                         type="phone"
                         className={getInputClassName('telefono')}
@@ -344,16 +331,20 @@ function Usuarios() {
 }
 
 function TableUsers() {
+  const { usuarios, setUsuarios } = useContext(UsuariosContext)
+  const [usuarioSelected, setUsuarioSelected] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, dirtyFields }
   } = useForm({
+    mode: 'onChange',
     resolver: zodResolver(userSchema),
     defaultValues: {
-      mode: 'onChange',
       nombres: '',
       apellidos: '',
       tipoCedula: 'V',
@@ -362,7 +353,6 @@ function TableUsers() {
       password: '',
       confirmtPassword: '',
       fechaNacimiento: '',
-      extension: '',
       telefono: '',
       correo: ''
     }
@@ -374,9 +364,6 @@ function TableUsers() {
     }
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
-
-  const { usuarios, setUsuarios } = useContext(UsuariosContext)
-  const [usuarioSelected, setUsuarioSelected] = useState(null)
 
   const modalEditUserRef = document.getElementById('modal-edit-user')
   const modalDeleteUserRef = document.getElementById('modal-delete-user')
@@ -395,7 +382,6 @@ function TableUsers() {
   function openModalEditUser(id) {
     let user = usuarios.find((user) => user.id === id)
     setUsuarioSelected(user)
-    console.log(user)
     let modal = new Modal(modalEditUserRef)
     modal.show()
 
@@ -416,17 +402,9 @@ function TableUsers() {
     })
   }
 
-  const onSubmit = async (data) => {
-    console.log(data)
-    let usuario = await window.api.updateUsuario(data)
-    setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
-    console.log(usuario)
+  function closeModalEditUser() {
     const modal = Modal.getInstance(modalEditUserRef)
     modal.hide()
-    /*
-    const toastElement = document.getElementById('liveToastCrear')
-    const toastcrear = new Toast(toastElement)
-    toastcrear.show()*/
   }
 
   function openModalDeleteUser(id) {
@@ -444,6 +422,8 @@ function TableUsers() {
       // Actualizar el estado de usuarios
       setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
 
+      setToastMessage('Usuario eliminado correctamente')
+
       // Cerrar el modal
       const modal = Modal.getInstance(modalDeleteUserRef)
       modal.hide()
@@ -456,6 +436,17 @@ function TableUsers() {
       console.error('Error al eliminar el usuario:', error)
       // Aquí podrías mostrar un toast de error si lo deseas
     }
+  }
+
+  const onSubmit = async (data) => {
+    let usuario = await window.api.updateUsuario(usuarioSelected.id, data)
+    setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
+    closeModalEditUser()
+    setToastMessage('Usuario actualizado correctamente')
+
+    const toastElement = document.getElementById('liveToast')
+    const toast = new Toast(toastElement)
+    toast.show()
   }
 
   return (
@@ -524,7 +515,7 @@ function TableUsers() {
               ></button>
             </div>
             <div className="modal-body">
-              <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
+              <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-update-user">
                 <div className="row mt-4">
                   <div className="col">
                     <div className="form-floating ">
@@ -793,10 +784,12 @@ function TableUsers() {
           ))}
         </tbody>
       </table>
+
+      {/* Toast */}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
           <div className="toast-header">
-            <strong className="me-auto">notificacion</strong>
+            <strong className="me-auto">Notificacion</strong>
             <button
               type="button"
               className="btn-close"
@@ -804,34 +797,11 @@ function TableUsers() {
               aria-label="Close"
             ></button>
           </div>
-          <div className="toast-body">Usuario eliminado con éxito.</div>
+          <div className="toast-body">{toastMessage}</div>
         </div>
       </div>
     </div>
   )
 }
-/*
-function ActualizarUsuarioForm({ userData, onSubmit }) {
 
-  return (
-
-  )
-}
-
-ActualizarUsuarioForm.propTypes = {
-  userData: PropTypes.shape({
-    perfil: PropTypes.shape({
-      nombres: PropTypes.string,
-      apellidos: PropTypes.string,
-      tipo_cedula: PropTypes.string,
-      cedula: PropTypes.string,
-      fecha_nacimiento: PropTypes.instanceOf(Date),
-      telefono: PropTypes.string,
-      correo: PropTypes.string
-    }),
-    username: PropTypes.string,
-    password: PropTypes.string
-  }),
-  onSubmit: PropTypes.func.isRequired
-}*/
 export default Usuarios

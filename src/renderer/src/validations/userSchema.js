@@ -1,6 +1,9 @@
 import { z } from 'zod'
+
 const tipo = ['V', 'E']
-const extns = ['0416', '0426', '0424', '0414', '0412']
+
+// const extns = ['0416', '0426', '0424', '0414', '0412']
+
 export const userSchema = z
   .object({
     nombres: z
@@ -38,15 +41,12 @@ export const userSchema = z
     correo: z.string().email({
       message: 'Correo invalido'
     }),
-    extension: z.enum(extns, {
-      errorMap: () => ({ message: 'selecione la extension' })
-    }),
     telefono: z
       .string()
       .min(7, {
         message: 'Minimo 7 caracteres'
       })
-      .max(7, {
+      .max(12, {
         message: 'Maximo 7 caracteres'
       })
   })

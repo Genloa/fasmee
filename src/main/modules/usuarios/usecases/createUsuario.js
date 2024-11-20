@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Usuario, Perfil } from '../../../singletons/database/schema'
+import { Perfil, Usuario } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
@@ -18,7 +18,7 @@ ipcMain.handle('createUsuario', async (event, data) => {
           tipo_cedula: data.tipoCedula,
           cedula: data.cedula,
           correo: data.correo,
-          telefono: data.extension + '-' + data.telefono,
+          telefono: data.telefono,
           enteId: 1
         }
       },

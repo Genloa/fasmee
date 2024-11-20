@@ -13,7 +13,7 @@ const api = {
   // Casos de uso para usuarios
   getUsuarios: () => ipcRenderer.invoke('getUsuarios'),
   createUsuario: (data) => ipcRenderer.invoke('createUsuario', data),
-  updateUsuario: (data) => ipcRenderer.invoke('updateUsuario', data),
+  updateUsuario: (id, data) => ipcRenderer.invoke('updateUsuario', { id, data }),
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
 
   // Casos de uso para pacientes

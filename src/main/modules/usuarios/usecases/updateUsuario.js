@@ -1,26 +1,31 @@
 import { ipcMain } from 'electron'
-import { Usuario } from '../../../singletons/database/schema'
+import { Perfil, Usuario } from '../../../singletons/database/schema'
+import hashPassword from '../../../utils/hashPassword'
 
-ipcMain.handle('updateUsuario', async (event, data) => {
-  const usuario = await Usuario.findByPk(data.id, {
-    include: [
-      {
-        association: Usuario.Perfil
-      }
-    ]
-  })
+ipcMain.handle('updateUsuario', async (event, { id, data }) => {
+  data.password = await hashPassword(data.password)
+
+  const usuario = await Usuario.findByPk(id)
 
   usuario.username = data.username
   usuario.password = data.password
-  usuario.Perfil.nombres = data.nombres
-  usuario.Perfil.apellidos = data.apellidos
-  usuario.Perfil.fecha_nacimiento = new Date(data.fechaNacimiento)
-  usuario.Perfil.tipo_cedula = data.tipoCedula
-  usuario.Perfil.cedula = data.cedula
-  usuario.Perfil.correo = data.correo
-  usuario.Perfil.telefono = data.telefono
 
   await usuario.save()
 
-  return usuario
+  const perfil = await Perfil.findOne({ where: { usuarioId: usuario.id } })
+
+  perfil.nombres = data.nombres
+  perfil.apellidos = data.apellidos
+  perfil.fecha_nacimiento = new Date(data.fechaNacimiento)
+  perfil.tipo_cedula = data.tipoCedula
+  perfil.cedula = data.cedula
+  perfil.correo = data.correo
+  perfil.telefono = data.telefono
+
+  await perfil.save()
+
+  return {
+    ...usuario.toJSON(),
+    perfil: perfil.toJSON()
+  }
 })
