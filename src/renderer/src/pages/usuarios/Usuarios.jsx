@@ -2,7 +2,7 @@ import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal, Toast } from 'bootstrap'
-import PropTypes from 'prop-types'
+//import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
@@ -13,6 +13,9 @@ const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 function Usuarios() {
   const [usuarios, setUsuarios] = useState([])
   const [showPassword, setShowPassword] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
+  const [showToast, setShowToast] = useState(false)
 
   const modalCrearUserRef = document.getElementById('modal-create-usuario')
 
@@ -22,6 +25,7 @@ function Usuarios() {
     reset,
     formState: { errors, dirtyFields }
   } = useForm({
+    mode: 'onChange',
     resolver: zodResolver(userSchema)
   })
 
@@ -37,16 +41,27 @@ function Usuarios() {
     modal.show()
   }
 
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToastCrear')
+      const toast = new Toast(toastEl)
+      toast.show()
+    }
+  }, [showToast])
+
   const onSubmit = async (data) => {
+    setShowToast(false)
     let usuario = await window.api.createUsuario(data)
-    setUsuarios([...usuarios, usuario])
+    if (usuario) {
+      setUsuarios([...usuarios, usuario])
+      setToastMessage('Usuario creado correctamente')
+      const modal = Modal.getInstance(modalCrearUserRef)
+      modal.hide()
+    } else {
+      setToastMessage('No se pudo crear el usuario')
+    }
+    setShowToast(true)
     reset()
-    const modal = Modal.getInstance(modalCrearUserRef)
-    modal.hide()
-    const toastElement = document.getElementById('liveToastCrear')
-    const toastcrear = new Toast(toastElement)
-    toastcrear.show()
-    console.log(usuarios)
   }
 
   return (
@@ -320,7 +335,7 @@ function Usuarios() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="toast-body">Usuario creado con éxito.</div>
+            <div className="toast-body">{toastMessage}</div>
           </div>
         </div>
       </UsuariosContext.Provider>
@@ -329,6 +344,37 @@ function Usuarios() {
 }
 
 function TableUsers() {
+  const [showPassword, setShowPassword] = useState(false)
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, dirtyFields }
+  } = useForm({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      mode: 'onChange',
+      nombres: '',
+      apellidos: '',
+      tipoCedula: 'V',
+      cedula: '',
+      username: '',
+      password: '',
+      confirmtPassword: '',
+      fechaNacimiento: '',
+      extension: '',
+      telefono: '',
+      correo: ''
+    }
+  })
+
+  const getInputClassName = (fieldName) => {
+    if (!dirtyFields[fieldName]) {
+      return 'form-control'
+    }
+    return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
+  }
+
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
 
@@ -349,8 +395,38 @@ function TableUsers() {
   function openModalEditUser(id) {
     let user = usuarios.find((user) => user.id === id)
     setUsuarioSelected(user)
+    console.log(user)
     let modal = new Modal(modalEditUserRef)
     modal.show()
+
+    reset({
+      mode: 'onChange',
+      nombres: user.perfil?.nombres || '',
+      apellidos: user.perfil?.apellidos || '',
+      tipoCedula: user.perfil?.tipo_cedula || 'V',
+      cedula: user.perfil?.cedula || '',
+      username: user?.username || '',
+      password: user?.password || '',
+      confirmtPassword: user?.password || '',
+      fechaNacimiento: user.perfil?.fecha_nacimiento
+        ? new Date(user.perfil.fecha_nacimiento).toISOString().split('T')[0]
+        : '',
+      telefono: user.perfil?.telefono || '',
+      correo: user.perfil?.correo || ''
+    })
+  }
+
+  const onSubmit = async (data) => {
+    console.log(data)
+    let usuario = await window.api.updateUsuario(data)
+    setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
+    console.log(usuario)
+    const modal = Modal.getInstance(modalEditUserRef)
+    modal.hide()
+    /*
+    const toastElement = document.getElementById('liveToastCrear')
+    const toastcrear = new Toast(toastElement)
+    toastcrear.show()*/
   }
 
   function openModalDeleteUser(id) {
@@ -358,19 +434,6 @@ function TableUsers() {
     setUsuarioSelected(user)
     let modal = new Modal(modalDeleteUserRef)
     modal.show()
-  }
-
-  const closeModalEditUser = async (data) => {
-    console.log(data)
-    // let usuario = await window.api.updateUsuario(data)
-    // setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
-    // console.log(usuario)
-    // const modal = Modal.getInstance(modalEditUserRef)
-    // modal.hide()
-    /*
-    const toastElement = document.getElementById('liveToastCrear')
-    const toastcrear = new Toast(toastElement)
-    toastcrear.show()*/
   }
 
   async function closeModalDeleteUser() {
@@ -461,7 +524,174 @@ function TableUsers() {
               ></button>
             </div>
             <div className="modal-body">
-              <ActualizarUsuarioForm userData={usuarioSelected} onSubmit={closeModalEditUser} />
+              <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="text"
+                        id="nombres"
+                        className={getInputClassName('nombres')}
+                        placeholder="Nombres"
+                        aria-label="nombres"
+                        {...register('nombres')}
+                      />
+                      <label htmlFor="nombres">Nombres</label>
+                      {errors.nombres?.message && (
+                        <div className="invalid-feedback">{errors.nombres?.message}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="text"
+                        className={getInputClassName('apellidos')}
+                        placeholder="apellidos"
+                        aria-label="apellidos"
+                        {...register('apellidos')}
+                      />
+                      <label htmlFor="apellidos">Apellidos</label>
+                      {errors.apellidos?.message && (
+                        <div className="invalid-feedback">{errors.apellidos?.message}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="input-group  col">
+                    <select
+                      className={`form-select flex-grow-0 bg-light ${errors.tipoCedula ? 'is-invalid' : ''}`}
+                      style={{ width: '60px' }}
+                      aria-label="Tipo de documento"
+                      {...register('tipoCedula')}
+                    >
+                      <option value="V">V</option>
+                      <option value="E">E</option>
+                    </select>
+                    <input
+                      type="text"
+                      id="cedula"
+                      className={getInputClassName('cedula')}
+                      placeholder="Cedula"
+                      aria-label="Cedula"
+                      aria-describedby="basic-addon1"
+                      {...register('cedula')}
+                    />
+                    {errors.cedula?.message && (
+                      <div className="invalid-feedback">{errors.cedula?.message}</div>
+                    )}
+                  </div>
+
+                  <div className="col">
+                    <input
+                      type="text"
+                      id="username"
+                      className={getInputClassName('username')}
+                      placeholder="Nombre de Usuario"
+                      aria-label="Username"
+                      {...register('username')}
+                    />
+                    {errors.username?.message && (
+                      <div className="invalid-feedback">{errors.username?.message}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="floatingPassword"
+                        className={` ${getInputClassName('password')}`}
+                        placeholder="password"
+                        {...register('password')}
+                      />
+                      <label htmlFor="floatingPassword">Contraseña</label>
+
+                      {errors.password?.message && (
+                        <div className="invalid-feedback">{errors.password?.message}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        id="floatingPassword"
+                        className={getInputClassName('confirmtPassword')}
+                        placeholder="password"
+                        {...register('confirmtPassword')}
+                      />
+                      <label htmlFor="floatingPassword">Confirmar contraseña</label>
+                      {errors.confirmtPassword?.message && (
+                        <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className=" col ">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="exampleCheck1"
+                      checked={showPassword}
+                      onChange={() => setShowPassword(!showPassword)}
+                    />
+                    <label className="form-check-label ms-2" htmlFor="exampleCheck1">
+                      Mostrar contraseña.
+                    </label>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="date"
+                        className={getInputClassName('fechaNacimiento')}
+                        id="floatingDate"
+                        placeholder="fechaNacimiento"
+                        {...register('fechaNacimiento')}
+                      />
+                      <label htmlFor="floatingDate"> fecha de nacimiento</label>
+                      {errors.fechaNacimiento?.message && (
+                        <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="input-group  col">
+                    <input
+                      type="phone"
+                      className={getInputClassName('telefono')}
+                      aria-label="Telefono"
+                      aria-describedby="basic-addon1"
+                      {...register('telefono')}
+                    />
+                    {errors.telefono?.message && (
+                      <div className="invalid-feedback">{errors.telefono?.message}</div>
+                    )}
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <div className="form-floating ">
+                      <input
+                        type="email"
+                        className={getInputClassName('correo')}
+                        id="correo"
+                        placeholder="correo"
+                        {...register('correo')}
+                      />
+                      <label htmlFor="correo">Correo</label>
+                      {errors.correo?.message && (
+                        <div className="invalid-feedback">{errors.correo?.message}</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </form>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
@@ -580,226 +810,11 @@ function TableUsers() {
     </div>
   )
 }
-
+/*
 function ActualizarUsuarioForm({ userData, onSubmit }) {
-  const [showPassword, setShowPassword] = useState(false)
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, dirtyFields }
-  } = useForm({
-    resolver: zodResolver(userSchema),
-    defaultValues: {
-      nombres: '',
-      apellidos: '',
-      tipoCedula: 'V',
-      cedula: '',
-      username: '',
-      password: '',
-      confirmtPassword: '',
-      fechaNacimiento: '',
-      extension: '',
-      telefono: '',
-      correo: ''
-    }
-  })
-
-  useEffect(() => {
-    if (userData) {
-      reset({
-        nombres: userData?.perfil?.nombres || '',
-        apellidos: userData.perfil?.apellidos || '',
-        tipoCedula: userData.perfil?.tipo_cedula || 'V',
-        cedula: userData.perfil?.cedula || '',
-        username: userData.username || '',
-        password: userData?.password || '',
-        confirmtPassword: userData?.password || '',
-        fechaNacimiento: userData.perfil?.fecha_nacimiento
-          ? new Date(userData.perfil.fecha_nacimiento).toISOString().split('T')[0]
-          : '',
-        telefono: userData.perfil?.telefono || '',
-        correo: userData.perfil?.correo || ''
-      })
-    }
-  }, [userData, reset])
-
-  const getInputClassName = (fieldName) => {
-    if (!dirtyFields[fieldName]) {
-      return 'form-control'
-    }
-    return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
-  }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
-      <div className="row mt-4">
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type="text"
-              id="nombres"
-              className={getInputClassName('nombres')}
-              placeholder="Nombres"
-              aria-label="nombres"
-              {...register('nombres')}
-            />
-            <label htmlFor="nombres">Nombres</label>
-            {errors.nombres?.message && (
-              <div className="invalid-feedback">{errors.nombres?.message}</div>
-            )}
-          </div>
-        </div>
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type="text"
-              className={getInputClassName('apellidos')}
-              placeholder="apellidos"
-              aria-label="apellidos"
-              {...register('apellidos')}
-            />
-            <label htmlFor="apellidos">Apellidos</label>
-            {errors.apellidos?.message && (
-              <div className="invalid-feedback">{errors.apellidos?.message}</div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="input-group  col">
-          <select
-            className={`form-select flex-grow-0 bg-light ${errors.tipoCedula ? 'is-invalid' : ''}`}
-            style={{ width: '60px' }}
-            aria-label="Tipo de documento"
-            {...register('tipoCedula')}
-          >
-            <option value="V">V</option>
-            <option value="E">E</option>
-          </select>
-          <input
-            type="text"
-            id="cedula"
-            className={getInputClassName('cedula')}
-            placeholder="Cedula"
-            aria-label="Cedula"
-            aria-describedby="basic-addon1"
-            {...register('cedula')}
-          />
-          {errors.cedula?.message && (
-            <div className="invalid-feedback">{errors.cedula?.message}</div>
-          )}
-        </div>
 
-        <div className="col">
-          <input
-            type="text"
-            id="username"
-            className={getInputClassName('username')}
-            placeholder="Nombre de Usuario"
-            aria-label="Username"
-            {...register('username')}
-          />
-          {errors.username?.message && (
-            <div className="invalid-feedback">{errors.username?.message}</div>
-          )}
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="floatingPassword"
-              className={` ${getInputClassName('password')}`}
-              placeholder="password"
-              {...register('password')}
-            />
-            <label htmlFor="floatingPassword">Contraseña</label>
-
-            {errors.password?.message && (
-              <div className="invalid-feedback">{errors.password?.message}</div>
-            )}
-          </div>
-        </div>
-
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              id="floatingPassword"
-              className={getInputClassName('confirmtPassword')}
-              placeholder="password"
-              {...register('confirmtPassword')}
-            />
-            <label htmlFor="floatingPassword">Confirmar contraseña</label>
-            {errors.confirmtPassword?.message && (
-              <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className=" col ">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="exampleCheck1"
-            checked={showPassword}
-            onChange={() => setShowPassword(!showPassword)}
-          />
-          <label className="form-check-label ms-2" htmlFor="exampleCheck1">
-            Mostrar contraseña.
-          </label>
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type="date"
-              className={getInputClassName('fechaNacimiento')}
-              id="floatingDate"
-              placeholder="fechaNacimiento"
-              {...register('fechaNacimiento')}
-            />
-            <label htmlFor="floatingDate"> fecha de nacimiento</label>
-            {errors.fechaNacimiento?.message && (
-              <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
-            )}
-          </div>
-        </div>
-        <div className="input-group  col">
-          <input
-            type="phone"
-            className={getInputClassName('telefono')}
-            aria-label="Telefono"
-            aria-describedby="basic-addon1"
-            {...register('telefono')}
-          />
-          {errors.telefono?.message && (
-            <div className="invalid-feedback">{errors.telefono?.message}</div>
-          )}
-        </div>
-      </div>
-      <div className="row mt-4">
-        <div className="col">
-          <div className="form-floating ">
-            <input
-              type="email"
-              className={getInputClassName('correo')}
-              id="correo"
-              placeholder="correo"
-              {...register('correo')}
-            />
-            <label htmlFor="correo">Correo</label>
-            {errors.correo?.message && (
-              <div className="invalid-feedback">{errors.correo?.message}</div>
-            )}
-          </div>
-        </div>
-      </div>
-    </form>
   )
 }
 
@@ -818,5 +833,5 @@ ActualizarUsuarioForm.propTypes = {
     password: PropTypes.string
   }),
   onSubmit: PropTypes.func.isRequired
-}
+}*/
 export default Usuarios

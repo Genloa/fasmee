@@ -23,7 +23,7 @@ function Navbar() {
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
           <img
-            src="../../src/img/icon.png"
+            src="../../src/assets/img/icon.png"
             alt="Logo"
             height="90"
             width="auto"
@@ -91,8 +91,8 @@ function Sidebar({ children }) {
                 <img
                   src={
                     isCollapsed
-                      ? '../../src/img/menu-regular.png'
-                      : '../../src/img/menu-alt-left-regular.png'
+                      ? '../../src/assets/img/menu-regular.png'
+                      : '../../src/assets/img/menu-alt-left-regular.png'
                   }
                   alt={isCollapsed ? 'Expand' : 'Collapse'}
                   width="20"
@@ -122,7 +122,7 @@ function Sidebar({ children }) {
               <li className="nav-item disabled">
                 <a href="#" className="nav-link text-white">
                   <img
-                    src="../../src/img/history.png"
+                    src="../../src/assets/img/history.png"
                     className="me-1"
                     alt=""
                     width="20"
@@ -134,7 +134,7 @@ function Sidebar({ children }) {
               <li className="nav-item disabled">
                 <a href="#" className="nav-link text-white">
                   <img
-                    src="../../src/img/home.png"
+                    src="../../src/assets/img/home.png"
                     className="me-1"
                     alt=""
                     width="20"
@@ -146,7 +146,7 @@ function Sidebar({ children }) {
               <li className="nav-item disabled">
                 <a href="#" className="nav-link text-white">
                   <img
-                    src="../../src/img/home.png"
+                    src="../../src/assets/img/home.png"
                     className="me-1"
                     alt=""
                     width="20"

@@ -25,7 +25,7 @@ class Database {
       //   )
       // }
 
-      this.connect('fasmee1', 'postgres', '27598704.Con', 'localhost', '5432', 'public')
+      this.connect('fasmee', 'postgres', '27831884', 'localhost', '5433', 'public')
     }
 
     return this.connection

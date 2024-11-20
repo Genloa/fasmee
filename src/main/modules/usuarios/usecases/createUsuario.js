@@ -7,7 +7,6 @@ ipcMain.handle('createUsuario', async (event, data) => {
     // Cifrando la contraseña
     data.password = await hashPassword(data.password)
 
-    // Creación del usuario junto con el perfil
     const usuario = await Usuario.create(
       {
         username: data.username,
@@ -24,16 +23,13 @@ ipcMain.handle('createUsuario', async (event, data) => {
         }
       },
       {
-        include: [
-          {
-            model: Perfil,
-            as: 'perfil' // Asegúrate de que el alias coincide con la asociación
-          }
-        ]
+        include: [{ model: Perfil, as: 'perfil' }]
       }
     )
 
-    return usuario.toJSON
+    console.log(usuario.toJSON())
+
+    return usuario.toJSON()
   } catch (error) {
     console.error('Error creating usuario:', error)
     throw error

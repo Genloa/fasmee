@@ -4,7 +4,7 @@ import { createHashRouter } from 'react-router-dom'
 import { AuthProvider } from '../hooks/useAuth'
 import ProtectedRoute from '../middleware/ProtectedRoute'
 import Login from '../pages/auth/Login'
-import Connection from '../pages/Connection/Connection'
+// import Connection from '../pages/Connection/Connection'
 import Home from '../pages/home/home'
 import Pacientes from '../pages/pacientes/Pacientes'
 import Usuarios from '../pages/usuarios/Usuarios'
@@ -12,7 +12,7 @@ import Usuarios from '../pages/usuarios/Usuarios'
 const router = createHashRouter([
   {
     path: '/',
-    element: <Connection />,
+    element: <Usuarios />,
     children: [
       {
         path: 'login',
