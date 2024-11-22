@@ -225,17 +225,21 @@ function Usuarios() {
                         )}
                       </div>
                     </div>
-                    <div className="input-group  col">
-                      <input
-                        type="phone"
-                        className={getInputClassName('telefono')}
-                        aria-label="Telefono"
-                        aria-describedby="basic-addon1"
-                        {...register('telefono')}
-                      />
-                      {errors.telefono?.message && (
-                        <div className="invalid-feedback">{errors.telefono?.message}</div>
-                      )}
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="phone"
+                          className={getInputClassName('telefono')}
+                          aria-label="Telefono"
+                          placeholder="Telefono"
+                          aria-describedby="basic-addon1"
+                          {...register('telefono')}
+                        />
+                        <label htmlFor="floatingPassword">Telefono</label>
+                        {errors.telefono?.message && (
+                          <div className="invalid-feedback">{errors.telefono?.message}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="row mt-4">
@@ -335,6 +339,8 @@ function TableUsers() {
   const [usuarioSelected, setUsuarioSelected] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
+  const [roles, setRoles] = useState([])
+  const [selectedRol, setSelectedRol] = useState('')
 
   const {
     register,
@@ -367,7 +373,7 @@ function TableUsers() {
 
   const modalEditUserRef = document.getElementById('modal-edit-user')
   const modalDeleteUserRef = document.getElementById('modal-delete-user')
-
+  const modalRolUserRef = document.getElementById('modal-rol-user')
   const fetchUsers = async () => {
     const fetchedUsers = await window.api.getUsuarios()
     setUsuarios(fetchedUsers)
@@ -377,6 +383,7 @@ function TableUsers() {
 
   useEffect(() => {
     fetchUsers()
+    fetchRoles()
   }, [])
 
   function openModalEditUser(id) {
@@ -449,6 +456,48 @@ function TableUsers() {
     toast.show()
   }
 
+  const handleSelectChange = (event) => {
+    setSelectedRol(Number(event.target.value))
+  }
+
+  const fetchRoles = async () => {
+    const fetchedRoles = await window.api.getRoles()
+    setRoles(fetchedRoles)
+    console.log(fetchedRoles)
+  }
+  function openModalRolUser(id) {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalRolUserRef)
+    modal.show()
+  }
+  const onSubmitRol = async () => {
+    try {
+      if (!usuarioSelected) {
+        throw new Error('Usuario no seleccionados.')
+      }
+
+      console.log(usuarioSelected)
+
+      if (!selectedRol) {
+        throw new Error('Rol no seleccionado.')
+      }
+
+      const result = await window.api.updateUserRol(usuarioSelected?.perfil.id, selectedRol)
+
+      setToastMessage('Rol asignado correctamente')
+
+      const modal = Modal.getInstance(modalRolUserRef)
+      modal.hide()
+      const toastElement = document.getElementById('liveToast')
+      const toast = new Toast(toastElement)
+      toast.show()
+      console.log('Rol asignado:', result)
+    } catch (error) {
+      console.error('Error asignando el rol al usuario:', error)
+    }
+  }
+
   return (
     <div
       className="scrollspy-example bg-light-tertiary rounded-2"
@@ -469,21 +518,40 @@ function TableUsers() {
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title" id="modalTitleId">
-                Asignar Rol Usuario
+                Asignar Rol Usuario {usuarioSelected?.perfil.nombres}{' '}
+                {usuarioSelected?.perfil.apellidos}
               </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
             </div>
-            <div className="modal-body"></div>
+            <div className="modal-body">
+              <form className="row g-3" id="form-create-user">
+                <div className="row mt-4">
+                  <div className="col">
+                    <select
+                      className="form-select flex-grow-0 bg-light"
+                      aria-label="Rol Usuario"
+                      value={selectedRol}
+                      onChange={handleSelectChange}
+                    >
+                      {roles.map((rol) => (
+                        <option key={rol.id} value={rol.id}>
+                          {rol.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </form>
+            </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="submit" className="btn btn-primary" form="form-update-user">
+              <button
+                type="button"
+                onClick={onSubmitRol}
+                className="btn btn-primary"
+                form="form-update-user"
+              >
                 Asignar
               </button>
             </div>
@@ -760,7 +828,11 @@ function TableUsers() {
               <td>{user.username}</td>
               <td>ROL</td>
               <td className="text-end">
-                <button type="button" className="btn btn-sm btn-primary me-2">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-primary me-2"
+                  onClick={() => openModalRolUser(user.id)}
+                >
                   <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
                 </button>
                 <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
