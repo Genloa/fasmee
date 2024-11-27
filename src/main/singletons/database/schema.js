@@ -755,7 +755,13 @@ Perfil.belongsToMany(Perfil, {
   otherKey: 'beneficiarioId'
 })
 
-Perfil.belongsToMany(Rol, { through: RolOnPerfil, foreignKey: 'perfilId' })
+Perfil.belongsToMany(Rol, {
+  through: RolOnPerfil,
+  foreignKey: 'perfilId',
+  otherKey: 'rolId',
+  as: 'roles'
+})
+
 Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 'perfilId' })
 Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
 Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })

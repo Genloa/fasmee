@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, Usuario } from '../../../singletons/database/schema'
+import { Perfil, Usuario, Rol } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('updateUsuario', async (event, { id, data }) => {
@@ -12,7 +12,19 @@ ipcMain.handle('updateUsuario', async (event, { id, data }) => {
 
   await usuario.save()
 
-  const perfil = await Perfil.findOne({ where: { usuarioId: usuario.id } })
+  const perfil = await Perfil.findOne({
+    where: { usuarioId: usuario.id },
+    include: [
+      {
+        model: Rol,
+        as: 'roles'
+      }
+    ]
+  })
+
+  if (!perfil) {
+    throw new Error('Perfil no encontrado.')
+  }
 
   perfil.nombres = data.nombres
   perfil.apellidos = data.apellidos
@@ -26,6 +38,9 @@ ipcMain.handle('updateUsuario', async (event, { id, data }) => {
 
   return {
     ...usuario.toJSON(),
-    perfil: perfil.toJSON()
+    perfil: {
+      ...perfil.toJSON(),
+      roles: perfil.roles.map((rol) => rol.toJSON())
+    }
   }
 })

@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Usuario, Perfil } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Usuario, Perfil, Rol } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('getUsuarios', async () => {
   try {
@@ -7,10 +7,17 @@ ipcMain.handle('getUsuarios', async () => {
       include: [
         {
           model: Perfil, // Incluye el modelo asociado
-          as: 'perfil' // Alias de la asociación (asegúrate de que coincida con el alias definido en tu asociación)
+          as: 'perfil', // Alias de la asociación (asegúrate de que coincida con el alias definido en tu asociación)
+          include: [
+            {
+              model: Rol, // Incluye el modelo Rol
+              as: 'roles' // Alias de la asociación
+            }
+          ]
         }
       ]
     })
+
     const usuariosSerializables = usuarios.map((usuario) => usuario.toJSON())
     return usuariosSerializables
   } catch (error) {

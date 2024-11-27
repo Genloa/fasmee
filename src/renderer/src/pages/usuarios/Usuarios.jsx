@@ -477,13 +477,27 @@ function TableUsers() {
         throw new Error('Usuario no seleccionados.')
       }
 
-      console.log(usuarioSelected)
-
       if (!selectedRol) {
         throw new Error('Rol no seleccionado.')
       }
 
-      const result = await window.api.updateUserRol(usuarioSelected?.perfil.id, selectedRol)
+      const usuario = await window.api.updateUserRol(usuarioSelected.perfil.id, selectedRol)
+      console.log(usuario)
+      setUsuarios((prevUsuarios) =>
+        prevUsuarios.map((u) =>
+          u.id === usuario.id
+            ? {
+                ...u,
+                perfil: {
+                  ...u.perfil,
+                  ...usuario.perfil, // Combina el perfil existente con el actualizado, incluyendo roles
+                  roles: usuario.perfil.roles // Asegúrate de que los roles se asignen correctamente
+                }
+              }
+            : u
+        )
+      )
+      console.log('todos los usuarios', usuarios)
 
       setToastMessage('Rol asignado correctamente')
 
@@ -492,7 +506,6 @@ function TableUsers() {
       const toastElement = document.getElementById('liveToast')
       const toast = new Toast(toastElement)
       toast.show()
-      console.log('Rol asignado:', result)
     } catch (error) {
       console.error('Error asignando el rol al usuario:', error)
     }
@@ -815,7 +828,7 @@ function TableUsers() {
           <tr>
             <th scope="col">Nombre y Apellido</th>
             <th scope="col">Usuario</th>
-            <th scope="col">Rol</th>
+            <th scope="col">Roles</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -826,7 +839,7 @@ function TableUsers() {
                 {user.perfil.nombres} {user.perfil.apellidos}
               </td>
               <td>{user.username}</td>
-              <td>ROL</td>
+              <td>{user.perfil.roles.map((rol) => rol.nombre).join(', ')}</td>
               <td className="text-end">
                 <button
                   type="button"
