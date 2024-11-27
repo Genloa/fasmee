@@ -10,6 +10,14 @@ import { pacienteSchema } from '../../validations/pacienteSchema'
 function Pacientes() {
   const modalCrearPacienteRef = document.getElementById('modal-create-paciente')
   const [usuarios, setUsuarios] = useState([])
+  const [entes, setEntes] = useState([])
+
+  const fetchEntes = async () => {
+    const fetchedEntes = await window.api.getEntes()
+    setEntes(fetchedEntes)
+    console.log(fetchedEntes)
+  }
+
   const {
     register,
     handleSubmit,
@@ -54,6 +62,7 @@ function Pacientes() {
   }
   useEffect(() => {
     fetchUsers()
+    fetchEntes()
   }, [])
 
   return (
@@ -81,6 +90,9 @@ function Pacientes() {
               </div>
               <div className="modal-body m-2">
                 <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
+                  <div className="row mt-4">
+                    <h6 className="text-center text-body-secondary">Informacion General</h6>
+                  </div>
                   <div className="row mt-4">
                     <div className="col">
                       <div className="form-floating ">
@@ -113,8 +125,6 @@ function Pacientes() {
                         )}
                       </div>
                     </div>
-                  </div>
-                  <div className="row mt-4">
                     <div className="input-group  col">
                       <select
                         className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
@@ -138,22 +148,23 @@ function Pacientes() {
                         <div className="invalid-feedback">{errors.cedula?.message}</div>
                       )}
                     </div>
-
-                    <div className="col">
-                      <input
-                        type="text"
-                        id="username"
-                        className={getInputClassName('username')}
-                        placeholder="Nombre de Usuario"
-                        aria-label="Username"
-                        {...register('username')}
-                      />
-                      {errors.username?.message && (
-                        <div className="invalid-feedback">{errors.username?.message}</div>
-                      )}
-                    </div>
                   </div>
                   <div className="row mt-4">
+                    <div className="col">
+                      <select
+                        className={`form-select flex-grow-0 bg-light ${errors.ente ? 'is-invalid' : ''}`}
+                        aria-label="entes"
+                        style={{ height: '100%' }}
+                        {...register('ente')}
+                      >
+                        <option selected>Ente</option>
+                        {entes.map((ente) => (
+                          <option key={ente.id} value={ente.id}>
+                            {ente.nombre}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                     <div className="col">
                       <div className="form-floating ">
                         <input
@@ -169,29 +180,21 @@ function Pacientes() {
                         )}
                       </div>
                     </div>
-                    <div className="input-group  col">
-                      <select
-                        className={`form-select flex-grow-0 bg-light ${errors.extension ? 'is-invalid' : ''}`}
-                        style={{ width: '90px' }}
-                        aria-label="Tipo de documento"
-                        {...register('extension')}
-                      >
-                        <option value="0416">0416</option>
-                        <option value="0426">0426</option>
-                        <option value="0424">0424</option>
-                        <option value="0414">0414</option>
-                        <option value="0412">0412</option>
-                      </select>
-                      <input
-                        type="phone"
-                        className={getInputClassName('telefono')}
-                        aria-label="Telefono"
-                        aria-describedby="basic-addon1"
-                        {...register('telefono')}
-                      />
-                      {errors.telefono?.message && (
-                        <div className="invalid-feedback">{errors.telefono?.message}</div>
-                      )}
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="phone"
+                          className={getInputClassName('telefono')}
+                          aria-label="Telefono"
+                          placeholder="Telefono"
+                          aria-describedby="basic-addon1"
+                          {...register('telefono')}
+                        />
+                        <label htmlFor="floatingPassword">Telefono</label>
+                        {errors.telefono?.message && (
+                          <div className="invalid-feedback">{errors.telefono?.message}</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                   <div className="row mt-4">
@@ -207,6 +210,111 @@ function Pacientes() {
                         <label htmlFor="correo">Correo</label>
                         {errors.correo?.message && (
                           <div className="invalid-feedback">{errors.correo?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <h6 className="text-center text-body-secondary">Informacion Medica</h6>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="patologias"
+                          className={getInputClassName('patologias')}
+                          placeholder="patologias"
+                          aria-label="patologias"
+                          {...register('patologias')}
+                        />
+                        <label htmlFor="patologias">Patologias</label>
+                        {errors.patologias?.message && (
+                          <div className="invalid-feedback">{errors.patologias?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="alergias"
+                          className={getInputClassName('alergias')}
+                          placeholder="alergias"
+                          aria-label="alergias"
+                          {...register('alergias')}
+                        />
+                        <label htmlFor="alergias">Alergias</label>
+                        {errors.alergias?.message && (
+                          <div className="invalid-feedback">{errors.alergias?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="cirugias"
+                          className={getInputClassName('cirugias')}
+                          placeholder="cirugias"
+                          aria-label="cirugias"
+                          {...register('cirugias')}
+                        />
+                        <label htmlFor="cirugias">Cirugias</label>
+                        {errors.cirugias?.message && (
+                          <div className="invalid-feedback">{errors.cirugias?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="medicamentos"
+                          className={getInputClassName('medicamentos')}
+                          placeholder="medicamentos"
+                          aria-label="medicamentos"
+                          {...register('medicamentos')}
+                        />
+                        <label htmlFor="medicamentos">Medicamentos</label>
+                        {errors.medicamentos?.message && (
+                          <div className="invalid-feedback">{errors.medicamentos?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="peso"
+                          className={getInputClassName('peso')}
+                          placeholder="peso"
+                          aria-label="peso"
+                          {...register('peso')}
+                        />
+                        <label htmlFor="peso">Peso</label>
+                        {errors.peso?.message && (
+                          <div className="invalid-feedback">{errors.peso?.message}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col">
+                      <div className="form-floating ">
+                        <input
+                          type="text"
+                          id="altura"
+                          className={getInputClassName('altura')}
+                          placeholder="altura"
+                          aria-label="altura"
+                          {...register('altura')}
+                        />
+                        <label htmlFor="altura">Altura</label>
+                        {errors.altura?.message && (
+                          <div className="invalid-feedback">{errors.altura?.message}</div>
                         )}
                       </div>
                     </div>
@@ -267,9 +375,9 @@ function Pacientes() {
                     </div>
                     <div className="card-body">
                       <h5 className="card-title">
-                        {user.Perfil.nombres} {user.Perfil.apellidos}
+                        {user.perfil?.nombres} {user.perfil?.apellidos}
                       </h5>
-                      <p className="card-text">Trabajador {user.Perfil.ente.nombre}</p>
+                      <p className="card-text">Trabajador</p>
                       <p className="card-text">Rol</p>
                       <div>
                         <div

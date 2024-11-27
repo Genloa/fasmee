@@ -20,9 +20,11 @@ ipcMain.handle('createPaciente', async (event, data) => {
       data: {
         Perfil_id: paciente.id,
         patologias: paciente.patologias,
+        medicamentos: paciente.medicamentos,
         alergias: paciente.alergias,
-        cirugias: paciente.cirugias
-        // ,peso: paciente.peso, altura: paciente.altura
+        cirugias: paciente.cirugias,
+        peso: paciente.peso,
+        altura: paciente.altura
       }
     })
     return { paciente, perfilMedico }

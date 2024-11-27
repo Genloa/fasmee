@@ -12,7 +12,7 @@ import Usuarios from '../pages/usuarios/Usuarios'
 const router = createHashRouter([
   {
     path: '/',
-    element: <Usuarios />,
+    element: <Pacientes />,
     children: [
       {
         path: 'login',

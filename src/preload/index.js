@@ -20,7 +20,10 @@ const api = {
   createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
 
   // Casos de uso para Roles
-  getRoles: () => ipcRenderer.invoke('getRoles')
+  getRoles: () => ipcRenderer.invoke('getRoles'),
+
+  // Casos de uso para Entes
+  getEntes: () => ipcRenderer.invoke('getEntes')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
