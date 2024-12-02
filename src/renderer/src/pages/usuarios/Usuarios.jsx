@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
-
+import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
 function Usuarios() {
