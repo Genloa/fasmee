@@ -19,6 +19,7 @@ const api = {
   // Casos de uso para pacientes
   createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
   deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
+  getTrabajadores: () => ipcRenderer.invoke('getTrabajadores'),
 
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),

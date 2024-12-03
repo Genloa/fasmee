@@ -103,7 +103,7 @@ const Perfil = sequelize.define(
 
     enteId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: Ente,
         key: 'id'

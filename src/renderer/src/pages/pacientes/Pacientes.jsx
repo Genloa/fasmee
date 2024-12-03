@@ -6,28 +6,39 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { pacienteSchema } from '../../validations/pacienteSchema'
-
+import Select from 'react-select'
+import { Controller } from 'react-hook-form'
 function Pacientes() {
   const modalCrearPacienteRef = document.getElementById('modal-create-paciente')
   const modalCrearBeneficiarioRef = document.getElementById('modal-create-beneficiario')
-
+  const [trabajadores, setTrabajadores] = useState([])
   const [usuarios, setUsuarios] = useState([])
   const [entes, setEntes] = useState([])
-
+  const [selectedTrabajador, setSelectedTrabajador] = useState(null)
   // HOOK
 
   useEffect(() => {
     fetchUsers()
     fetchEntes()
-
+    fetchTrabajadores()
     const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
     dropdownMenus.forEach((dropdownMenu) => {
       new Dropdown(dropdownMenu)
     })
   }, [])
+  const handleChange = (selectedOption) => {
+    setSelectedTrabajador(selectedOption)
+  }
 
+  const trabajadorOptions = trabajadores.map((trabajador) => ({
+    value: trabajador.id,
+    label: trabajador.cedula
+  }))
   // FETCH
-
+  const fetchTrabajadores = async () => {
+    const fetchedTrabajadores = await window.api.getTrabajadores()
+    setTrabajadores(fetchedTrabajadores)
+  }
   const fetchEntes = async () => {
     const fetchedEntes = await window.api.getEntes()
     setEntes(fetchedEntes)
@@ -441,19 +452,29 @@ function Pacientes() {
                   </div>
                   <div className="row mt-4">
                     <div className="col">
-                      <select
-                        className={`form-select flex-grow-0 bg-light ${errors.ente ? 'is-invalid' : ''}`}
-                        aria-label="entes"
-                        style={{ height: '100%' }}
-                        {...register('ente')}
-                      >
-                        <option selected>Ente</option>
-                        {entes.map((ente) => (
-                          <option key={ente.id} value={ente.id}>
-                            {ente.nombre}
-                          </option>
-                        ))}
-                      </select>
+                      <Controller
+                        name="trabajador"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div>
+                            <Select
+                              {...field}
+                              options={trabajadorOptions}
+                              placeholder="Buscar Trabajador"
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value) // Guardar solo el ID
+                                setValue('trabajador', selectedOption?.value) // Registrar el valor
+                              }}
+                            />
+                            {errors.trabajador && (
+                              <div className="invalid-feedback d-block">
+                                {errors.trabajador.message}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      />
                     </div>
                     <div className="col">
                       <div className="form-floating ">
@@ -675,7 +696,7 @@ function Pacientes() {
                   <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
                     <div className="text-center">
                       <img
-                        src="../../src/img/paciente.jpg"
+                        src="../../src/assets/img/paciente.jpg"
                         width="60%"
                         height="60%"
                         alt="Logo"
