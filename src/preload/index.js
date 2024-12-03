@@ -18,6 +18,7 @@ const api = {
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
   // Casos de uso para pacientes
   createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
+  deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
 
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),
