@@ -1,31 +1,50 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Modal } from 'bootstrap'
+import { Dropdown, Modal } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { pacienteSchema } from '../../validations/pacienteSchema'
-import * as bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 function Pacientes() {
   const modalCrearPacienteRef = document.getElementById('modal-create-paciente')
   const modalCrearBeneficiarioRef = document.getElementById('modal-create-beneficiario')
+
   const [usuarios, setUsuarios] = useState([])
   const [entes, setEntes] = useState([])
 
+  // HOOK
+
   useEffect(() => {
+    fetchUsers()
+    fetchEntes()
+
     const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
     dropdownMenus.forEach((dropdownMenu) => {
-      new bootstrap.Dropdown(dropdownMenu)
+      new Dropdown(dropdownMenu)
     })
   }, [])
+
+  // FETCH
 
   const fetchEntes = async () => {
     const fetchedEntes = await window.api.getEntes()
     setEntes(fetchedEntes)
     console.log(fetchedEntes)
   }
+
+  const fetchUsers = async () => {
+    try {
+      const fetchedUsers = await window.api.getUsuarios()
+      setUsuarios(fetchedUsers)
+      console.log(fetchedUsers)
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    }
+  }
+
+  // FORM VALIDATION
 
   const {
     register,
@@ -35,6 +54,19 @@ function Pacientes() {
   } = useForm({
     resolver: zodResolver(pacienteSchema)
   })
+
+  const onSubmit = async (data) => {
+    console.log(data)
+    let paciente = await window.api.createPaciente(data)
+    fetchUsers()
+    console.log(paciente)
+    reset()
+    const modal = Modal.getInstance(modalCrearPacienteRef)
+    modal.hide()
+    // const toastElement = document.getElementById('liveToastCrear')
+    //const toastcrear = new Toast(toastElement)
+    //toastcrear.show()
+  }
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -52,32 +84,6 @@ function Pacientes() {
     let modal = new Modal(modalCrearBeneficiarioRef)
     modal.show()
   }
-
-  const onSubmit = async (data) => {
-    console.log(data)
-    let paciente = await window.api.createPaciente(data)
-    fetchUsers()
-    console.log(paciente)
-    reset()
-    const modal = Modal.getInstance(modalCrearPacienteRef)
-    modal.hide()
-    // const toastElement = document.getElementById('liveToastCrear')
-    //const toastcrear = new Toast(toastElement)
-    //toastcrear.show()
-  }
-  const fetchUsers = async () => {
-    try {
-      const fetchedUsers = await window.api.getUsuarios()
-      setUsuarios(fetchedUsers)
-      console.log(fetchedUsers)
-    } catch (error) {
-      console.error('Error fetching users:', error)
-    }
-  }
-  useEffect(() => {
-    fetchUsers()
-    fetchEntes()
-  }, [])
 
   return (
     <>
