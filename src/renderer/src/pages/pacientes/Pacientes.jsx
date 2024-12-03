@@ -10,6 +10,7 @@ import { pacienteSchema } from '../../validations/pacienteSchema'
 function Pacientes() {
   const modalCrearPacienteRef = document.getElementById('modal-create-paciente')
   const modalCrearBeneficiarioRef = document.getElementById('modal-create-beneficiario')
+
   const [usuarios, setUsuarios] = useState([])
   const [entes, setEntes] = useState([])
 
