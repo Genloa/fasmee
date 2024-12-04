@@ -14,7 +14,6 @@ function Pacientes() {
   const [trabajadores, setTrabajadores] = useState([])
   const [usuarios, setUsuarios] = useState([])
   const [entes, setEntes] = useState([])
-  const [selectedTrabajador, setSelectedTrabajador] = useState(null)
   // HOOK
 
   useEffect(() => {
@@ -26,9 +25,6 @@ function Pacientes() {
       new Dropdown(dropdownMenu)
     })
   }, [])
-  const handleChange = (selectedOption) => {
-    setSelectedTrabajador(selectedOption)
-  }
 
   const trabajadorOptions = trabajadores.map((trabajador) => ({
     value: trabajador.id,
@@ -61,6 +57,8 @@ function Pacientes() {
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     formState: { errors, dirtyFields }
   } = useForm({
     resolver: zodResolver(pacienteSchema)
@@ -68,12 +66,13 @@ function Pacientes() {
 
   const onSubmit = async (data) => {
     console.log(data)
-    let paciente = await window.api.createPaciente(data)
+    reset()
+    /*  let paciente = await window.api.createPaciente(data)
     fetchUsers()
     console.log(paciente)
-    reset()
+
     const modal = Modal.getInstance(modalCrearPacienteRef)
-    modal.hide()
+    modal.hide()*/
     // const toastElement = document.getElementById('liveToastCrear')
     //const toastcrear = new Toast(toastElement)
     //toastcrear.show()
@@ -452,31 +451,6 @@ function Pacientes() {
                   </div>
                   <div className="row mt-4">
                     <div className="col">
-                      <Controller
-                        name="trabajador"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <div>
-                            <Select
-                              {...field}
-                              options={trabajadorOptions}
-                              placeholder="Buscar Trabajador"
-                              onChange={(selectedOption) => {
-                                field.onChange(selectedOption?.value) // Guardar solo el ID
-                                setValue('trabajador', selectedOption?.value) // Registrar el valor
-                              }}
-                            />
-                            {errors.trabajador && (
-                              <div className="invalid-feedback d-block">
-                                {errors.trabajador.message}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      />
-                    </div>
-                    <div className="col">
                       <div className="form-floating ">
                         <input
                           type="date"
@@ -507,8 +481,6 @@ function Pacientes() {
                         )}
                       </div>
                     </div>
-                  </div>
-                  <div className="row mt-4">
                     <div className="col">
                       <div className="form-floating ">
                         <input
@@ -523,6 +495,38 @@ function Pacientes() {
                           <div className="invalid-feedback">{errors.correo?.message}</div>
                         )}
                       </div>
+                    </div>
+                  </div>
+                  <div className="row mt-4">
+                    {' '}
+                    <div className="col">
+                      <Controller
+                        name="trabajador"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div>
+                            <Select
+                              {...field}
+                              options={trabajadorOptions}
+                              placeholder="Buscar Trabajador"
+                              value={
+                                trabajadorOptions.find((option) => option.value === field.value) ||
+                                null
+                              }
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
+                                setValue('trabajador', selectedOption ? selectedOption.value : null) // Registrar el valor
+                              }}
+                            />
+                            {errors.trabajador && (
+                              <div className="invalid-feedback d-block">
+                                {errors.trabajador.message}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      />
                     </div>
                   </div>
                   <div className="row mt-4">
