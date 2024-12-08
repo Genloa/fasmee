@@ -4,6 +4,7 @@ import Login from './pages/auth/Login'
 import Home from './pages/home/home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
+import Connection from './pages/connection/Connection'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.min.js'
@@ -12,7 +13,7 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Connection />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/dash/users" element={<Usuarios />} />

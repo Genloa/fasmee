@@ -58,6 +58,7 @@ const Connection = () => {
     <div className="container">
       <h1 className="text-center">Te damos la bienvenida</h1>
       <h4>Por favor ingresa las credenciales de tu base de datos Postgre SLQ</h4>
+      <img src="../../assets/img/imglogin.svg" alt="" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row row-cols-2">
           <div className="col">
