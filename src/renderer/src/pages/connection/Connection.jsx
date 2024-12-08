@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { NavLink } from 'react-router-dom'
 import connectionSchema from '../../validations/connectionSchema'
 
 const Connection = () => {
@@ -58,7 +59,6 @@ const Connection = () => {
     <div className="container">
       <h1 className="text-center">Te damos la bienvenida</h1>
       <h4>Por favor ingresa las credenciales de tu base de datos Postgre SLQ</h4>
-      <img src="../../assets/img/imglogin.svg" alt="" />
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="row row-cols-2">
           <div className="col">
@@ -130,6 +130,10 @@ const Connection = () => {
         <button type="submit" className="btn btn-primary mt-3">
           Conectar
         </button>
+
+        <NavLink to="/login" className="btn btn-primary">
+          login
+        </NavLink>
       </form>
 
       <div className="toast-container position-fixed bottom-0 end-0 p-3">

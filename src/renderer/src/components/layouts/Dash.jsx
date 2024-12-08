@@ -1,12 +1,12 @@
 import {
+  faBookMedical,
+  faBoxesStacked,
+  faCalendarCheck,
+  faClipboardUser,
   faHospitalUser,
   faHouse,
   faUser,
-  faBookMedical,
-  faCalendarCheck,
-  faClipboardUser,
-  faUserDoctor,
-  faBoxesStacked
+  faUserDoctor
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
