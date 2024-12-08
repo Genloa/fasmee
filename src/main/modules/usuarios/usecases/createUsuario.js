@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, Usuario } from '../../../singletons/database/schema'
+import { Perfil, Usuario, Rol } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
@@ -23,7 +23,18 @@ ipcMain.handle('createUsuario', async (event, data) => {
         }
       },
       {
-        include: [{ model: Perfil, as: 'perfil' }]
+        include: [
+          {
+            model: Perfil,
+            as: 'perfil',
+            include: [
+              {
+                model: Rol, // Incluye el modelo Rol
+                as: 'roles' // Alias de la asociación
+              }
+            ]
+          }
+        ]
       }
     )
 
