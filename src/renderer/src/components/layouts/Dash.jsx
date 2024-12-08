@@ -41,15 +41,8 @@ function Navbar() {
           />
         </a>
         <div className="d-flex flex-grow-1 justify-content-between align-items-center">
-          <form className="d-flex flex-grow-1 mx-4" role="search">
-            <input
-              className="form-control  bg-light focus-ring focus-ring-primary border-light  rounded-4 w-50"
-              type="search"
-              placeholder="Buscar"
-              aria-label="Buscar"
-            />
-          </form>
-          <div className="dropdown">
+          <form className="d-flex flex-grow-1 mx-4" role="search"></form>
+          <div className="dropdown ">
             <button
               className="btn btn-outline-body dropdown-toggle"
               type="button"
