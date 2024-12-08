@@ -11,7 +11,7 @@ ipcMain.handle('getTrabajadores', async () => {
       }
     })
     const perfilTrabajadores = perfiles.map((perfil) => perfil.toJSON())
-    console.log(perfilTrabajadores)
+
     return perfilTrabajadores
   } catch (error) {
     console.error('Error fetching users:', error)

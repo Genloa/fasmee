@@ -94,7 +94,7 @@ const Perfil = sequelize.define(
 
     usuarioId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: Usuario,
         key: 'id'
@@ -742,12 +742,13 @@ Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
 
 Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' })
 Perfil.belongsTo(Ente, { foreignKey: 'enteId' })
-Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId' })
+Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId', as: 'perfilMedico' })
 Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
 Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
 Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
 Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
 Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId' })
+
 Perfil.belongsToMany(Perfil, {
   through: PerfilOnBeneficiario,
   as: 'beneficiarios',
@@ -766,7 +767,7 @@ Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 
 Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
 Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })
 
-PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId' })
+PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfilmedico' })
 
 Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'solicitante' })
 Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })

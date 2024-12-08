@@ -17,9 +17,12 @@ const api = {
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
   // Casos de uso para pacientes
-  createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
+  createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
   deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
+  getPacientes: () => ipcRenderer.invoke('getPacientes'),
   getTrabajadores: () => ipcRenderer.invoke('getTrabajadores'),
+
+  createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
 
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),

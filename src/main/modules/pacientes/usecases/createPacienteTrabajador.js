@@ -11,7 +11,7 @@ ipcMain.handle('createPaciente', async (event, data) => {
         tipo_cedula: data.tipoCedula,
         cedula: data.cedula,
         correo: data.correo,
-        telefono: data.extension + '-' + data.telefono,
+        telefono: data.telefono,
         ente_id: data.enteId
       }
     })
@@ -27,7 +27,24 @@ ipcMain.handle('createPaciente', async (event, data) => {
         altura: paciente.altura
       }
     })
-    return { paciente, perfilMedico }
+
+    const beneficiarios = await Perfil.findAll({
+      where: { id: paciente.id },
+      include: [
+        {
+          model: Perfil,
+          as: 'beneficiarios' // Alias de la asociación
+        }
+      ]
+    })
+
+    const trabajador = {
+      ...paciente.toJSON(),
+      perfilMedico: { ...perfilMedico.toJSON() },
+      beneficiarios: beneficiarios.map((beneficiario) => beneficiario.toJSON()) // Transforma la relación en un array serializables
+    }
+
+    return trabajador
   } catch (error) {
     console.error('Error creating paciente and perfil:', error)
   }

@@ -24,13 +24,13 @@ export const pacienteSchema = z.object({
     message: 'Debe colocar su cedula'
   }),
   fechaNacimiento: z.string().min(1, { message: 'Ingresa tu fecha de nacimiento' }).date(),
-  telefono: z.string().min(7, {
-    message: 'Minimo 7 caracteres'
+  telefono: z.string().min(11, {
+    message: 'Minimo 11 caracteres'
   }),
   correo: z.string().email({
     message: 'Correo invalido'
   }),
-  trabajador: z.string().nonempty({ message: 'Trabajador es requerido' }),
+  trabajadorId: z.number().min(1, { message: 'Trabajador es requerido' }),
   patologias: z.string().nullable(),
   alergias: z.string().nullable(),
   cirugias: z.string().nullable(),

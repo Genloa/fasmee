@@ -1,4 +1,13 @@
-import { faHospitalUser, faHouse, faUser } from '@fortawesome/free-solid-svg-icons'
+import {
+  faHospitalUser,
+  faHouse,
+  faUser,
+  faBookMedical,
+  faCalendarCheck,
+  faClipboardUser,
+  faUserDoctor,
+  faBoxesStacked
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
 import { useState } from 'react'
@@ -121,40 +130,38 @@ function Sidebar({ children }) {
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <a href="#" className="nav-link text-white">
-                  <img
-                    src="../../src/assets/img/history.png"
-                    className="me-1"
-                    alt=""
-                    width="20"
-                    height="20"
-                  />
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Citas</span>}
+                </NavLink>
+              </li>
+              <li className="nav-item disabled">
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faClipboardUser} className="fs-5" />
+                  {!isCollapsed && (
+                    <span className="fs-5 d-none ms-3 d-sm-inline">Cola Pacientes</span>
+                  )}
+                </NavLink>
+              </li>
+              <li className="nav-item disabled">
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faUserDoctor} className="fs-5" />
+                  {!isCollapsed && (
+                    <span className="fs-5 d-none ms-3 d-sm-inline">Atender Paciente</span>
+                  )}
+                </NavLink>
+              </li>
+              <li className="nav-item disabled">
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faBookMedical} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Historias</span>}
-                </a>
+                </NavLink>
               </li>
               <li className="nav-item disabled">
-                <a href="#" className="nav-link text-white">
-                  <img
-                    src="../../src/assets/img/home.png"
-                    className="me-1"
-                    alt=""
-                    width="20"
-                    height="20"
-                  />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">products</span>}
-                </a>
-              </li>
-              <li className="nav-item disabled">
-                <a href="#" className="nav-link text-white">
-                  <img
-                    src="../../src/assets/img/home.png"
-                    className="me-1"
-                    alt=""
-                    width="20"
-                    height="20"
-                  />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">orders</span>}
-                </a>
+                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                  <FontAwesomeIcon icon={faBoxesStacked} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Inventario</span>}
+                </NavLink>
               </li>
             </ul>
           </div>

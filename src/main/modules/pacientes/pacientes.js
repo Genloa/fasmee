@@ -1,3 +1,5 @@
-import './usecases/createPaciente'
+import './usecases/createPacienteTrabajador'
 import './usecases/deletePaciente'
 import './usecases/getTrabajadores'
+import './usecases/getPacientes'
+import './usecases/createPacienteBeneficiario'
