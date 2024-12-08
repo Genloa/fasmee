@@ -43,11 +43,11 @@ export const userSchema = z
     }),
     telefono: z
       .string()
-      .min(7, {
-        message: 'Minimo 7 caracteres'
+      .min(11, {
+        message: 'Minimo 11 caracteres'
       })
-      .max(12, {
-        message: 'Maximo 7 caracteres'
+      .max(11, {
+        message: 'Maximo 11 caracteres'
       })
   })
   .refine((data) => data.password === data.confirmtPassword, {
