@@ -1,7 +1,7 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Dropdown, Toast } from 'bootstrap'
+import { Dropdown, Toast, Modal } from 'bootstrap'
 import { createContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
@@ -29,10 +29,12 @@ PacientesProvider.propTypes = {
 
 function Pacientes() {
   const [pacientes, setPacientes] = useState([])
-
+  const [pacienteSelected, setPacienteSelected] = useState(null)
+  const [toastMessagePa, setToastMessagePa] = useState('')
+  //modales
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
-
+  const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
   const handleShowModalTrabajador = () => setShowModalTrabajador(true)
@@ -60,6 +62,43 @@ function Pacientes() {
     }
   }
 
+  // delete
+  function openModalDeletePaciente(id) {
+    let paciente = pacientes.find((paciente) => paciente.id === id)
+    setPacienteSelected(paciente)
+    let modal = new Modal(modalDeletePacienteRef)
+    modal.show()
+  }
+
+  async function closeModalDeletePaciente() {
+    try {
+      // Eliminar el usuario
+      const beneficiariosEliminados = await window.api.deletePaciente(pacienteSelected.id)
+      console.log(beneficiariosEliminados)
+
+      // Actualizar el estado de usuarios falta
+      /*setPacientes((prevPacientes) =>
+        prevPacientes.filter(
+          (paciente) =>
+            paciente.id !== pacienteSelected.id && !beneficiariosEliminados.includes(paciente.id)
+        )
+      )*/
+      setToastMessagePa('Paciente eliminado correctamente')
+
+      // Cerrar el modal
+      const modal = Modal.getInstance(modalDeletePacienteRef)
+      modal.hide()
+
+      // Mostrar el toast
+      const toastElement = document.getElementById('liveToastPa')
+      const toast = new Toast(toastElement)
+      toast.show()
+    } catch (error) {
+      console.error('Error al eliminar el Paciente:', error)
+      // Aquí podrías mostrar un toast de error si lo deseas
+    }
+  }
+
   return (
     <>
       <PacientesProvider>
@@ -74,6 +113,50 @@ function Pacientes() {
             handleClose={handleCloseModalTrabajador}
             fetchPacientes={fetchPacientes}
           />
+          <div
+            className="modal fade"
+            id="modal-delete-paciente"
+            tabIndex="-1"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="modalTitleId"
+            aria-hidden="true"
+          >
+            <div
+              className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+              role="document"
+            >
+              <div className="modal-content">
+                <div className="modal-header bg-danger text-white">
+                  <h5 className="modal-title" id="modalTitleId">
+                    Eliminar Paciente
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">{pacienteSelected?.nombres}</div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => closeModalDeletePaciente()}
+                    id="liveToastBtn"
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className="card border-white">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center ">
@@ -151,7 +234,7 @@ function Pacientes() {
                             <button
                               type="button"
                               className="btn btn-danger"
-                              //onClick={() => openModalDeletePaciente(Paciente.id)}
+                              onClick={() => openModalDeletePaciente(paciente.id)}
                             >
                               <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
                             </button>
@@ -162,6 +245,27 @@ function Pacientes() {
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+          {/* Toast */}
+          <div className="toast-container position-fixed bottom-0 end-0 p-3">
+            <div
+              id="liveToastPa"
+              className="toast"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div className="toast-header">
+                <strong className="me-auto">Notificacion</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="toast-body">{toastMessagePa}</div>
             </div>
           </div>
         </Dash>{' '}
