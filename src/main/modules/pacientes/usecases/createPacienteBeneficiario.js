@@ -16,12 +16,12 @@ ipcMain.handle('createPacienteBeneficiario', async (event, data) => {
 
     const perfilMedico = await PerfilMedico.create({
       perfilId: pacienteBeneficiario.id,
-      patologias: pacienteBeneficiario.patologias,
-      medicamentos: pacienteBeneficiario.medicamentos,
-      alergias: pacienteBeneficiario.alergias,
-      cirugias: pacienteBeneficiario.cirugias,
-      peso: pacienteBeneficiario.peso,
-      altura: pacienteBeneficiario.altura
+      patologias: data.patologias,
+      medicamentos: data.medicamentos,
+      alergias: data.alergias,
+      cirugias: data.cirugias,
+      peso: data.peso,
+      altura: data.altura
     })
 
     const perfilOnBeneficiario = await PerfilOnBeneficiario.create({

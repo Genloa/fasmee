@@ -1,6 +1,6 @@
 import { z } from 'zod'
 const tipo = ['V', 'E']
-export const pacienteSchema = z.object({
+export const beneficiarioSchema = z.object({
   nombres: z
     .string()
     .min(3, {
@@ -31,10 +31,10 @@ export const pacienteSchema = z.object({
     message: 'Correo invalido'
   }),
   trabajadorId: z.number().min(1, { message: 'Trabajador es requerido' }),
-  patologias: z.string().nullable(),
-  alergias: z.string().nullable(),
-  cirugias: z.string().nullable(),
-  medicamentos: z.string().nullable(),
+  patologias: z.string().optional(),
+  alergias: z.string().optional(),
+  cirugias: z.string().optional(),
+  medicamentos: z.string().optional(),
   peso: z
     .number()
     .positive()

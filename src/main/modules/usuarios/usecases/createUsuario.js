@@ -23,24 +23,31 @@ ipcMain.handle('createUsuario', async (event, data) => {
         }
       },
       {
-        include: [
-          {
-            model: Perfil,
-            as: 'perfil',
-            include: [
-              {
-                model: Rol, // Incluye el modelo Rol
-                as: 'roles' // Alias de la asociación
-              }
-            ]
-          }
-        ]
+        include: [{ model: Perfil, as: 'perfil' }]
       }
     )
 
-    console.log(usuario.toJSON())
+    const perfil = await Perfil.findOne({
+      where: { id: usuario.perfil.id },
+      include: [
+        {
+          model: Usuario,
+          as: 'usuario'
+        },
+        {
+          model: Rol,
+          as: 'roles'
+        }
+      ]
+    })
 
-    return usuario.toJSON()
+    return {
+      ...perfil.usuario.toJSON(),
+      perfil: {
+        ...perfil.toJSON(),
+        roles: perfil.roles.map((rol) => rol.toJSON())
+      }
+    }
   } catch (error) {
     console.error('Error creating usuario:', error)
     throw error

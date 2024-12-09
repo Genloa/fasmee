@@ -1,47 +1,33 @@
 import { ipcMain } from 'electron'
 import { Perfil, PerfilMedico } from '../../../singletons/database/schema'
 
-ipcMain.handle('createPaciente', async (event, data) => {
+ipcMain.handle('createPacienteTrabajador', async (event, data) => {
   try {
-    const paciente = await Perfil.create({
-      data: {
-        nombres: data.nombres,
-        apellidos: data.apellidos,
-        fecha_nacimiento: new Date(data.fechaNacimiento),
-        tipo_cedula: data.tipoCedula,
-        cedula: data.cedula,
-        correo: data.correo,
-        telefono: data.telefono,
-        ente_id: data.enteId
-      }
+    const perfilTrabajador = await Perfil.create({
+      nombres: data.nombres,
+      apellidos: data.apellidos,
+      fecha_nacimiento: new Date(data.fechaNacimiento),
+      tipo_cedula: data.tipoCedula,
+      cedula: data.cedula,
+      correo: data.correo,
+      telefono: data.telefono,
+      enteId: data.enteId
     })
 
     const perfilMedico = await PerfilMedico.create({
-      data: {
-        Perfil_id: paciente.id,
-        patologias: paciente.patologias,
-        medicamentos: paciente.medicamentos,
-        alergias: paciente.alergias,
-        cirugias: paciente.cirugias,
-        peso: paciente.peso,
-        altura: paciente.altura
-      }
-    })
-
-    const beneficiarios = await Perfil.findAll({
-      where: { id: paciente.id },
-      include: [
-        {
-          model: Perfil,
-          as: 'beneficiarios' // Alias de la asociación
-        }
-      ]
+      perfilId: perfilTrabajador.id,
+      patologias: data.patologias,
+      medicamentos: data.medicamentos,
+      alergias: data.alergias,
+      cirugias: data.cirugias,
+      peso: data.peso,
+      altura: data.altura
     })
 
     const trabajador = {
-      ...paciente.toJSON(),
+      ...perfilTrabajador.toJSON(),
       perfilMedico: { ...perfilMedico.toJSON() },
-      beneficiarios: beneficiarios.map((beneficiario) => beneficiario.toJSON()) // Transforma la relación en un array serializables
+      beneficiarios: []
     }
 
     return trabajador
