@@ -34,6 +34,7 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "react-hook-form": "^7.53.1",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.28.0",
     "react-select": "^5.8.3",
     "sequelize": "^6.37.5",

@@ -105,31 +105,56 @@ function Sidebar({ children }) {
             </div>
             <ul className="nav nav-pills flex-column mt-5">
               <li className="nav-item">
-                <NavLink to="/home" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to="/home"
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faHouse} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to="/dash/users"
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faUser} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink to="/dash/pacientes" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to="/dash/pacientes"
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faHospitalUser} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Pacientes</span>}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Citas</span>}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faClipboardUser} className="fs-5" />
                   {!isCollapsed && (
                     <span className="fs-5 d-none ms-3 d-sm-inline">Cola Pacientes</span>
@@ -137,7 +162,12 @@ function Sidebar({ children }) {
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faUserDoctor} className="fs-5" />
                   {!isCollapsed && (
                     <span className="fs-5 d-none ms-3 d-sm-inline">Atender Paciente</span>
@@ -145,13 +175,23 @@ function Sidebar({ children }) {
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faBookMedical} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Historias</span>}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
-                <NavLink to="/dash/users" className="nav-link text-white text-decoration-none">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
                   <FontAwesomeIcon icon={faBoxesStacked} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Inventario</span>}
                 </NavLink>

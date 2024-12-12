@@ -10,6 +10,7 @@ import { trabajadorSchema } from '../../validations/trabajadorSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import ReactPaginate from 'react-paginate'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
@@ -28,6 +29,13 @@ PacientesProvider.propTypes = {
 }
 
 function Pacientes() {
+  //paginacion
+  const [currentPage, setCurrentPage] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+  const usersPerPage = 3
+  const pagesVisited = currentPage * usersPerPage
+
+  //pacientes
   const [pacientes, setPacientes] = useState([])
   const [pacienteSelected, setPacienteSelected] = useState(null)
   const [toastMessagePa, setToastMessagePa] = useState('')
@@ -73,17 +81,28 @@ function Pacientes() {
   async function closeModalDeletePaciente() {
     try {
       // Eliminar el usuario
-      const beneficiariosEliminados = await window.api.deletePaciente(pacienteSelected.id)
+      const response = await window.api.deletePaciente(pacienteSelected.id)
+      const beneficiariosEliminados = Array.isArray(response.beneficiariosEliminados)
+        ? response.beneficiariosEliminados
+        : []
       console.log(beneficiariosEliminados)
 
       // Actualizar el estado de usuarios falta
-      /*setPacientes((prevPacientes) =>
+      setPacientes((prevPacientes) =>
         prevPacientes.filter(
           (paciente) =>
             paciente.id !== pacienteSelected.id && !beneficiariosEliminados.includes(paciente.id)
         )
-      )*/
+      )
       setToastMessagePa('Paciente eliminado correctamente')
+      /*
+      //queda pendiente
+      if (beneficiariosEliminados) {
+        console.log(beneficiariosEliminados)
+        setToastMessagePa('Paciente Trabajador y Beneficiarios eliminado correctamente')
+      } else {
+        setToastMessagePa('Paciente eliminado correctamente')
+      }*/
 
       // Cerrar el modal
       const modal = Modal.getInstance(modalDeletePacienteRef)
@@ -97,6 +116,68 @@ function Pacientes() {
       console.error('Error al eliminar el Paciente:', error)
       // Aquí podrías mostrar un toast de error si lo deseas
     }
+  }
+
+  //paginacion
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value)
+    setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
+  }
+
+  const filteredPacientes = pacientes.filter((paciente) =>
+    `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const displayUsers = filteredPacientes
+    .slice(pagesVisited, pagesVisited + usersPerPage)
+    .map((paciente) => (
+      <div className="col" key={paciente.id}>
+        <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
+          <div className="text-center">
+            <img
+              src="../../src/assets/img/paciente.jpg"
+              width="60%"
+              height="60%"
+              alt="Logo"
+              className="d-inline-block align-text-top rounded-circle mt-3"
+            />
+          </div>
+          <div className="card-body">
+            <h5 className="card-title">
+              {paciente.nombres} {paciente.apellidos}
+            </h5>
+            {paciente.enteId ? (
+              <div className="card-text">Trabajador</div>
+            ) : (
+              <div className="card-text">Beneficiario</div>
+            )}
+            <div>
+              <div
+                className="btn-group btn-group-sm mt-2"
+                role="group"
+                aria-label="Button group name"
+              >
+                <button type="button" className="btn btn-primary">
+                  <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={() => openModalDeletePaciente(paciente.id)}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))
+
+  const pageCount = Math.ceil(filteredPacientes.length / usersPerPage)
+
+  const changePage = ({ selected }) => {
+    setCurrentPage(selected)
   }
 
   return (
@@ -184,66 +265,34 @@ function Pacientes() {
                   </li>
                 </ul>
               </div>
-              <div className="form-floating mb-3 mt-3">
-                <input
-                  type="search"
-                  className="form-control"
-                  id="floatingInput"
-                  placeholder="Buscar"
-                  aria-label="Buscar"
+              <div className="container">
+                <div className="form-floating mb-3 mt-3">
+                  <input
+                    type="search"
+                    className="form-control"
+                    id="floatingInput"
+                    placeholder="Buscar"
+                    aria-label="Buscar"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                  />
+                  <label htmlFor="floatingInput">Buscar Paciente</label>
+                </div>
+
+                <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">{displayUsers}</div>
+                <ReactPaginate
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  pageCount={pageCount}
+                  onPageChange={changePage}
+                  containerClassName={'pagination'}
+                  previousLinkClassName={'page-link'}
+                  nextLinkClassName={'page-link'}
+                  disabledClassName={'disabled'}
+                  activeClassName={'active'}
+                  pageClassName={'page-item'}
+                  pageLinkClassName={'page-link'}
                 />
-                <label htmlFor="floatingInput">Buscar Paciente</label>
-              </div>
-              <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">
-                {pacientes.map((paciente) => (
-                  <div className="col" key={paciente.id}>
-                    <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
-                      <div className="text-center">
-                        <img
-                          src="../../src/assets/img/paciente.jpg"
-                          width="60%"
-                          height="60%"
-                          alt="Logo"
-                          className="d-inline-block align-text-top rounded-circle mt-3"
-                        />
-                      </div>
-                      <div className="card-body">
-                        <h5 className="card-title">
-                          {paciente.nombres} {paciente.apellidos}
-                        </h5>
-
-                        {paciente.enteId ? (
-                          <div className="card-text">Trabajador</div>
-                        ) : (
-                          <div className="card-text">Beneficiario</div>
-                        )}
-
-                        <div>
-                          <div
-                            className="btn-group btn-group-sm mt-2"
-                            role="group"
-                            aria-label="Button group name"
-                          >
-                            <button
-                              type="button"
-                              className="btn btn-primary"
-                              //onClick={() => openModalEditPaciente(paciente.id)}
-                            >
-                              <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-danger"
-                              onClick={() => openModalDeletePaciente(paciente.id)}
-                            >
-                              <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
@@ -299,6 +348,7 @@ function ModalCrearBeneficiario({ show, handleClose, fetchPacientes }) {
     value: trabajador.id,
     label: trabajador.cedula
   }))
+
   // FETCH
   const fetchTrabajadores = async () => {
     const fetchedTrabajadores = await window.api.getTrabajadores()
@@ -315,15 +365,14 @@ function ModalCrearBeneficiario({ show, handleClose, fetchPacientes }) {
     setValue,
     formState: { errors, dirtyFields }
   } = useForm({
+    mode: 'onChange',
     resolver: zodResolver(beneficiarioSchema)
   })
 
   const onSubmitBeneficiario = async (data) => {
-    console.log('enviando datos')
-
+    console.log(pacientes)
     let pacienteBeneficiario = await window.api.createPacienteBeneficiario(data)
     fetchPacientes()
-    console.log(pacienteBeneficiario)
     if (pacienteBeneficiario) {
       setPacientes([...pacientes, pacienteBeneficiario])
       setToastMessage('Beneficiario creado correctamente')
@@ -715,17 +764,17 @@ function ModalCrearTrabajador({ show, handleClose, fetchPacientes }) {
     setValue,
     formState: { errors, dirtyFields }
   } = useForm({
+    mode: 'onChange',
     resolver: zodResolver(trabajadorSchema)
   })
 
   const onSubmitTrabajador = async (data) => {
     let pacienteTrabajador = await window.api.createPacienteTrabajador(data)
-
     fetchPacientes()
-
     if (pacienteTrabajador) {
       setPacientes([...pacientes, pacienteTrabajador])
       setToastMessage('Trabajador creado correctamente')
+      console.log(pacientes)
     } else {
       setToastMessage('No se pudo crear el usuario')
     }
