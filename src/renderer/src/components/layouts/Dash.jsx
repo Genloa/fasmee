@@ -6,7 +6,8 @@ import {
   faHospitalUser,
   faHouse,
   faUser,
-  faUserDoctor
+  faUserDoctor,
+  faHandHoldingMedical
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
@@ -172,6 +173,17 @@ function Sidebar({ children }) {
                   {!isCollapsed && (
                     <span className="fs-5 d-none ms-3 d-sm-inline">Atender Paciente</span>
                   )}
+                </NavLink>
+              </li>
+              <li className="nav-item disabled">
+                <NavLink
+                  to=""
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
+                  <FontAwesomeIcon icon={faHandHoldingMedical} className="fs-5" />
+                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Servicios</span>}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
