@@ -1,17 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { beneficiarioSchema } from '../validations/beneficiarioSchema'
+import { trabajadorSchema } from '../validations/trabajadorSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 
-function FormPacienteBeneficiario({
-  onSubmit,
-  defaultValues,
-  trabajadorOptions,
-  mode,
-  handleClose
-}) {
+function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, handleClose }) {
   const {
     register,
     handleSubmit,
@@ -21,9 +15,8 @@ function FormPacienteBeneficiario({
   } = useForm({
     mode: 'onChange',
     defaultValues,
-    resolver: zodResolver(beneficiarioSchema)
+    resolver: zodResolver(trabajadorSchema)
   })
-
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
       return 'form-control'
@@ -33,11 +26,8 @@ function FormPacienteBeneficiario({
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
       <div className="row mt-4">
-        <h6 className="text-center text-body-secondary">Informacion General</h6>
-      </div>
-      <div className="row mt-4">
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               id="nombres"
@@ -53,7 +43,7 @@ function FormPacienteBeneficiario({
           </div>
         </div>
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               className={getInputClassName('apellidos')}
@@ -67,7 +57,7 @@ function FormPacienteBeneficiario({
             )}
           </div>
         </div>
-        <div className="input-group  col">
+        <div className="input-group col">
           <select
             className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
             style={{ width: '60px' }}
@@ -93,7 +83,7 @@ function FormPacienteBeneficiario({
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="date"
               className={getInputClassName('fechaNacimiento')}
@@ -101,14 +91,14 @@ function FormPacienteBeneficiario({
               placeholder="fechaNacimiento"
               {...register('fechaNacimiento')}
             />
-            <label htmlFor="floatingDate"> fecha de nacimiento</label>
+            <label htmlFor="floatingDate">Fecha de nacimiento</label>
             {errors.fechaNacimiento?.message && (
               <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
             )}
           </div>
         </div>
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="phone"
               className={getInputClassName('telefono')}
@@ -124,7 +114,7 @@ function FormPacienteBeneficiario({
           </div>
         </div>
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="email"
               className={getInputClassName('correo')}
@@ -140,26 +130,25 @@ function FormPacienteBeneficiario({
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
-            name="trabajador"
+            name="ente"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <div>
                 <Select
                   {...field}
-                  options={trabajadorOptions}
-                  placeholder="Buscar Trabajador"
-                  value={trabajadorOptions.find((option) => option.value === field.value) || null}
+                  options={enteOptions}
+                  placeholder="Seleccionar Ente"
+                  value={enteOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
-                    setValue('trabajadorId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    setValue('enteId', selectedOption ? selectedOption.value : null) // Registrar el valor
                   }}
                 />
-                {errors.trabajador && (
-                  <div className="invalid-feedback d-block">{errors.trabajador.message}</div>
+                {errors.ente && (
+                  <div className="invalid-feedback d-block">{errors.ente.message}</div>
                 )}
               </div>
             )}
@@ -171,7 +160,7 @@ function FormPacienteBeneficiario({
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               id="patologias"
@@ -187,7 +176,7 @@ function FormPacienteBeneficiario({
           </div>
         </div>
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               id="alergias"
@@ -205,7 +194,7 @@ function FormPacienteBeneficiario({
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               id="cirugias"
@@ -221,7 +210,7 @@ function FormPacienteBeneficiario({
           </div>
         </div>
         <div className="col">
-          <div className="form-floating ">
+          <div className="form-floating">
             <input
               type="text"
               id="medicamentos"
@@ -293,7 +282,7 @@ function FormPacienteBeneficiario({
   )
 }
 
-FormPacienteBeneficiario.propTypes = {
+FormPacienteTrabajador.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.shape({
     nombres: PropTypes.string,
@@ -303,7 +292,7 @@ FormPacienteBeneficiario.propTypes = {
     fechaNacimiento: PropTypes.string,
     telefono: PropTypes.string,
     correo: PropTypes.string,
-    trabajadorId: PropTypes.number,
+    enteId: PropTypes.number,
     patologias: PropTypes.string,
     alergias: PropTypes.string,
     cirugias: PropTypes.string,
@@ -311,7 +300,7 @@ FormPacienteBeneficiario.propTypes = {
     peso: PropTypes.number,
     altura: PropTypes.number
   }).isRequired,
-  trabajadorOptions: PropTypes.arrayOf(
+  enteOptions: PropTypes.arrayOf(
     PropTypes.shape({
       value: PropTypes.number.isRequired,
       label: PropTypes.string.isRequired
@@ -321,4 +310,4 @@ FormPacienteBeneficiario.propTypes = {
   handleClose: PropTypes.func.isRequired
 }
 
-export default FormPacienteBeneficiario
+export default FormPacienteTrabajador

@@ -1,11 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { trabajadorSchema } from '../validations/trabajadorSchema'
+import { beneficiarioSchema } from '../validations/beneficiarioSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 
-function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, handleClose }) {
+function FormPacienteBeneficiario({
+  onSubmit,
+  defaultValues,
+  trabajadorOptions,
+  mode,
+  handleClose
+}) {
   const {
     register,
     handleSubmit,
@@ -15,8 +21,9 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
   } = useForm({
     mode: 'onChange',
     defaultValues,
-    resolver: zodResolver(trabajadorSchema)
+    resolver: zodResolver(beneficiarioSchema)
   })
+
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
       return 'form-control'
@@ -26,8 +33,11 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
       <div className="row mt-4">
+        <h6 className="text-center text-body-secondary">Informacion General</h6>
+      </div>
+      <div className="row mt-4">
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               id="nombres"
@@ -43,7 +53,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
           </div>
         </div>
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               className={getInputClassName('apellidos')}
@@ -57,7 +67,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
             )}
           </div>
         </div>
-        <div className="input-group col">
+        <div className="input-group  col">
           <select
             className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
             style={{ width: '60px' }}
@@ -83,7 +93,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="date"
               className={getInputClassName('fechaNacimiento')}
@@ -91,14 +101,14 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
               placeholder="fechaNacimiento"
               {...register('fechaNacimiento')}
             />
-            <label htmlFor="floatingDate">Fecha de nacimiento</label>
+            <label htmlFor="floatingDate"> fecha de nacimiento</label>
             {errors.fechaNacimiento?.message && (
               <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
             )}
           </div>
         </div>
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="phone"
               className={getInputClassName('telefono')}
@@ -114,7 +124,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
           </div>
         </div>
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="email"
               className={getInputClassName('correo')}
@@ -130,25 +140,26 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
         </div>
       </div>
       <div className="row mt-4">
+        {' '}
         <div className="col">
           <Controller
-            name="ente"
+            name="trabajador"
             control={control}
             defaultValue=""
             render={({ field }) => (
               <div>
                 <Select
                   {...field}
-                  options={enteOptions}
-                  placeholder="Seleccionar Ente"
-                  value={enteOptions.find((option) => option.value === field.value) || null}
+                  options={trabajadorOptions}
+                  placeholder="Buscar Trabajador"
+                  value={trabajadorOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
-                    setValue('enteId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    setValue('trabajadorId', selectedOption ? selectedOption.value : null) // Registrar el valor
                   }}
                 />
-                {errors.ente && (
-                  <div className="invalid-feedback d-block">{errors.ente.message}</div>
+                {errors.trabajador && (
+                  <div className="invalid-feedback d-block">{errors.trabajador.message}</div>
                 )}
               </div>
             )}
@@ -160,7 +171,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               id="patologias"
@@ -176,7 +187,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
           </div>
         </div>
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               id="alergias"
@@ -194,7 +205,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
       </div>
       <div className="row mt-4">
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               id="cirugias"
@@ -210,7 +221,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
           </div>
         </div>
         <div className="col">
-          <div className="form-floating">
+          <div className="form-floating ">
             <input
               type="text"
               id="medicamentos"
@@ -282,7 +293,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
   )
 }
 
-FormPacienteTrabajador.propTypes = {
+FormPacienteBeneficiario.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.shape({
     nombres: PropTypes.string,
@@ -292,7 +303,7 @@ FormPacienteTrabajador.propTypes = {
     fechaNacimiento: PropTypes.string,
     telefono: PropTypes.string,
     correo: PropTypes.string,
-    ente: PropTypes.string,
+    trabajadorId: PropTypes.number.isRequired,
     patologias: PropTypes.string,
     alergias: PropTypes.string,
     cirugias: PropTypes.string,
@@ -300,9 +311,9 @@ FormPacienteTrabajador.propTypes = {
     peso: PropTypes.number,
     altura: PropTypes.number
   }).isRequired,
-  enteOptions: PropTypes.arrayOf(
+  trabajadorOptions: PropTypes.arrayOf(
     PropTypes.shape({
-      value: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired,
       label: PropTypes.string.isRequired
     })
   ).isRequired,
@@ -310,4 +321,4 @@ FormPacienteTrabajador.propTypes = {
   handleClose: PropTypes.func.isRequired
 }
 
-export default FormPacienteTrabajador
+export default FormPacienteBeneficiario

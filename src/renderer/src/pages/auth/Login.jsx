@@ -89,9 +89,9 @@ function Login() {
                 Ingresar
               </button>
 
-              <NavLink to="/home" className="btn btn-primary">
+              {/*<NavLink to="/home" className="btn btn-primary">
                 Home
-              </NavLink>
+              </NavLink>*/}
             </form>
           </div>
         </div>
