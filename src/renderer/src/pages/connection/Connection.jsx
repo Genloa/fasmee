@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { NavLink } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import connectionSchema from '../../validations/connectionSchema'
 
 const Connection = () => {
@@ -27,14 +27,14 @@ const Connection = () => {
     }
   })
 
-  // async function checkConnection() {
-  //   let result = await window.api.checkConnection()
-  //   if (result) {
-  //     Navigate('/home')
-  //   }
-  // }
+  async function checkConnection() {
+    let result = await window.api.checkConnection()
+    if (result) {
+      Navigate('/home')
+    }
+  }
 
-  // checkConnection()
+  checkConnection()
 
   useEffect(() => {
     if (showToast) {
@@ -130,10 +130,6 @@ const Connection = () => {
         <button type="submit" className="btn btn-primary mt-3">
           Conectar
         </button>
-
-        <NavLink to="/login" className="btn btn-primary">
-          login
-        </NavLink>
       </form>
 
       <div className="toast-container position-fixed bottom-0 end-0 p-3">

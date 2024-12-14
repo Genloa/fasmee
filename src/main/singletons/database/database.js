@@ -1,5 +1,6 @@
 import Logger from 'electron-log'
 import { Sequelize } from 'sequelize'
+import file from '../../services/fileService'
 
 class Database {
   constructor() {
@@ -11,21 +12,18 @@ class Database {
     Database.instance = this
   }
 
-  getConnection() {
+  async getConnection() {
     if (!this.connection) {
-      // let data = await file.read()
-      // if (data.postgre) {
-      //   this.connect(
-      //     data.postgre.database,
-      //     data.postgre.username,
-      //     data.postgre.password,
-      //     data.postgre.host,
-      //     data.postgre.port,
-      //     data.postgre.schema
-      //   )
-      // }
+      let credentials = await this.getCredentials()
 
-      this.connect('fasmee', 'postgres', '27831884', 'localhost', '5433', 'public')
+      this.connect(
+        credentials.database,
+        credentials.username,
+        credentials.password,
+        credentials.host,
+        credentials.port,
+        credentials.schema
+      )
     }
 
     return this.connection
@@ -62,6 +60,11 @@ class Database {
     } catch (error) {
       Logger.error('Unable to sync models:', error)
     }
+  }
+
+  async getCredentials() {
+    let data = await file.read()
+    return data.postgre
   }
 
   disconnect() {
