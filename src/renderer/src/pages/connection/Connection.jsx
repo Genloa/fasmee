@@ -2,12 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import connectionSchema from '../../validations/connectionSchema'
 
 const Connection = () => {
   const [toastMessage, setToastMessage] = useState('')
-
   const [showToast, setShowToast] = useState(false)
 
   const {
@@ -19,22 +18,24 @@ const Connection = () => {
     resolver: zodResolver(connectionSchema),
     defaultValues: {
       username: 'postgres',
-      password: '27598704.Con',
-      database: 'fasmee1',
+      password: '',
+      database: '',
       host: 'localhost',
       port: '5432',
       schema: 'public'
     }
   })
 
-  // async function checkConnection() {
-  //   let result = await window.api.checkConnection()
-  //   if (result) {
-  //     Navigate('/home')
-  //   }
-  // }
+  let navigate = useNavigate()
 
-  // checkConnection()
+  async function checkConnection() {
+    let result = await window.api.checkConnection()
+    if (result) {
+      navigate('/login')
+    }
+  }
+
+  checkConnection()
 
   useEffect(() => {
     if (showToast) {
@@ -48,7 +49,7 @@ const Connection = () => {
     setShowToast(false)
     let success = await window.api.testConnection(data)
     if (success) {
-      setToastMessage('Conexión exitosa')
+      window.api.reloadApp()
     } else {
       setToastMessage('No se pudo conectar a la base de datos')
     }
@@ -130,10 +131,6 @@ const Connection = () => {
         <button type="submit" className="btn btn-primary mt-3">
           Conectar
         </button>
-
-        <NavLink to="/login" className="btn btn-primary">
-          login
-        </NavLink>
       </form>
 
       <div className="toast-container position-fixed bottom-0 end-0 p-3">

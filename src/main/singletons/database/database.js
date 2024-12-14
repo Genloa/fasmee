@@ -1,5 +1,6 @@
 import Logger from 'electron-log'
 import { Sequelize } from 'sequelize'
+import file from '../../services/fileService'
 
 class Database {
   constructor() {
@@ -13,19 +14,21 @@ class Database {
 
   getConnection() {
     if (!this.connection) {
-      // let data = await file.read()
-      // if (data.postgre) {
-      //   this.connect(
-      //     data.postgre.database,
-      //     data.postgre.username,
-      //     data.postgre.password,
-      //     data.postgre.host,
-      //     data.postgre.port,
-      //     data.postgre.schema
-      //   )
-      // }
+      let postgre = this.getCredentials()
 
-      this.connect('fasmee', 'postgres', '27831884', 'localhost', '5433', 'public')
+      if (!postgre) {
+        Logger.info('No se encontraron las credenciales de la base de datos.')
+        return null
+      }
+
+      this.connect(
+        postgre.database,
+        postgre.username,
+        postgre.password,
+        postgre.host,
+        postgre.port,
+        postgre.schema
+      )
     }
 
     return this.connection
@@ -57,11 +60,16 @@ class Database {
   async syncModels() {
     try {
       import('./schema')
-      await this.connection.sync({ alter: true })
+      await this.connection.sync({ alter: false })
       Logger.info('All models were synchronized successfully.')
     } catch (error) {
       Logger.error('Unable to sync models:', error)
     }
+  }
+
+  getCredentials() {
+    let data = file.read()
+    return data?.postgre
   }
 
   disconnect() {

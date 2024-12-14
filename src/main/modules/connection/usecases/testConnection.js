@@ -1,7 +1,12 @@
 import { ipcMain } from 'electron'
+import file from '../../../services/fileService'
 import database from '../../../singletons/database/database'
 
 ipcMain.handle('testConnection', async (event, data) => {
+  // Check if the file exists and initialize it
+  await file.init()
+
+  // Check if the connection is valid
   let connection = database.connect(
     data.database,
     data.username,
@@ -11,7 +16,8 @@ ipcMain.handle('testConnection', async (event, data) => {
   )
 
   if (await database.testConnection(connection)) {
-    database.syncModels()
+    await database.syncModels()
+    await file.updated({ postgre: data })
     return true
   }
 
