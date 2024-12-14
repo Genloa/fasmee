@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Toast, Modal } from 'bootstrap'
 import { createContext, useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
-import FormPacienteTrabajador from '../../forms/TrabajadorForm'
 import PropTypes from 'prop-types'
 import ReactPaginate from 'react-paginate'
-import FormPacienteBeneficiario from '../../forms/BeneficiarioForm'
+import ModalCrearBeneficiario from './components/ModalCrearBeneficiario'
+import ModalEditTrabajador from './components/ModalEditTrabajador'
+import ModalCrearTrabajador from './components/ModalCrearTrabajador'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
@@ -38,13 +39,24 @@ function Pacientes() {
   //modales
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
-  const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
+  const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
+  // const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
   const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
   const handleShowModalTrabajador = () => setShowModalTrabajador(true)
   const handleCloseModalTrabajador = () => setShowModalTrabajador(false)
-  const handleShowBeneficiarioEdit = (paciente) => {
+  const handleShowTrabajadorEdit = (paciente) => {
+    setPacienteSelected(paciente)
+    setShowTrabajadorEdit(true)
+  }
+
+  const handleCloseTrabajadorEdit = () => {
+    setShowTrabajadorEdit(false)
+    setPacienteSelected(null)
+  }
+  /*
+ const handleShowBeneficiarioEdit = (paciente) => {
     setPacienteSelected(paciente)
     setShowBeneficiarioEdit(true)
   }
@@ -53,7 +65,7 @@ function Pacientes() {
     setShowBeneficiarioEdit(false)
     setPacienteSelected(null)
   }
-
+*/
   // HOOK
 
   useEffect(() => {
@@ -71,7 +83,6 @@ function Pacientes() {
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log(fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -102,14 +113,6 @@ function Pacientes() {
         )
       )
       setToastMessagePa('Paciente eliminado correctamente')
-      /*
-      //queda pendiente
-      if (beneficiariosEliminados) {
-        console.log(beneficiariosEliminados)
-        setToastMessagePa('Paciente Trabajador y Beneficiarios eliminado correctamente')
-      } else {
-        setToastMessagePa('Paciente eliminado correctamente')
-      }*/
 
       // Cerrar el modal
       const modal = Modal.getInstance(modalDeletePacienteRef)
@@ -164,13 +167,23 @@ function Pacientes() {
                 role="group"
                 aria-label="Button group name"
               >
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleShowBeneficiarioEdit(paciente)}
-                >
-                  <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-                </button>
+                {paciente.enteId ? (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleShowTrabajadorEdit(paciente)}
+                  >
+                    <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    //onClick={handleShowBeneficiarioEdit(paciente)}
+                  >
+                    <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+                  </button>
+                )}
                 <button
                   type="button"
                   className="btn btn-danger"
@@ -205,10 +218,19 @@ function Pacientes() {
             handleClose={handleCloseModalTrabajador}
             fetchPacientes={fetchPacientes}
           />
-          {pacienteSelected && (
+          {/*  {pacienteSelected && (
             <ModalEditBeneficiario
               show={ShowBeneficiarioEdit}
               handleClose={handleCloseBeneficiarioEdit}
+              fetchPacientes={fetchPacientes}
+              pacienteSelected={pacienteSelected}
+            />
+          )}*/}
+
+          {pacienteSelected && (
+            <ModalEditTrabajador
+              show={ShowTrabajadorEdit}
+              handleClose={handleCloseTrabajadorEdit}
               fetchPacientes={fetchPacientes}
               pacienteSelected={pacienteSelected}
             />
@@ -342,425 +364,5 @@ function Pacientes() {
     </>
   )
 }
-
-function ModalCrearBeneficiario({ show, handleClose, fetchPacientes }) {
-  const [pacientes, setPacientes] = useState([])
-  const [toastMessage, setToastMessage] = useState('')
-  const [showToast, setShowToast] = useState(false)
-
-  const [trabajadores, setTrabajadores] = useState([])
-
-  // HOOK
-
-  useEffect(() => {
-    fetchTrabajadores()
-  }, [])
-
-  useEffect(() => {
-    if (showToast) {
-      const toastEl = document.getElementById('liveToastCrear')
-      const toast = new Toast(toastEl)
-      toast.show()
-    }
-  }, [showToast])
-
-  const trabajadorOptions = trabajadores.map((trabajador) => ({
-    value: trabajador.id,
-    label: trabajador.cedula
-  }))
-
-  // FETCH
-  const fetchTrabajadores = async () => {
-    const fetchedTrabajadores = await window.api.getTrabajadores()
-    setTrabajadores(fetchedTrabajadores)
-  }
-
-  // FORM VALIDATION
-  const defaultValues = {
-    nombres: '',
-    apellidos: '',
-    tipoCedula: 'V',
-    cedula: '',
-    fechaNacimiento: '',
-    telefono: '',
-    correo: '',
-    trabajadorId: '',
-    patologias: '',
-    alergias: '',
-    cirugias: '',
-    medicamentos: '',
-    peso: 0.0,
-    altura: 0.0
-  }
-
-  const onSubmitBeneficiario = async (data) => {
-    console.log(pacientes)
-    let pacienteBeneficiario = await window.api.createPacienteBeneficiario(data)
-    fetchPacientes()
-    if (pacienteBeneficiario) {
-      setPacientes([...pacientes, pacienteBeneficiario])
-      setToastMessage('Beneficiario creado correctamente')
-    } else {
-      setToastMessage('No se pudo crear el usuario')
-    }
-    setShowToast(true)
-    handleClose(true)
-  }
-
-  return (
-    <>
-      <div
-        className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
-        id="modal-create-trabajador"
-        tabIndex="-1"
-        aria-labelledby="modal-create-paciente-label"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="modal-create-paciente-label">
-                Crear Paciente Beneficiario
-              </h1>
-              <button
-                type="submit"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleClose}
-              ></button>
-            </div>
-            <div className="modal-body m-2">
-              <FormPacienteBeneficiario
-                onSubmit={onSubmitBeneficiario}
-                defaultValues={defaultValues}
-                trabajadorOptions={trabajadorOptions}
-                mode="create"
-                handleClose={handleClose}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-          id="liveToastCrear"
-          className="toast"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessage}</div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-ModalCrearBeneficiario.propTypes = {
-  show: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  fetchPacientes: PropTypes.func.isRequired
-}
-
-function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSelected }) {
-  const [pacientes, setPacientes] = useState([])
-  const [toastMessage, setToastMessage] = useState('')
-  const [showToast, setShowToast] = useState(false)
-
-  const [trabajadores, setTrabajadores] = useState([])
-
-  // HOOK
-
-  useEffect(() => {
-    fetchTrabajadores()
-  }, [])
-
-  useEffect(() => {
-    if (showToast) {
-      const toastEl = document.getElementById('liveToastCrear')
-      const toast = new Toast(toastEl)
-      toast.show()
-    }
-  }, [showToast])
-
-  const trabajadorOptions = trabajadores.map((trabajador) => ({
-    value: trabajador.id,
-    label: trabajador.cedula
-  }))
-
-  // FETCH
-  const fetchTrabajadores = async () => {
-    const fetchedTrabajadores = await window.api.getTrabajadores()
-    setTrabajadores(fetchedTrabajadores)
-  }
-
-  // FORM VALIDATION colocar algo que me traiga el trabajador id puede ser con el trabajador.beneficiarios.id
-  const defaultValues = {
-    nombres: pacienteSelected?.nombres,
-    apellidos: pacienteSelected?.apellidos,
-    tipoCedula: pacienteSelected?.tipoCedula,
-    cedula: pacienteSelected?.cedula,
-    fechaNacimiento: pacienteSelected?.fechaNacimiento,
-    telefono: pacienteSelected?.telefono,
-    correo: pacienteSelected?.correo,
-    trabajadorId: 1,
-    patologias: pacienteSelected?.patologias,
-    alergias: pacienteSelected?.alergias,
-    cirugias: pacienteSelected?.cirugias,
-    medicamentos: pacienteSelected?.medicamentos,
-    peso: pacienteSelected?.peso,
-    altura: pacienteSelected?.altura
-  }
-
-  const findBeneficiarioInObjects = (dataArray, beneficiarioId) => {
-    for (const obj of dataArray) {
-      const beneficiario = obj.beneficiarios.find((b) => b.id === beneficiarioId)
-      if (beneficiario) {
-        return obj.id
-      }
-    }
-    return null // Devuelve null si no se encuentra el beneficiario en ningún objeto
-  }
-
-  // Uso de la función
-  const objetoId = findBeneficiarioInObjects(pacientes, pacienteSelected.id)
-  console.log(objetoId)
-  const onSubmitBeneficiario = async (data) => {
-    console.log(pacientes)
-    let pacienteBeneficiario = await window.api.createPacienteBeneficiario(data)
-    fetchPacientes()
-    if (pacienteBeneficiario) {
-      setPacientes([...pacientes, pacienteBeneficiario])
-      setToastMessage('Beneficiario creado correctamente')
-    } else {
-      setToastMessage('No se pudo crear el usuario')
-    }
-    setShowToast(true)
-    handleClose(true)
-  }
-
-  return (
-    <>
-      <div
-        className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
-        id="modal-create-trabajador"
-        tabIndex="-1"
-        aria-labelledby="modal-create-paciente-label"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="modal-create-paciente-label">
-                Crear Paciente Beneficiario
-              </h1>
-              <button
-                type="submit"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleClose}
-              ></button>
-            </div>
-            <div className="modal-body m-2">
-              <FormPacienteBeneficiario
-                onSubmit={onSubmitBeneficiario}
-                defaultValues={defaultValues}
-                trabajadorOptions={trabajadorOptions}
-                mode="edit"
-                handleClose={handleClose}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-          id="liveToastCrear"
-          className="toast"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessage}</div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-ModalEditBeneficiario.propTypes = {
-  show: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  fetchPacientes: PropTypes.func.isRequired,
-  pacienteSelected: PropTypes.shape({
-    id: PropTypes.number,
-    nombres: PropTypes.string,
-    apellidos: PropTypes.string,
-    tipoCedula: PropTypes.string,
-    cedula: PropTypes.string,
-    fechaNacimiento: PropTypes.string,
-    telefono: PropTypes.string,
-    correo: PropTypes.string,
-    //trabajadorId: PropTypes.number,
-    patologias: PropTypes.string,
-    alergias: PropTypes.string,
-    cirugias: PropTypes.string,
-    medicamentos: PropTypes.string,
-    peso: PropTypes.number,
-    altura: PropTypes.number
-  }).isRequired
-}
-
-function ModalCrearTrabajador({ show, handleClose, fetchPacientes }) {
-  const [pacientes, setPacientes] = useState([])
-  const [toastMessage, setToastMessage] = useState('')
-  const [showToastTrabajador, setShowToastTrabajador] = useState(false)
-  const [entes, setEntes] = useState([])
-
-  // HOOK
-
-  useEffect(() => {
-    fetchEntes()
-  }, [])
-
-  useEffect(() => {
-    if (showToastTrabajador) {
-      const toastdor = document.getElementById('liveToastCrearTrabajdor')
-      const toast = new Toast(toastdor)
-      toast.show()
-    }
-  }, [showToastTrabajador])
-
-  const enteOptions = entes.map((ente) => ({
-    value: ente.id,
-    label: ente.nombre
-  }))
-
-  // FETCH
-  const fetchEntes = async () => {
-    const fetchedEntes = await window.api.getEntes()
-    setEntes(fetchedEntes)
-  }
-
-  // FORM VALIDATION
-  const defaultValues = {
-    nombres: '',
-    apellidos: '',
-    tipoCedula: 'V',
-    cedula: '',
-    fechaNacimiento: '',
-    telefono: '',
-    correo: '',
-    ente: '',
-    patologias: '',
-    alergias: '',
-    cirugias: '',
-    medicamentos: '',
-    peso: 0.0,
-    altura: 0.0
-  }
-
-  const onSubmitTrabajador = async (data) => {
-    let pacienteTrabajador = await window.api.createPacienteTrabajador(data)
-    fetchPacientes()
-    if (pacienteTrabajador) {
-      setPacientes([...pacientes, pacienteTrabajador])
-      setToastMessage('Trabajador creado correctamente')
-      console.log(pacientes)
-    } else {
-      setToastMessage('No se pudo crear el usuario')
-    }
-    setShowToastTrabajador(true)
-    handleClose(true)
-  }
-
-  return (
-    <>
-      <div
-        className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
-        id="modal-create-trabajador"
-        tabIndex="-1"
-        aria-labelledby="modal-create-trabajador-label"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="modal-create-trabajador-label">
-                Crear Paciente Trabajador
-              </h1>
-              <button
-                type="submit"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                onClick={handleClose}
-              ></button>
-            </div>
-            <div className="modal-body m-2">
-              <FormPacienteTrabajador
-                onSubmit={onSubmitTrabajador}
-                defaultValues={defaultValues}
-                enteOptions={enteOptions}
-                mode="create"
-                handleClose={handleClose}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-          id="liveToastCrearTrabajdor"
-          className="toast"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessage}</div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-ModalCrearTrabajador.propTypes = {
-  show: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired,
-  fetchPacientes: PropTypes.func.isRequired
-}
-
-/*function ModalEditarPaciente() {
-  return <></>
-}*/
 
 export default Pacientes
