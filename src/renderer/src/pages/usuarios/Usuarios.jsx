@@ -6,6 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
+import ReactPaginate from 'react-paginate'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
@@ -283,16 +284,7 @@ function Usuarios() {
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title">Usuarios</h5>
-            <div className="form-floating mb-3 mt-5">
-              <input
-                type="search"
-                className="form-control"
-                id="floatingInput"
-                placeholder="Buscar"
-                aria-label="Buscar"
-              />
-              <label htmlFor="floatingInput">Buscar Usuario</label>
-            </div>
+
             <div className="mt-5">
               <div className="text-end mb-3">
                 <button
@@ -335,6 +327,11 @@ function Usuarios() {
 }
 
 function TableUsers() {
+  //paginacion
+  const [currentPage, setCurrentPage] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+  const usersPerPage = 3
+  // usuarios
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -509,6 +506,62 @@ function TableUsers() {
     } catch (error) {
       console.error('Error asignando el rol al usuario:', error)
     }
+  }
+
+  //paginacion
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value)
+    setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
+  }
+
+  const filteredUsuarios = usuarios.filter((user) =>
+    `${user.perfil.nombres} ${user.perfil.apellidos}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  )
+
+  const pagesVisited = currentPage * usersPerPage
+  const displayUsers = filteredUsuarios
+    .slice(pagesVisited, pagesVisited + usersPerPage)
+    .map((user) => (
+      <tr key={user.id}>
+        <td>
+          {user.perfil.nombres} {user.perfil.apellidos}
+        </td>
+        <td>{user.username}</td>
+        <td>{user.perfil.roles.map((rol) => rol.nombre).join(', ')}</td>
+        <td className="text-end">
+          <button
+            type="button"
+            className="btn btn-sm btn-primary me-2"
+            onClick={() => openModalRolUser(user.id)}
+          >
+            <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
+          </button>
+          <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => openModalEditUser(user.id)}
+            >
+              <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger"
+              onClick={() => openModalDeleteUser(user.id)}
+            >
+              <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))
+
+  const pageCount = Math.ceil(filteredUsuarios.length / usersPerPage)
+
+  const changePage = ({ selected }) => {
+    setCurrentPage(selected)
   }
 
   return (
@@ -823,52 +876,46 @@ function TableUsers() {
       </div>
 
       {/* Table */}
-      <table className="table table-sm table-hover align-middle">
-        <thead>
-          <tr>
-            <th scope="col">Nombre y Apellido</th>
-            <th scope="col">Usuario</th>
-            <th scope="col">Roles</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {usuarios.map((user) => (
-            <tr key={user.id}>
-              <td>
-                {user.perfil.nombres} {user.perfil.apellidos}
-              </td>
-              <td>{user.username}</td>
-              <td>{user.perfil.roles.map((rol) => rol.nombre).join(', ')}</td>
-              <td className="text-end">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-primary me-2"
-                  onClick={() => openModalRolUser(user.id)}
-                >
-                  <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
-                </button>
-                <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    onClick={() => openModalEditUser(user.id)}
-                  >
-                    <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-danger"
-                    onClick={() => openModalDeleteUser(user.id)}
-                  >
-                    <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-                  </button>
-                </div>
-              </td>
+      <div className="container">
+        <div className="form-floating mb-3 mt-3">
+          <input
+            type="search"
+            className="form-control"
+            id="floatingInput"
+            placeholder="Buscar"
+            aria-label="Buscar"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <label htmlFor="floatingInput">Buscar Paciente</label>
+        </div>
+
+        <table className="table table-sm table-hover align-middle">
+          <thead>
+            <tr>
+              <th scope="col">Nombre y Apellido</th>
+              <th scope="col">Usuario</th>
+              <th scope="col">Roles</th>
+              <th scope="col"></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>{displayUsers}</tbody>
+        </table>
+
+        <ReactPaginate
+          previousLabel={'Anterior'}
+          nextLabel={'Siguiente'}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={'pagination'}
+          previousLinkClassName={'page-link'}
+          nextLinkClassName={'page-link'}
+          disabledClassName={'disabled'}
+          activeClassName={'active'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+        />
+      </div>
 
       {/* Toast */}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
