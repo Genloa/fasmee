@@ -19,10 +19,9 @@ class FileService {
     }
   }
 
-  async read() {
+  read() {
     try {
-      let content = await superFs.content(this.filepath)
-      return JSON.parse(content)
+      return superFs.readJSONSync(this.filepath)
     } catch (error) {
       Logger.error(error)
     }

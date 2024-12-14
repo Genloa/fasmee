@@ -1,9 +1,6 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-
-import file from './services/fileService'
-file.init()
 
 function createWindow() {
   // Crear la ventana del navegador.
@@ -35,6 +32,12 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  ipcMain.handle('reloadApp', async () => {
+    mainWindow.close()
+    app.relaunch()
+    app.exit(0)
+  })
 }
 
 // Este método se llamará cuando Electron haya terminado
@@ -72,8 +75,9 @@ app.on('window-all-closed', () => {
 
 // Módulos
 
-import './modules/auth/auth'
 import './modules/connection/connection'
+
+import './modules/auth/auth'
 import './modules/entes/entes'
 import './modules/pacientes/pacientes'
 import './modules/roles/roles'

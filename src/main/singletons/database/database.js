@@ -12,17 +12,22 @@ class Database {
     Database.instance = this
   }
 
-  async getConnection() {
+  getConnection() {
     if (!this.connection) {
-      let credentials = await this.getCredentials()
+      let postgre = this.getCredentials()
+
+      if (!postgre) {
+        Logger.info('No se encontraron las credenciales de la base de datos.')
+        return null
+      }
 
       this.connect(
-        credentials.database,
-        credentials.username,
-        credentials.password,
-        credentials.host,
-        credentials.port,
-        credentials.schema
+        postgre.database,
+        postgre.username,
+        postgre.password,
+        postgre.host,
+        postgre.port,
+        postgre.schema
       )
     }
 
@@ -55,16 +60,16 @@ class Database {
   async syncModels() {
     try {
       import('./schema')
-      await this.connection.sync({ alter: true })
+      await this.connection.sync({ alter: false })
       Logger.info('All models were synchronized successfully.')
     } catch (error) {
       Logger.error('Unable to sync models:', error)
     }
   }
 
-  async getCredentials() {
-    let data = await file.read()
-    return data.postgre
+  getCredentials() {
+    let data = file.read()
+    return data?.postgre
   }
 
   disconnect() {

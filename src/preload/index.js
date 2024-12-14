@@ -5,6 +5,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 const api = {
   // Casos de uso para la conexion
   checkConnection: () => ipcRenderer.invoke('checkConnection'),
+  reloadApp: () => ipcRenderer.invoke('reloadApp'),
   testConnection: (data) => ipcRenderer.invoke('testConnection', data),
 
   // Casos de uso para la authentication
