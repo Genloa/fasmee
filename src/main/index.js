@@ -20,7 +20,7 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    // mainWindow.maximize()
+    mainWindow.maximize()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -74,7 +74,7 @@ app.on('window-all-closed', () => {
 
 import './modules/auth/auth'
 import './modules/connection/connection'
-import './modules/usuarios/usuarios'
-import './modules/roles/roles'
 import './modules/entes/entes'
 import './modules/pacientes/pacientes'
+import './modules/roles/roles'
+import './modules/usuarios/usuarios'
