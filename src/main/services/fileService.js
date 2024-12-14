@@ -7,8 +7,7 @@ class FileService {
     this.filepath = path.join(process.env.APPDATA, 'fasmee', 'AUTH_DATA_FILE.json')
 
     this.model = {
-      postgre: null,
-      login: null
+      postgre: null
     }
   }
 
