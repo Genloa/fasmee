@@ -16,8 +16,6 @@ ipcMain.handle('getPacientes', async () => {
       ]
     })
 
-    console.log(pacientes)
-
     const pacientesSerializables = pacientes.map((paciente) => paciente.toJSON())
     return pacientesSerializables
   } catch (error) {

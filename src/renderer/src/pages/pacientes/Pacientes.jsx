@@ -8,6 +8,7 @@ import ReactPaginate from 'react-paginate'
 import ModalCrearBeneficiario from './components/ModalCrearBeneficiario'
 import ModalEditTrabajador from './components/ModalEditTrabajador'
 import ModalCrearTrabajador from './components/ModalCrearTrabajador'
+import ModalEditBeneficiario from './components/ModalEditBeneficiario'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
@@ -40,7 +41,7 @@ function Pacientes() {
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
   const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
-  // const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
+  const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
   const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
@@ -55,8 +56,8 @@ function Pacientes() {
     setShowTrabajadorEdit(false)
     setPacienteSelected(null)
   }
-  /*
- const handleShowBeneficiarioEdit = (paciente) => {
+
+  const handleShowBeneficiarioEdit = (paciente) => {
     setPacienteSelected(paciente)
     setShowBeneficiarioEdit(true)
   }
@@ -65,7 +66,7 @@ function Pacientes() {
     setShowBeneficiarioEdit(false)
     setPacienteSelected(null)
   }
-*/
+
   // HOOK
 
   useEffect(() => {
@@ -171,7 +172,7 @@ function Pacientes() {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={handleShowTrabajadorEdit(paciente)}
+                    onClick={() => handleShowTrabajadorEdit(paciente)}
                   >
                     <FontAwesomeIcon icon={faUserPen} className="fs-5" />
                   </button>
@@ -179,7 +180,7 @@ function Pacientes() {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    //onClick={handleShowBeneficiarioEdit(paciente)}
+                    onClick={() => handleShowBeneficiarioEdit(paciente)}
                   >
                     <FontAwesomeIcon icon={faUserPen} className="fs-5" />
                   </button>
@@ -218,16 +219,16 @@ function Pacientes() {
             handleClose={handleCloseModalTrabajador}
             fetchPacientes={fetchPacientes}
           />
-          {/*  {pacienteSelected && (
+          {pacienteSelected && (
             <ModalEditBeneficiario
               show={ShowBeneficiarioEdit}
               handleClose={handleCloseBeneficiarioEdit}
               fetchPacientes={fetchPacientes}
               pacienteSelected={pacienteSelected}
             />
-          )}*/}
+          )}
 
-          {pacienteSelected && (
+          {pacienteSelected && pacienteSelected.enteId && (
             <ModalEditTrabajador
               show={ShowTrabajadorEdit}
               handleClose={handleCloseTrabajadorEdit}
@@ -296,14 +297,18 @@ function Pacientes() {
 
                 <ul className="dropdown-menu">
                   <li>
-                    <a className="dropdown-item" href="#" onClick={handleShowModalTrabajador}>
+                    <button
+                      className="dropdown-item btn"
+                      onClick={handleShowModalTrabajador}
+                      type="button"
+                    >
                       Trabajador
-                    </a>
+                    </button>
                   </li>
                   <li>
-                    <a className="dropdown-item" href="#" onClick={handleShowModal}>
+                    <button className="dropdown-item btn" onClick={handleShowModal} type="button">
                       Beneficiario
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>

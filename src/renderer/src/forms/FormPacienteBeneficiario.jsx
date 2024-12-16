@@ -4,6 +4,7 @@ import { beneficiarioSchema } from '../validations/beneficiarioSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { useEffect } from 'react'
 
 function FormPacienteBeneficiario({
   onSubmit,
@@ -23,6 +24,17 @@ function FormPacienteBeneficiario({
     defaultValues,
     resolver: zodResolver(beneficiarioSchema)
   })
+
+  useEffect(() => {
+    if (defaultValues && typeof defaultValues.trabajadorId === 'number') {
+      const defaultTrabajador = trabajadorOptions.find(
+        (option) => option.value === defaultValues.trabajadorId
+      )
+      if (defaultTrabajador) {
+        setValue('trabajador', defaultTrabajador) // Establecer el valor por defecto para react-select
+      }
+    }
+  }, [defaultValues, trabajadorOptions, setValue])
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -152,9 +164,9 @@ function FormPacienteBeneficiario({
                   {...field}
                   options={trabajadorOptions}
                   placeholder="Buscar Trabajador"
-                  value={trabajadorOptions.find((option) => option.value === field.value) || null}
+                  isClearable
                   onChange={(selectedOption) => {
-                    field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
+                    field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
                     setValue('trabajadorId', selectedOption ? selectedOption.value : null) // Registrar el valor
                   }}
                 />
