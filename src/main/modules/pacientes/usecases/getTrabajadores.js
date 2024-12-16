@@ -4,6 +4,13 @@ import { Op } from 'sequelize'
 ipcMain.handle('getTrabajadores', async () => {
   try {
     const perfiles = await Perfil.findAll({
+      include: [
+        {
+          model: Perfil,
+          as: 'beneficiarios' // Alias de la asociación
+        }
+      ],
+
       where: {
         enteId: {
           [Op.ne]: null // Busca perfiles donde enteId no es nulo

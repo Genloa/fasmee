@@ -4,7 +4,7 @@ import { trabajadorSchema } from '../validations/trabajadorSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
-
+import { useEffect } from 'react'
 function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, handleClose }) {
   const {
     register,
@@ -17,6 +17,17 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
     defaultValues,
     resolver: zodResolver(trabajadorSchema)
   })
+
+  useEffect(() => {
+    // Asegurarse de que defaultValues.enteId existe y es un número
+    if (defaultValues && typeof defaultValues.enteId === 'number') {
+      const defaultEnte = enteOptions.find((option) => option.value === defaultValues.enteId)
+      if (defaultEnte) {
+        setValue('ente', defaultEnte) // Establecer el valor por defecto para react-select
+      }
+    }
+  }, [defaultValues, enteOptions, setValue])
+
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
       return 'form-control'
@@ -141,10 +152,10 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
                   {...field}
                   options={enteOptions}
                   placeholder="Seleccionar Ente"
-                  value={enteOptions.find((option) => option.value === field.value) || null}
+                  isClearable
                   onChange={(selectedOption) => {
-                    field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
-                    setValue('enteId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    field.onChange(selectedOption) // Simplificado
+                    setValue('enteId', selectedOption ? selectedOption.value : null)
                   }}
                 />
                 {errors.ente && (
@@ -289,10 +300,10 @@ FormPacienteTrabajador.propTypes = {
     apellidos: PropTypes.string,
     tipoCedula: PropTypes.string,
     cedula: PropTypes.string,
-    fechaNacimiento: PropTypes.string,
+    fechaNacimiento: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
     telefono: PropTypes.string,
     correo: PropTypes.string,
-    enteId: PropTypes.number,
+    enteId: PropTypes.number.isRequired,
     patologias: PropTypes.string,
     alergias: PropTypes.string,
     cirugias: PropTypes.string,

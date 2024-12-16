@@ -33,45 +33,54 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
   const fetchTrabajadores = async () => {
     const fetchedTrabajadores = await window.api.getTrabajadores()
     setTrabajadores(fetchedTrabajadores)
+    console.log(fetchedTrabajadores)
+  }
+
+  const findTrabajadorIdByBeneficiarioId = (trabajadores, beneficiarioId) => {
+    for (const trabajador of trabajadores) {
+      if (trabajador.beneficiarios && Array.isArray(trabajador.beneficiarios)) {
+        const beneficiario = trabajador.beneficiarios.find((b) => b.id === beneficiarioId)
+        if (beneficiario) {
+          return trabajador.id
+        }
+      }
+    }
+    return null // Return null if beneficiarioId is not found
   }
 
   // FORM VALIDATION colocar algo que me traiga el trabajador id puede ser con el trabajador.beneficiarios.id
   const defaultValues = {
-    nombres: pacienteSelected?.nombres,
-    apellidos: pacienteSelected?.apellidos,
-    tipoCedula: pacienteSelected?.tipoCedula,
-    cedula: pacienteSelected?.cedula,
-    fechaNacimiento: pacienteSelected?.fechaNacimiento,
-    telefono: pacienteSelected?.telefono,
-    correo: pacienteSelected?.correo,
-    trabajadorId: 105,
-    patologias: pacienteSelected?.patologias,
-    alergias: pacienteSelected?.alergias,
-    cirugias: pacienteSelected?.cirugias,
-    medicamentos: pacienteSelected?.medicamentos,
-    peso: pacienteSelected?.peso,
-    altura: pacienteSelected?.altura
+    nombres: pacienteSelected.nombres,
+    apellidos: pacienteSelected.apellidos,
+    tipoCedula: pacienteSelected.tipoCedula,
+    cedula: pacienteSelected.cedula,
+    fechaNacimiento: pacienteSelected.fecha_nacimiento
+      ? new Date(pacienteSelected.fecha_nacimiento).toISOString().split('T')[0]
+      : '',
+    telefono: pacienteSelected.telefono,
+    correo: pacienteSelected.correo,
+    trabajadorId: findTrabajadorIdByBeneficiarioId(trabajadores, pacienteSelected.id),
+    patologias: pacienteSelected.perfilMedico.patologias,
+    alergias: pacienteSelected.perfilMedico.alergias,
+    cirugias: pacienteSelected.perfilMedico.cirugias,
+    medicamentos: pacienteSelected.perfilMedico.medicamentos,
+    peso: pacienteSelected.perfilMedico.peso,
+    altura: pacienteSelected.perfilMedico.altura
   }
 
-  const findBeneficiarioInObjects = (dataArray, beneficiarioId) => {
-    for (const obj of dataArray) {
-      const beneficiario = obj.beneficiarios.find((b) => b.id === beneficiarioId)
-      if (beneficiario) {
-        return obj.id
-      }
-    }
-    return null // Devuelve null si no se encuentra el beneficiario en ningún objeto
-  }
+  console.log(defaultValues)
 
-  // Uso de la función
-  const objetoId = findBeneficiarioInObjects(pacientes, pacienteSelected.id)
-  console.log(objetoId)
   const onSubmitBeneficiario = async (data) => {
     console.log(pacientes)
-    let pacienteBeneficiario = await window.api.createPacienteBeneficiario(data)
+    let pacienteBeneficiario = await window.api.updatePacienteBeneficiario(
+      data,
+      pacienteSelected.id
+    )
     fetchPacientes()
     if (pacienteBeneficiario) {
-      setPacientes([...pacientes, pacienteBeneficiario])
+      setPacientes((prevPacientes) =>
+        prevPacientes.map((p) => (p.id === pacienteBeneficiario.id ? pacienteBeneficiario : p))
+      )
       setToastMessage('Beneficiario creado correctamente')
     } else {
       setToastMessage('No se pudo crear el usuario')
@@ -93,7 +102,7 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="modal-create-paciente-label">
-                Crear Paciente Beneficiario
+                Editar Paciente Beneficiario
               </h1>
               <button
                 type="submit"
@@ -149,15 +158,19 @@ ModalEditBeneficiario.propTypes = {
     apellidos: PropTypes.string,
     tipoCedula: PropTypes.string,
     cedula: PropTypes.string,
-    fechaNacimiento: PropTypes.string,
+    fecha_nacimiento: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)])
+      .isRequired,
     telefono: PropTypes.string,
     correo: PropTypes.string,
-    trabajadorId: PropTypes.number.isRequired,
-    patologias: PropTypes.string,
-    alergias: PropTypes.string,
-    cirugias: PropTypes.string,
-    medicamentos: PropTypes.string,
-    peso: PropTypes.number,
-    altura: PropTypes.number
+    perfilMedico: PropTypes.shape({
+      patologias: PropTypes.string,
+      alergias: PropTypes.string,
+      cirugias: PropTypes.string,
+      medicamentos: PropTypes.string,
+      peso: PropTypes.number,
+      altura: PropTypes.number
+    })
   }).isRequired
 }
+
+export default ModalEditBeneficiario

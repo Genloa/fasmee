@@ -54,11 +54,11 @@ function ModalCrearTrabajador({ show, handleClose, fetchPacientes }) {
 
   const onSubmitTrabajador = async (data) => {
     let pacienteTrabajador = await window.api.createPacienteTrabajador(data)
+    console.log(pacienteTrabajador)
     fetchPacientes()
     if (pacienteTrabajador) {
       setPacientes([...pacientes, pacienteTrabajador])
       setToastMessage('Trabajador creado correctamente')
-      console.log(pacientes)
     } else {
       setToastMessage('No se pudo crear el usuario')
     }
