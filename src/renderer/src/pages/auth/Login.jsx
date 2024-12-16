@@ -1,6 +1,10 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+
+// imagenes
+import { NavLink } from 'react-router-dom'
+import doctors from '../../assets/img/doctors.svg'
+import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 
 function Login() {
   const [username, setUsername] = useState('')
@@ -30,12 +34,12 @@ function Login() {
   return (
     <div className="vh-100 bg-primary flex-column  justify-content-center aling-item-center">
       <div className="pt-4">
-        <img src="././src/assets/img/icon.png" className="rounded mx-auto d-block" alt="" />
+        <img src={fasmeeIcon} className="rounded mx-auto d-block" alt="" />
       </div>
       <div className="container flex-fill">
-        <div className="row ">
+        <div className="row">
           <div className="col">
-            <img src="././src/assets/img/imglogin.svg" width="80%" alt="" />
+            <img src={doctors} width="80%" alt="" />
           </div>
 
           <div className="col order-5" width="100%">
@@ -88,10 +92,9 @@ function Login() {
               <button type="submit" className="btn btn-danger">
                 Ingresar
               </button>
-
-              {/*<NavLink to="/home" className="btn btn-primary">
+              <NavLink to="/home" className="btn btn-primary">
                 Home
-              </NavLink>*/}
+              </NavLink>
             </form>
           </div>
         </div>
