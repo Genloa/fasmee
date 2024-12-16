@@ -1,15 +1,15 @@
 import { Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './hooks/useAuth'
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-
 import Login from './pages/auth/Login'
 import Citas from './pages/citas/Citas'
 import Connection from './pages/connection/Connection'
 import Home from './pages/home/home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
+
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 function App() {
   return (
