@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useAuth } from '../../hooks/useAuth'
 
 // imagenes
-import { NavLink } from 'react-router-dom'
 import doctors from '../../assets/img/doctors.svg'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 
@@ -29,6 +28,10 @@ function Login() {
 
     setMessage(message.message)
     setShowAlert(true)
+  }
+
+  const handleRunSeeders = async () => {
+    await window.api.runSeeders()
   }
 
   return (
@@ -92,9 +95,9 @@ function Login() {
               <button type="submit" className="btn btn-danger">
                 Ingresar
               </button>
-              <NavLink to="/home" className="btn btn-primary">
-                Home
-              </NavLink>
+              <button type="button" onClick={handleRunSeeders} className="btn btn-danger">
+                Seeders
+              </button>
             </form>
           </div>
         </div>

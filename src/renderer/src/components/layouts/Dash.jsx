@@ -1,19 +1,24 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
+
 import {
   faBookMedical,
   faBoxesStacked,
   faCalendarCheck,
   faClipboardUser,
+  faHandHoldingMedical,
   faHospitalUser,
   faHouse,
   faUser,
-  faUserDoctor,
-  faHandHoldingMedical
+  faUserDoctor
 } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import PropTypes from 'prop-types'
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+
 import '../../assets/css/dash.css'
+
+// imagenes
+import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 
 function Dash({ children }) {
   return (
@@ -34,7 +39,7 @@ function Navbar() {
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
           <img
-            src="../../src/assets/img/icon.png"
+            src={fasmeeIcon}
             alt="Logo"
             height="90"
             width="auto"

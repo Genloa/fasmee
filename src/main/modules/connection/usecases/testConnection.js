@@ -16,8 +16,8 @@ ipcMain.handle('testConnection', async (event, data) => {
   )
 
   if (await database.testConnection(connection)) {
+    await file.update({ postgre: data })
     await database.syncModels()
-    await file.updated({ postgre: data })
     return true
   }
 

@@ -1,14 +1,14 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown, Toast, Modal } from 'bootstrap'
-import { createContext, useEffect, useState } from 'react'
-import Dash from '../../components/layouts/Dash'
+import { Dropdown, Modal, Toast } from 'bootstrap'
 import PropTypes from 'prop-types'
+import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
+import Dash from '../../components/layouts/Dash'
 import ModalCrearBeneficiario from './components/ModalCrearBeneficiario'
-import ModalEditTrabajador from './components/ModalEditTrabajador'
 import ModalCrearTrabajador from './components/ModalCrearTrabajador'
 import ModalEditBeneficiario from './components/ModalEditBeneficiario'
+import ModalEditTrabajador from './components/ModalEditTrabajador'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
@@ -30,23 +30,28 @@ function Pacientes() {
   //paginacion
   const [currentPage, setCurrentPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
-  const usersPerPage = 3
   const pagesVisited = currentPage * usersPerPage
+
+  const usersPerPage = 3
 
   //pacientes
   const [pacientes, setPacientes] = useState([])
   const [pacienteSelected, setPacienteSelected] = useState(null)
   const [toastMessagePa, setToastMessagePa] = useState('')
+
   //modales
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
   const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
   const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
+
   const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
+
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
   const handleShowModalTrabajador = () => setShowModalTrabajador(true)
   const handleCloseModalTrabajador = () => setShowModalTrabajador(false)
+
   const handleShowTrabajadorEdit = (paciente) => {
     setPacienteSelected(paciente)
     setShowTrabajadorEdit(true)
@@ -65,6 +70,11 @@ function Pacientes() {
   const handleCloseBeneficiarioEdit = () => {
     setShowBeneficiarioEdit(false)
     setPacienteSelected(null)
+  }
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value)
+    setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
 
   // HOOK
@@ -130,10 +140,6 @@ function Pacientes() {
   }
 
   //paginacion
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value)
-    setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
-  }
 
   const filteredPacientes = pacientes.filter((paciente) =>
     `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(searchTerm.toLowerCase())

@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, Usuario, Rol } from '../../../singletons/database/schema'
+import { Perfil, Rol, Usuario } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {

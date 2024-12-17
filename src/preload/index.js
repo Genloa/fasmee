@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 // Custom APIs for renderer
 const api = {
   //
+  runSeeders: () => ipcRenderer.invoke('runSeeders'),
 
   // Casos de uso para la conexion
   checkConnection: () => ipcRenderer.invoke('checkConnection'),
