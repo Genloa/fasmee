@@ -68,6 +68,29 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
+  Departamento = sequelize.define(
+    'departamento',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      nombre: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      cubiculo: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    },
+    {
+      tableName: 'departamentos',
+      timestamps: true
+    }
+  )
+
   Perfil = sequelize.define(
     'perfil',
     {
@@ -129,6 +152,7 @@ if (sequelize instanceof Sequelize) {
           key: 'id'
         }
       },
+
       departamentoId: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -200,29 +224,6 @@ if (sequelize instanceof Sequelize) {
     },
     {
       tableName: 'perfiles_medicos',
-      timestamps: true
-    }
-  )
-
-  Departamento = sequelize.define(
-    'departamento',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      nombre: {
-        type: DataTypes.STRING,
-        allowNull: false
-      },
-      cubiculo: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
-    },
-    {
-      tableName: 'departamentos',
       timestamps: true
     }
   )
@@ -710,6 +711,7 @@ if (sequelize instanceof Sequelize) {
   Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId', as: 'colasPacientes' })
   Departamento.hasMany(Cita, { foreignKey: 'departamentoId', as: 'citas' })
   Departamento.hasMany(Historia, { foreignKey: 'departamentoId', as: 'historias' })
+  Departamento.hasMany(Perfil, { foreignKey: 'departamentoId', as: 'perfiles' })
 
   // Relaciones del modelo cita
 
@@ -744,7 +746,7 @@ if (sequelize instanceof Sequelize) {
 
   Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
   Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
-  Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+  Historia.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
   Historia.hasMany(Archivos, { foreignKey: 'historiaId', as: 'archivos' })
 
   // Relaciones del modelo archivos
@@ -777,8 +779,8 @@ if (sequelize instanceof Sequelize) {
 
   // Relaciones del modelo perfil_on_articulo
 
-  PerfilOnArticulo.belongsTo(Perfil, { foreignKey: 'perfilId' })
-  PerfilOnArticulo.belongsTo(Articulo, { foreignKey: 'articuloId' })
+  PerfilOnArticulo.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  PerfilOnArticulo.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
 
   // Relaciones del modelo cola_pacientes
 
