@@ -14,14 +14,12 @@ let Articulo = null
 let Historia = null
 let Rol = null
 let Permiso = null
-let Servicio = null
 let PerfilOnArticulo = null
 let ColaPacientes = null
 let PerfilOnBeneficiario = null
 let RolOnPerfil = null
 let RolOnPermiso = null
 let DepartamentoOnPerfil = null
-let PerfilOnServicio = null
 let ArticuloOnAlmacen = null
 
 if (sequelize instanceof Sequelize) {
@@ -427,25 +425,6 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  Servicio = sequelize.define(
-    'servicio',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      nombre: {
-        type: DataTypes.STRING,
-        allowNull: false
-      }
-    },
-    {
-      tableName: 'servicios',
-      timestamps: true
-    }
-  )
-
   PerfilOnArticulo = sequelize.define(
     'perfil_on_articulo',
     {
@@ -645,49 +624,6 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  PerfilOnServicio = sequelize.define(
-    'perfil_on_servicio',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      perfilId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Perfil,
-          key: 'id'
-        }
-      },
-      servicioId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Servicio,
-          key: 'id'
-        }
-      },
-      fecha_emision: {
-        type: DataTypes.DATE,
-        allowNull: false
-      },
-      fecha_recepcion: {
-        type: DataTypes.DATE,
-        allowNull: true
-      },
-      resultados: {
-        type: DataTypes.STRING(1000),
-        allowNull: true
-      }
-    },
-    {
-      tableName: 'perfiles_on_servicios',
-      timestamps: true
-    }
-  )
-
   ArticuloOnAlmacen = sequelize.define(
     'articulo_on_almacen',
     {
@@ -727,118 +663,159 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  Ente.hasMany(Perfil, { foreignKey: 'enteId', as: 'perfiles' })
-
-  Perfil.belongsTo(Ente, { foreignKey: 'enteId', as: 'ente' })
-
-  Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
-
-  Departamento.belongsToMany(Perfil, {
-    through: DepartamentoOnPerfil,
-    foreignKey: 'departamentoId',
-    as: 'perfiles'
-  })
-
-  Articulo.belongsToMany(Perfil, {
-    through: PerfilOnArticulo,
-    foreignKey: 'articuloId',
-    as: 'perfiles'
-  })
-
-  Articulo.belongsToMany(Almacen, {
-    through: ArticuloOnAlmacen,
-    foreignKey: 'articuloId',
-    as: 'almacenes'
-  })
-
-  Almacen.belongsToMany(Articulo, {
-    through: ArticuloOnAlmacen,
-    foreignKey: 'almacenId',
-    as: 'articulos'
-  })
-
-  ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
-  ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
-
-  Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId', as: 'perfiles' })
-  Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId', as: 'permisos' })
-
-  Permiso.belongsToMany(Rol, { through: RolOnPermiso, foreignKey: 'permisoId', as: 'roles' })
-
-  Servicio.belongsToMany(Perfil, {
-    through: PerfilOnServicio,
-    foreignKey: 'servicioId',
-    as: 'perfiles'
-  })
-
-  Ente.hasMany(Perfil, { foreignKey: 'enteId' })
+  // Relaciones del modelo usuario
 
   Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
 
+  // Relaciones del modelo ente
+
+  Ente.hasMany(Perfil, { foreignKey: 'enteId', as: 'perfiles' })
+
+  // Relaciones del modelo perfil
+
+  Perfil.belongsTo(Ente, { foreignKey: 'enteId', as: 'ente' })
   Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' })
-  Perfil.belongsTo(Ente, { foreignKey: 'enteId' })
   Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId', as: 'perfilMedico' })
+  Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
   Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
   Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
   Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
   Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
-  Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId' })
-
+  Perfil.belongsToMany(Articulo, {
+    through: PerfilOnArticulo,
+    as: 'articulos',
+    foreignKey: 'perfilId',
+    otherKey: 'articuloId'
+  })
   Perfil.belongsToMany(Perfil, {
     through: PerfilOnBeneficiario,
     as: 'beneficiarios',
     foreignKey: 'perfilId',
     otherKey: 'beneficiarioId'
   })
-
   Perfil.belongsToMany(Rol, {
     through: RolOnPerfil,
+    as: 'roles',
     foreignKey: 'perfilId',
-    otherKey: 'rolId',
-    as: 'roles'
+    otherKey: 'rolId'
   })
-
   Perfil.belongsToMany(Departamento, {
     through: DepartamentoOnPerfil,
     as: 'departamentos',
-    foreignKey: 'perfilId'
+    foreignKey: 'perfilId',
+    otherKey: 'departamentoId'
   })
 
-  Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
-  Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })
+  // Relaciones del modelo perfil_medico
 
   PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfilmedico' })
 
-  Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'solicitante' })
-  Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-  Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+  // Relaciones del modelo departamento
 
-  Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'medico' })
-  Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-  Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
-
-  Departamento.hasMany(Cita, { foreignKey: 'departamentoId' })
-  Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId' })
-  Departamento.hasMany(Historia, { foreignKey: 'departamentoId' })
+  Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId', as: 'colasPacientes' })
+  Departamento.hasMany(Cita, { foreignKey: 'departamentoId', as: 'citas' })
+  Departamento.hasMany(Historia, { foreignKey: 'departamentoId', as: 'historias' })
   Departamento.belongsToMany(Perfil, {
     through: DepartamentoOnPerfil,
-    foreignKey: 'departamentoId'
+    as: 'perfiles',
+    foreignKey: 'departamentoId',
+    otherKey: 'perfilId'
   })
 
-  Articulo.belongsToMany(Perfil, { through: PerfilOnArticulo, foreignKey: 'articuloId' })
-  Articulo.belongsToMany(Almacen, { through: ArticuloOnAlmacen, foreignKey: 'articuloId' })
+  // Relaciones del modelo cita
 
-  Almacen.belongsToMany(Articulo, { through: ArticuloOnAlmacen, foreignKey: 'almacenId' })
+  Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
+  Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
+  Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
 
-  ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId' })
-  ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+  // Relaciones del modelo almacen
 
-  Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId' })
-  Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId' })
+  Almacen.belongsToMany(Articulo, {
+    through: ArticuloOnAlmacen,
+    as: 'articulos',
+    foreignKey: 'almacenId',
+    otherKey: 'articuloId'
+  })
 
-  Permiso.belongsToMany(Rol, { through: RolOnPermiso, foreignKey: 'permisoId' })
+  // Relaciones del modelo articulo
 
-  Servicio.belongsToMany(Perfil, { through: PerfilOnServicio, foreignKey: 'servicioId' })
+  Articulo.belongsToMany(Perfil, {
+    through: PerfilOnArticulo,
+    as: 'perfiles',
+    foreignKey: 'articuloId',
+    otherKey: 'perfilId'
+  })
+  Articulo.belongsToMany(Almacen, {
+    through: ArticuloOnAlmacen,
+    as: 'almacenes',
+    foreignKey: 'articuloId',
+    otherKey: 'almacenId'
+  })
+
+  // Relaciones del modelo historia
+
+  Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
+  Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
+  Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+
+  // Relaciones del modelo rol
+
+  Rol.belongsToMany(Perfil, {
+    through: RolOnPerfil,
+    as: 'perfiles',
+    foreignKey: 'rolId',
+    otherKey: 'perfilId'
+  })
+  Rol.belongsToMany(Permiso, {
+    through: RolOnPermiso,
+    as: 'permisos',
+    foreignKey: 'rolId',
+    otherKey: 'permisoId'
+  })
+
+  // Relaciones del modelo permiso
+
+  Permiso.belongsToMany(Rol, {
+    through: RolOnPermiso,
+    as: 'roles',
+    foreignKey: 'permisoId',
+    otherKey: 'rolId'
+  })
+
+  // Relaciones del modelo perfil_on_articulo
+
+  PerfilOnArticulo.belongsTo(Perfil, { foreignKey: 'perfilId' })
+  PerfilOnArticulo.belongsTo(Articulo, { foreignKey: 'articuloId' })
+
+  // Relaciones del modelo cola_pacientes
+
+  ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
+
+  // Relaciones del modelo perfil_on_beneficiario
+
+  PerfilOnBeneficiario.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  PerfilOnBeneficiario.belongsTo(Perfil, { foreignKey: 'beneficiarioId', as: 'beneficiario' })
+
+  // Relaciones del modelo rol_on_perfil
+
+  RolOnPerfil.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
+  RolOnPerfil.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+
+  // Relaciones del modelo rol_on_permiso
+
+  RolOnPermiso.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
+  RolOnPermiso.belongsTo(Permiso, { foreignKey: 'permisoId', as: 'permiso' })
+
+  // Relaciones del modelo departamento_on_perfil
+
+  DepartamentoOnPerfil.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
+  DepartamentoOnPerfil.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+
+  // Relaciones del modelo articulo_on_almacen
+
+  ArticuloOnAlmacen.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
+  ArticuloOnAlmacen.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
 }
 
 export {
@@ -855,11 +832,9 @@ export {
   PerfilMedico,
   PerfilOnArticulo,
   PerfilOnBeneficiario,
-  PerfilOnServicio,
   Permiso,
   Rol,
   RolOnPerfil,
   RolOnPermiso,
-  Servicio,
   Usuario
 }

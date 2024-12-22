@@ -20,8 +20,7 @@ ipcMain.handle('createUsuario', async (event, data) => {
           tipo_cedula: data.tipoCedula,
           cedula: data.cedula,
           correo: data.correo,
-          telefono: data.telefono,
-          enteId: 1
+          telefono: data.telefono
         }
       },
       {
