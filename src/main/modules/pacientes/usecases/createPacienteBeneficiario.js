@@ -2,10 +2,8 @@ import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
 import { Perfil, PerfilMedico, PerfilOnBeneficiario } from '../../../singletons/database/schema'
 
-let sequelize = db.getConnection()
-
 ipcMain.handle('createPacienteBeneficiario', async (event, data) => {
-  const t = await sequelize.transaction()
+  const t = await db.getConnection().transaction()
 
   try {
     const pacienteBeneficiario = await Perfil.create(
@@ -55,5 +53,6 @@ ipcMain.handle('createPacienteBeneficiario', async (event, data) => {
   } catch (error) {
     await t.rollback()
     console.error('Error creating paciente and perfil:', error)
+    throw error
   }
 })

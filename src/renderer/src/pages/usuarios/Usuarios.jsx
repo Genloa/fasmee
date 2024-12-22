@@ -3,20 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal, Toast } from 'bootstrap'
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import ReactPaginate from 'react-paginate'
+import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
-import Select from 'react-select'
-import { Controller } from 'react-hook-form'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
 function Usuarios() {
+  // Data
   const [usuarios, setUsuarios] = useState([])
+  const [departamentos, setDepartamentos] = useState([])
+
   const [showPassword, setShowPassword] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-  const [departamentos, setDepartamentos] = useState([])
   const [showToast, setShowToast] = useState(false)
 
   const modalCrearUserRef = document.getElementById('modal-create-usuario')

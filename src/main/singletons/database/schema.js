@@ -727,6 +727,50 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
+  Ente.hasMany(Perfil, { foreignKey: 'enteId', as: 'perfiles' })
+
+  Perfil.belongsTo(Ente, { foreignKey: 'enteId', as: 'ente' })
+
+  Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
+
+  Departamento.belongsToMany(Perfil, {
+    through: DepartamentoOnPerfil,
+    foreignKey: 'departamentoId',
+    as: 'perfiles'
+  })
+
+  Articulo.belongsToMany(Perfil, {
+    through: PerfilOnArticulo,
+    foreignKey: 'articuloId',
+    as: 'perfiles'
+  })
+
+  Articulo.belongsToMany(Almacen, {
+    through: ArticuloOnAlmacen,
+    foreignKey: 'articuloId',
+    as: 'almacenes'
+  })
+
+  Almacen.belongsToMany(Articulo, {
+    through: ArticuloOnAlmacen,
+    foreignKey: 'almacenId',
+    as: 'articulos'
+  })
+
+  ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
+
+  Rol.belongsToMany(Perfil, { through: RolOnPerfil, foreignKey: 'rolId', as: 'perfiles' })
+  Rol.belongsToMany(Permiso, { through: RolOnPermiso, foreignKey: 'rolId', as: 'permisos' })
+
+  Permiso.belongsToMany(Rol, { through: RolOnPermiso, foreignKey: 'permisoId', as: 'roles' })
+
+  Servicio.belongsToMany(Perfil, {
+    through: PerfilOnServicio,
+    foreignKey: 'servicioId',
+    as: 'perfiles'
+  })
+
   Ente.hasMany(Perfil, { foreignKey: 'enteId' })
 
   Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
@@ -759,6 +803,7 @@ if (sequelize instanceof Sequelize) {
     as: 'departamentos',
     foreignKey: 'perfilId'
   })
+
   Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
   Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })
 

@@ -1,10 +1,12 @@
 import { ipcMain } from 'electron'
-import { Perfil, Usuario, Rol, DepartamentoOnPerfil } from '../../../singletons/database/schema'
+import db from '../../../singletons/database/database'
+import { DepartamentoOnPerfil, Perfil, Rol, Usuario } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
+  const t = await db.getConnection().transaction()
+
   try {
-    // Cifrando la contraseña
     data.password = await hashPassword(data.password)
 
     const usuario = await Usuario.create(
@@ -24,27 +26,36 @@ ipcMain.handle('createUsuario', async (event, data) => {
       },
       {
         include: [{ model: Perfil, as: 'perfil' }]
-      }
+      },
+      { transaction: t }
     )
 
-    const departamento = await DepartamentoOnPerfil.create({
-      departamentoId: data.departamentoId,
-      perfilId: usuario.perfil.id
-    })
+    const departamento = await DepartamentoOnPerfil.create(
+      {
+        departamentoId: data.departamentoId,
+        perfilId: usuario.perfil.id
+      },
+      { transaction: t }
+    )
 
-    const perfil = await Perfil.findOne({
-      where: { id: usuario.perfil.id },
-      include: [
-        {
-          model: Usuario,
-          as: 'usuario'
-        },
-        {
-          model: Rol,
-          as: 'roles'
-        }
-      ]
-    })
+    const perfil = await Perfil.findOne(
+      {
+        where: { id: usuario.perfil.id },
+        include: [
+          {
+            model: Usuario,
+            as: 'usuario'
+          },
+          {
+            model: Rol,
+            as: 'roles'
+          }
+        ]
+      },
+      { transaction: t }
+    )
+
+    await t.commit()
 
     return {
       ...perfil.usuario.toJSON(),
@@ -55,6 +66,7 @@ ipcMain.handle('createUsuario', async (event, data) => {
       }
     }
   } catch (error) {
+    await t.rollback()
     console.error('Error creating usuario:', error)
     throw error
   }
