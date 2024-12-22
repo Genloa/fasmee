@@ -32,7 +32,12 @@ const api = {
   getRoles: () => ipcRenderer.invoke('getRoles'),
 
   // Casos de uso para Entes
-  getEntes: () => ipcRenderer.invoke('getEntes')
+  getEntes: () => ipcRenderer.invoke('getEntes'),
+  // Casos de uso para departamentos
+  getDepartamentos: () => ipcRenderer.invoke('getDepartamentos'),
+
+  // Casos de uso para Citas
+  getCitasPacientes: () => ipcRenderer.invoke('getCitasPacientes')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

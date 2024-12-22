@@ -59,7 +59,7 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
       : '',
     telefono: pacienteSelected.telefono,
     correo: pacienteSelected.correo,
-    trabajadorId: findTrabajadorIdByBeneficiarioId(trabajadores, pacienteSelected.id),
+    trabajadorId: findTrabajadorIdByBeneficiarioId(trabajadores, pacienteSelected.id) || 0,
     patologias: pacienteSelected.perfilMedico.patologias,
     alergias: pacienteSelected.perfilMedico.alergias,
     cirugias: pacienteSelected.perfilMedico.cirugias,

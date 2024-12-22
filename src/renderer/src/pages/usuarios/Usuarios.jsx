@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 import ReactPaginate from 'react-paginate'
+import Select from 'react-select'
+import { Controller } from 'react-hook-form'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
@@ -14,20 +16,45 @@ function Usuarios() {
   const [usuarios, setUsuarios] = useState([])
   const [showPassword, setShowPassword] = useState(false)
   const [toastMessage, setToastMessage] = useState('')
-
+  const [departamentos, setDepartamentos] = useState([])
   const [showToast, setShowToast] = useState(false)
 
   const modalCrearUserRef = document.getElementById('modal-create-usuario')
+
+  useEffect(() => {
+    fetchDepartamentos()
+  }, [])
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToastCrear')
+      const toast = new Toast(toastEl)
+      toast.show()
+    }
+  }, [showToast])
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     formState: { errors, dirtyFields }
   } = useForm({
     mode: 'onChange',
     resolver: zodResolver(userSchema)
   })
+
+  const departamentoOptions = departamentos.map((departamento) => ({
+    value: departamento.id,
+    label: departamento.nombre
+  }))
+
+  // FETCH
+  const fetchDepartamentos = async () => {
+    const fetchedDepartamentos = await window.api.getDepartamentos()
+    setDepartamentos(fetchedDepartamentos)
+  }
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -40,14 +67,6 @@ function Usuarios() {
     let modal = new Modal(modalCrearUserRef)
     modal.show()
   }
-
-  useEffect(() => {
-    if (showToast) {
-      const toastEl = document.getElementById('liveToastCrear')
-      const toast = new Toast(toastEl)
-      toast.show()
-    }
-  }, [showToast])
 
   const onSubmit = async (data) => {
     setShowToast(false)
@@ -260,6 +279,37 @@ function Usuarios() {
                       </div>
                     </div>
                   </div>
+                  <div className="row mt-4">
+                    <div className="col">
+                      <Controller
+                        name="departamento"
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                          <div>
+                            <Select
+                              {...field}
+                              options={departamentoOptions}
+                              placeholder="Buscar Departamento"
+                              isClearable
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
+                                setValue(
+                                  'departamentoId',
+                                  selectedOption ? selectedOption.value : null
+                                ) // Registrar el valor
+                              }}
+                            />
+                            {errors.departamento && (
+                              <div className="invalid-feedback d-block">
+                                {errors.departamento.message}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      />
+                    </div>
+                  </div>
                 </form>
               </div>
               <div className="modal-footer">
@@ -338,11 +388,14 @@ function TableUsers() {
   const [toastMessage, setToastMessage] = useState('')
   const [roles, setRoles] = useState([])
   const [selectedRol, setSelectedRol] = useState('')
+  const [departamentos, setDepartamentos] = useState([])
 
   const {
     register,
     handleSubmit,
     reset,
+    control,
+    setValue,
     formState: { errors, dirtyFields }
   } = useForm({
     mode: 'onChange',
@@ -357,7 +410,8 @@ function TableUsers() {
       confirmtPassword: '',
       fechaNacimiento: '',
       telefono: '',
-      correo: ''
+      correo: '',
+      departamentoId: 0
     }
   })
 
@@ -381,7 +435,19 @@ function TableUsers() {
   useEffect(() => {
     fetchUsers()
     fetchRoles()
+    fetchDepartamentos()
   }, [])
+
+  const departamentoOptions = departamentos.map((departamento) => ({
+    value: departamento.id,
+    label: departamento.nombre
+  }))
+
+  // FETCH
+  const fetchDepartamentos = async () => {
+    const fetchedDepartamentos = await window.api.getDepartamentos()
+    setDepartamentos(fetchedDepartamentos)
+  }
 
   function openModalEditUser(id) {
     let user = usuarios.find((user) => user.id === id)
@@ -402,7 +468,8 @@ function TableUsers() {
         ? new Date(user.perfil.fecha_nacimiento).toISOString().split('T')[0]
         : '',
       telefono: user.perfil?.telefono || '',
-      correo: user.perfil?.correo || ''
+      correo: user.perfil?.correo || '',
+      departamentoId: user.perfil?.departamentos[0]?.id || 0
     })
   }
 
@@ -445,6 +512,7 @@ function TableUsers() {
   const onSubmit = async (data) => {
     let usuario = await window.api.updateUsuario(usuarioSelected.id, data)
     setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
+    fetchUsers()
     closeModalEditUser()
     setToastMessage('Usuario actualizado correctamente')
 
@@ -814,6 +882,41 @@ function TableUsers() {
                         <div className="invalid-feedback">{errors.correo?.message}</div>
                       )}
                     </div>
+                  </div>
+                </div>
+                <div className="row mt-4">
+                  <div className="col">
+                    <Controller
+                      name="departamentoId"
+                      control={control}
+                      defaultValue={usuarioSelected?.perfil?.departamentos[0]?.id || 0}
+                      render={({ field }) => (
+                        <div>
+                          <Select
+                            {...field}
+                            options={departamentoOptions}
+                            placeholder="Buscar Departamento"
+                            isClearable
+                            value={
+                              departamentoOptions.find((option) => option.value === field.value) ||
+                              null
+                            }
+                            onChange={(selectedOption) => {
+                              field.onChange(selectedOption ? selectedOption.value : null) // Guardar solo el ID o null si no hay selección
+                              setValue(
+                                'departamentoId',
+                                selectedOption ? selectedOption.value : null
+                              ) // Registrar el valor
+                            }}
+                          />
+                          {errors.departamentoId && (
+                            <div className="invalid-feedback d-block">
+                              {errors.departamentoId.message}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    />
                   </div>
                 </div>
               </form>
