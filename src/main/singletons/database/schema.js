@@ -754,7 +754,11 @@ if (sequelize instanceof Sequelize) {
     as: 'roles'
   })
 
-  Perfil.belongsToMany(Departamento, { through: DepartamentoOnPerfil, foreignKey: 'perfilId' })
+  Perfil.belongsToMany(Departamento, {
+    through: DepartamentoOnPerfil,
+    as: 'departamentos',
+    foreignKey: 'perfilId'
+  })
   Perfil.belongsToMany(Servicio, { through: PerfilOnServicio, foreignKey: 'perfilId' })
   Perfil.belongsToMany(Articulo, { through: PerfilOnArticulo, foreignKey: 'perfilId' })
 

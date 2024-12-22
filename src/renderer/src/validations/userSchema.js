@@ -48,7 +48,8 @@ export const userSchema = z
       })
       .max(11, {
         message: 'Maximo 11 caracteres'
-      })
+      }),
+    departamentoId: z.number().min(1, { message: 'departamento es requerido' })
   })
   .refine((data) => data.password === data.confirmtPassword, {
     message: 'Las contraseña no coinciden',

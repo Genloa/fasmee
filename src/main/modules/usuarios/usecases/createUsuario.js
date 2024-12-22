@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, Rol, Usuario } from '../../../singletons/database/schema'
+import { Perfil, Usuario, Rol, DepartamentoOnPerfil } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
@@ -27,6 +27,11 @@ ipcMain.handle('createUsuario', async (event, data) => {
       }
     )
 
+    const departamento = await DepartamentoOnPerfil.create({
+      departamentoId: data.departamentoId,
+      perfilId: usuario.perfil.id
+    })
+
     const perfil = await Perfil.findOne({
       where: { id: usuario.perfil.id },
       include: [
@@ -45,7 +50,8 @@ ipcMain.handle('createUsuario', async (event, data) => {
       ...perfil.usuario.toJSON(),
       perfil: {
         ...perfil.toJSON(),
-        roles: perfil.roles.map((rol) => rol.toJSON())
+        roles: perfil.roles.map((rol) => rol.toJSON()),
+        departamento: departamento.toJSON()
       }
     }
   } catch (error) {

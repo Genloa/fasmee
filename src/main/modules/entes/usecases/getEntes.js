@@ -8,7 +8,7 @@ ipcMain.handle('getEntes', async () => {
     console.log(entesSerializables)
     return entesSerializables
   } catch (error) {
-    console.error('Error fetching roles:', error)
+    console.error('Error fetching entes:', error)
     throw error
   }
 })
