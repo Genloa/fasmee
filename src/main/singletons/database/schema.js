@@ -12,7 +12,6 @@ let Cita = null
 let Almacen = null
 let Articulo = null
 let Historia = null
-let Ingreso = null
 let Rol = null
 let Permiso = null
 let Servicio = null
@@ -390,45 +389,6 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  Ingreso = sequelize.define(
-    'ingreso',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      articuloId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: Articulo,
-          key: 'id'
-        }
-      },
-      almacenId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: Almacen,
-          key: 'id'
-        }
-      },
-      cantidad: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      fecha_ingreso: {
-        type: DataTypes.DATE,
-        allowNull: false
-      }
-    },
-    {
-      tableName: 'ingresos',
-      timestamps: true
-    }
-  )
-
   Rol = sequelize.define(
     'rol',
     {
@@ -751,6 +711,14 @@ if (sequelize instanceof Sequelize) {
           model: Articulo,
           key: 'id'
         }
+      },
+      cantidad: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      fecha_ingreso: {
+        type: DataTypes.DATE,
+        allowNull: false
       }
     },
     {
@@ -808,14 +776,9 @@ if (sequelize instanceof Sequelize) {
     foreignKey: 'departamentoId'
   })
 
-  Ingreso.belongsTo(Articulo, { foreignKey: 'articuloId' })
-  Ingreso.belongsTo(Almacen, { foreignKey: 'almacenId' })
-
-  Articulo.hasMany(Ingreso, { foreignKey: 'articuloId' })
   Articulo.belongsToMany(Perfil, { through: PerfilOnArticulo, foreignKey: 'articuloId' })
   Articulo.belongsToMany(Almacen, { through: ArticuloOnAlmacen, foreignKey: 'articuloId' })
 
-  Almacen.hasMany(Ingreso, { foreignKey: 'almacenId' })
   Almacen.belongsToMany(Articulo, { through: ArticuloOnAlmacen, foreignKey: 'almacenId' })
 
   ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId' })
@@ -839,7 +802,6 @@ export {
   DepartamentoOnPerfil,
   Ente,
   Historia,
-  Ingreso,
   Perfil,
   PerfilMedico,
   PerfilOnArticulo,

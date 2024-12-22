@@ -1,7 +1,6 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Modal, Toast } from 'bootstrap'
-import PropTypes from 'prop-types'
 import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Dash from '../../components/layouts/Dash'
@@ -12,102 +11,66 @@ import ModalEditTrabajador from './components/ModalEditTrabajador'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
-function PacientesProvider({ children }) {
-  const [pacientes, setPacientes] = useState([])
-
-  return (
-    <PacientesContext.Provider value={{ pacientes, setPacientes }}>
-      {children}
-    </PacientesContext.Provider>
-  )
-}
-
-PacientesProvider.propTypes = {
-  children: PropTypes.node.isRequired
-}
-
 function Pacientes() {
-  //paginacion
-  const [currentPage, setCurrentPage] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
-  const pagesVisited = currentPage * usersPerPage
-
-  const usersPerPage = 3
-
-  //pacientes
+  // Pacientes
   const [pacientes, setPacientes] = useState([])
   const [pacienteSelected, setPacienteSelected] = useState(null)
   const [toastMessagePa, setToastMessagePa] = useState('')
 
-  //modales
+  // Modales
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
   const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
   const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
 
+  // Paginacion
+  const [currentPage, setCurrentPage] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const usersPerPage = 3
+  const pagesVisited = currentPage * usersPerPage
+
   const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
-
-  const handleShowModal = () => setShowModal(true)
-  const handleCloseModal = () => setShowModal(false)
-  const handleShowModalTrabajador = () => setShowModalTrabajador(true)
-  const handleCloseModalTrabajador = () => setShowModalTrabajador(false)
-
-  const handleShowTrabajadorEdit = (paciente) => {
-    setPacienteSelected(paciente)
-    setShowTrabajadorEdit(true)
-  }
-
-  const handleCloseTrabajadorEdit = () => {
-    setShowTrabajadorEdit(false)
-    setPacienteSelected(null)
-  }
-
-  const handleShowBeneficiarioEdit = (paciente) => {
-    setPacienteSelected(paciente)
-    setShowBeneficiarioEdit(true)
-  }
-
-  const handleCloseBeneficiarioEdit = () => {
-    setShowBeneficiarioEdit(false)
-    setPacienteSelected(null)
-  }
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
 
-  // HOOK
-
-  useEffect(() => {
-    fetchPacientes()
-
-    const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
-    dropdownMenus.forEach((dropdownMenu) => {
-      new Dropdown(dropdownMenu)
-    })
-  }, [])
-
-  // FETCH
-
-  const fetchPacientes = async () => {
-    try {
-      const fetchedPacientes = await window.api.getPacientes()
-      setPacientes(fetchedPacientes)
-    } catch (error) {
-      console.error('Error fetching pacientes:', error)
-    }
+  // Modal Beneficiario
+  const handleShowModal = () => setShowModal(true)
+  const handleCloseModal = () => setShowModal(false)
+  const handleShowBeneficiarioEdit = (paciente) => {
+    setPacienteSelected(paciente)
+    setShowBeneficiarioEdit(true)
+  }
+  const handleCloseBeneficiarioEdit = () => {
+    setShowBeneficiarioEdit(false)
+    setPacienteSelected(null)
   }
 
-  // delete
-  function openModalDeletePaciente(id) {
+  // Modal Trabajador
+  const handleShowModalTrabajador = () => setShowModalTrabajador(true)
+  const handleCloseModalTrabajador = () => setShowModalTrabajador(false)
+  const handleShowTrabajadorEdit = (paciente) => {
+    setPacienteSelected(paciente)
+    setShowTrabajadorEdit(true)
+  }
+  const handleCloseTrabajadorEdit = () => {
+    setShowTrabajadorEdit(false)
+    setPacienteSelected(null)
+  }
+
+  // Modal Eliminar Paciente
+
+  const openModalDeletePaciente = (id) => {
     let paciente = pacientes.find((paciente) => paciente.id === id)
     setPacienteSelected(paciente)
     let modal = new Modal(modalDeletePacienteRef)
     modal.show()
   }
 
-  async function closeModalDeletePaciente() {
+  const closeModalDeletePaciente = async () => {
     try {
       // Eliminar el usuario
       const response = await window.api.deletePaciente(pacienteSelected.id)
@@ -139,7 +102,29 @@ function Pacientes() {
     }
   }
 
-  //paginacion
+  // FETCH
+
+  const fetchPacientes = async () => {
+    try {
+      const fetchedPacientes = await window.api.getPacientes()
+      setPacientes(fetchedPacientes)
+    } catch (error) {
+      console.error('Error fetching pacientes:', error)
+    }
+  }
+
+  // HOOK
+
+  useEffect(() => {
+    fetchPacientes()
+
+    const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
+    dropdownMenus.forEach((dropdownMenu) => {
+      new Dropdown(dropdownMenu)
+    })
+  }, [])
+
+  // Paginacion
 
   const filteredPacientes = pacientes.filter((paciente) =>
     `${paciente.nombres} ${paciente.apellidos}`.toLowerCase().includes(searchTerm.toLowerCase())
@@ -212,167 +197,165 @@ function Pacientes() {
   }
 
   return (
-    <>
-      <PacientesProvider>
-        <Dash>
-          <ModalCrearBeneficiario
-            show={showModal}
-            handleClose={handleCloseModal}
+    <Dash>
+      <PacientesContext.Provider value={{ pacientes, setPacientes }}>
+        <ModalCrearBeneficiario
+          show={showModal}
+          handleClose={handleCloseModal}
+          fetchPacientes={fetchPacientes}
+        />
+        <ModalCrearTrabajador
+          show={showModalTrabajador}
+          handleClose={handleCloseModalTrabajador}
+          fetchPacientes={fetchPacientes}
+        />
+        {pacienteSelected && (
+          <ModalEditBeneficiario
+            show={ShowBeneficiarioEdit}
+            handleClose={handleCloseBeneficiarioEdit}
             fetchPacientes={fetchPacientes}
+            pacienteSelected={pacienteSelected}
           />
-          <ModalCrearTrabajador
-            show={showModalTrabajador}
-            handleClose={handleCloseModalTrabajador}
+        )}
+
+        {pacienteSelected && pacienteSelected.enteId && (
+          <ModalEditTrabajador
+            show={ShowTrabajadorEdit}
+            handleClose={handleCloseTrabajadorEdit}
             fetchPacientes={fetchPacientes}
+            pacienteSelected={pacienteSelected}
           />
-          {pacienteSelected && (
-            <ModalEditBeneficiario
-              show={ShowBeneficiarioEdit}
-              handleClose={handleCloseBeneficiarioEdit}
-              fetchPacientes={fetchPacientes}
-              pacienteSelected={pacienteSelected}
-            />
-          )}
+        )}
 
-          {pacienteSelected && pacienteSelected.enteId && (
-            <ModalEditTrabajador
-              show={ShowTrabajadorEdit}
-              handleClose={handleCloseTrabajadorEdit}
-              fetchPacientes={fetchPacientes}
-              pacienteSelected={pacienteSelected}
-            />
-          )}
-
+        <div
+          className="modal fade"
+          id="modal-delete-paciente"
+          tabIndex="-1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="modalTitleId"
+          aria-hidden="true"
+        >
           <div
-            className="modal fade"
-            id="modal-delete-paciente"
-            tabIndex="-1"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="modalTitleId"
-            aria-hidden="true"
+            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+            role="document"
           >
-            <div
-              className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-              role="document"
-            >
-              <div className="modal-content">
-                <div className="modal-header bg-danger text-white">
-                  <h5 className="modal-title" id="modalTitleId">
-                    Eliminar Paciente
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">{pacienteSelected?.nombres}</div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => closeModalDeletePaciente()}
-                    id="liveToastBtn"
-                  >
-                    Confirmar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card border-white">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center ">
-                <h5 className="card-title">Pacientes</h5>
-
-                <button
-                  type="button"
-                  className="btn btn-primary dropdown-toggle "
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Nuevo Paciente
-                </button>
-
-                <ul className="dropdown-menu">
-                  <li>
-                    <button
-                      className="dropdown-item btn"
-                      onClick={handleShowModalTrabajador}
-                      type="button"
-                    >
-                      Trabajador
-                    </button>
-                  </li>
-                  <li>
-                    <button className="dropdown-item btn" onClick={handleShowModal} type="button">
-                      Beneficiario
-                    </button>
-                  </li>
-                </ul>
-              </div>
-              <div className="container">
-                <div className="form-floating mb-3 mt-3">
-                  <input
-                    type="search"
-                    className="form-control"
-                    id="floatingInput"
-                    placeholder="Buscar"
-                    aria-label="Buscar"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                  />
-                  <label htmlFor="floatingInput">Buscar Paciente</label>
-                </div>
-
-                <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">{displayUsers}</div>
-                <ReactPaginate
-                  previousLabel={'Anterior'}
-                  nextLabel={'Siguiente'}
-                  pageCount={pageCount}
-                  onPageChange={changePage}
-                  containerClassName={'pagination'}
-                  previousLinkClassName={'page-link'}
-                  nextLinkClassName={'page-link'}
-                  disabledClassName={'disabled'}
-                  activeClassName={'active'}
-                  pageClassName={'page-item'}
-                  pageLinkClassName={'page-link'}
-                />
-              </div>
-            </div>
-          </div>
-          {/* Toast */}
-          <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div
-              id="liveToastPa"
-              className="toast"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div className="toast-header">
-                <strong className="me-auto">Notificacion</strong>
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title" id="modalTitleId">
+                  Eliminar Paciente
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
-                  data-bs-dismiss="toast"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="toast-body">{toastMessagePa}</div>
+              <div className="modal-body">{pacienteSelected?.nombres}</div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => closeModalDeletePaciente()}
+                  id="liveToastBtn"
+                >
+                  Confirmar
+                </button>
+              </div>
             </div>
           </div>
-        </Dash>{' '}
-      </PacientesProvider>
-    </>
+        </div>
+        <div className="card border-white">
+          <div className="card-body">
+            <div className="d-flex justify-content-between align-items-center ">
+              <h5 className="card-title">Pacientes</h5>
+
+              <button
+                type="button"
+                className="btn btn-primary dropdown-toggle "
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Nuevo Paciente
+              </button>
+
+              <ul className="dropdown-menu">
+                <li>
+                  <button
+                    className="dropdown-item btn"
+                    onClick={handleShowModalTrabajador}
+                    type="button"
+                  >
+                    Trabajador
+                  </button>
+                </li>
+                <li>
+                  <button className="dropdown-item btn" onClick={handleShowModal} type="button">
+                    Beneficiario
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div className="container">
+              <div className="form-floating mb-3 mt-3">
+                <input
+                  type="search"
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="Buscar"
+                  aria-label="Buscar"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+                <label htmlFor="floatingInput">Buscar Paciente</label>
+              </div>
+
+              <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">{displayUsers}</div>
+              <ReactPaginate
+                previousLabel={'Anterior'}
+                nextLabel={'Siguiente'}
+                pageCount={pageCount}
+                onPageChange={changePage}
+                containerClassName={'pagination'}
+                previousLinkClassName={'page-link'}
+                nextLinkClassName={'page-link'}
+                disabledClassName={'disabled'}
+                activeClassName={'active'}
+                pageClassName={'page-item'}
+                pageLinkClassName={'page-link'}
+              />
+            </div>
+          </div>
+        </div>
+        {/* Toast */}
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToastPa"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificacion</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessagePa}</div>
+          </div>
+        </div>
+      </PacientesContext.Provider>
+    </Dash>
   )
 }
 
