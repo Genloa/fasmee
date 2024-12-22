@@ -129,6 +129,14 @@ if (sequelize instanceof Sequelize) {
           model: Ente,
           key: 'id'
         }
+      },
+      departamentoId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: Departamento,
+          key: 'id'
+        }
       }
     },
     {
@@ -253,14 +261,6 @@ if (sequelize instanceof Sequelize) {
         allowNull: false,
         references: {
           model: Perfil,
-          key: 'id'
-        }
-      },
-      departamentoId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: Departamento,
           key: 'id'
         }
       }
@@ -625,37 +625,6 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  DepartamentoOnPerfil = sequelize.define(
-    'departamento_on_perfil',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      departamentoId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Departamento,
-          key: 'id'
-        }
-      },
-      perfilId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Perfil,
-          key: 'id'
-        }
-      }
-    },
-    {
-      tableName: 'departamentos_on_perfiles',
-      timestamps: true
-    }
-  )
-
   ArticuloOnAlmacen = sequelize.define(
     'articulo_on_almacen',
     {
@@ -707,6 +676,7 @@ if (sequelize instanceof Sequelize) {
 
   Perfil.belongsTo(Ente, { foreignKey: 'enteId', as: 'ente' })
   Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' })
+  Perfil.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
   Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId', as: 'perfilMedico' })
   Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
   Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
@@ -731,12 +701,6 @@ if (sequelize instanceof Sequelize) {
     foreignKey: 'perfilId',
     otherKey: 'rolId'
   })
-  Perfil.belongsToMany(Departamento, {
-    through: DepartamentoOnPerfil,
-    as: 'departamentos',
-    foreignKey: 'perfilId',
-    otherKey: 'departamentoId'
-  })
 
   // Relaciones del modelo perfil_medico
 
@@ -747,18 +711,11 @@ if (sequelize instanceof Sequelize) {
   Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId', as: 'colasPacientes' })
   Departamento.hasMany(Cita, { foreignKey: 'departamentoId', as: 'citas' })
   Departamento.hasMany(Historia, { foreignKey: 'departamentoId', as: 'historias' })
-  Departamento.belongsToMany(Perfil, {
-    through: DepartamentoOnPerfil,
-    as: 'perfiles',
-    foreignKey: 'departamentoId',
-    otherKey: 'perfilId'
-  })
 
   // Relaciones del modelo cita
 
   Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
   Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
-  Cita.belongsTo(Departamento, { foreignKey: 'departamentoId' })
 
   // Relaciones del modelo almacen
 
@@ -843,11 +800,6 @@ if (sequelize instanceof Sequelize) {
 
   RolOnPermiso.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
   RolOnPermiso.belongsTo(Permiso, { foreignKey: 'permisoId', as: 'permiso' })
-
-  // Relaciones del modelo departamento_on_perfil
-
-  DepartamentoOnPerfil.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
-  DepartamentoOnPerfil.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
 
   // Relaciones del modelo articulo_on_almacen
 
