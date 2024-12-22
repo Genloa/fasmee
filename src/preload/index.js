@@ -3,6 +3,9 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
+  //
+  runSeeders: () => ipcRenderer.invoke('runSeeders'),
+
   // Casos de uso para la conexion
   checkConnection: () => ipcRenderer.invoke('checkConnection'),
   reloadApp: () => ipcRenderer.invoke('reloadApp'),
@@ -17,6 +20,7 @@ const api = {
   updateUsuario: (id, data) => ipcRenderer.invoke('updateUsuario', { id, data }),
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
+
   // Casos de uso para pacientes
   createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
   createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
