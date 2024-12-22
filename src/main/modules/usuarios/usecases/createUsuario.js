@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
-import { DepartamentoOnPerfil, Perfil, Rol, Usuario } from '../../../singletons/database/schema'
+import { Departamento, Perfil, Rol, Usuario } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
@@ -20,19 +20,13 @@ ipcMain.handle('createUsuario', async (event, data) => {
           tipo_cedula: data.tipoCedula,
           cedula: data.cedula,
           correo: data.correo,
-          telefono: data.telefono
+          telefono: data.telefono,
+          enteId: 1,
+          departamentoId: data.departamentoId
         }
       },
       {
         include: [{ model: Perfil, as: 'perfil' }]
-      },
-      { transaction: t }
-    )
-
-    const departamento = await DepartamentoOnPerfil.create(
-      {
-        departamentoId: data.departamentoId,
-        perfilId: usuario.perfil.id
       },
       { transaction: t }
     )
@@ -48,6 +42,10 @@ ipcMain.handle('createUsuario', async (event, data) => {
           {
             model: Rol,
             as: 'roles'
+          },
+          {
+            model: Departamento,
+            as: 'departamento'
           }
         ]
       },
@@ -61,7 +59,7 @@ ipcMain.handle('createUsuario', async (event, data) => {
       perfil: {
         ...perfil.toJSON(),
         roles: perfil.roles.map((rol) => rol.toJSON()),
-        departamento: departamento.toJSON()
+        departamento: perfil.departamento.toJSON()
       }
     }
   } catch (error) {

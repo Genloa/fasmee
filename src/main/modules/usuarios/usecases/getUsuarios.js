@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Usuario, Perfil, Rol, Departamento } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Departamento, Perfil, Rol, Usuario } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('getUsuarios', async () => {
   try {
