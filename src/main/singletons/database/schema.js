@@ -12,6 +12,7 @@ let Cita = null
 let Almacen = null
 let Articulo = null
 let Historia = null
+let Archivos = null
 let Rol = null
 let Permiso = null
 let PerfilOnArticulo = null
@@ -387,6 +388,37 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
+  Archivos = sequelize.define(
+    'archivos',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      historiaId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Historia,
+          key: 'id'
+        }
+      },
+      descripcion: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      path: {
+        type: DataTypes.STRING,
+        allowNull: false
+      }
+    },
+    {
+      tableName: 'archivos',
+      timestamps: true
+    }
+  )
+
   Rol = sequelize.define(
     'rol',
     {
@@ -757,6 +789,11 @@ if (sequelize instanceof Sequelize) {
   Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
   Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
   Historia.belongsTo(Departamento, { foreignKey: 'departamentoId' })
+  Historia.hasMany(Archivos, { foreignKey: 'historiaId', as: 'archivos' })
+
+  // Relaciones del modelo archivos
+
+  Archivos.belongsTo(Historia, { foreignKey: 'historiaId', as: 'historia' })
 
   // Relaciones del modelo rol
 
@@ -820,6 +857,7 @@ if (sequelize instanceof Sequelize) {
 
 export {
   Almacen,
+  Archivos,
   Articulo,
   ArticuloOnAlmacen,
   Cita,

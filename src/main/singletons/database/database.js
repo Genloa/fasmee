@@ -60,7 +60,7 @@ class Database {
   async syncModels() {
     try {
       await import('./schema')
-      await this.connection.sync({ alter: false })
+      await this.connection.sync({ alter: true })
       Logger.info('Todos los modelos fueron sincronizados exitosamente.')
     } catch (error) {
       Logger.error('No se pudieron sincronizar los modelos:', error)
