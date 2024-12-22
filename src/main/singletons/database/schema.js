@@ -20,7 +20,6 @@ let ColaPacientes = null
 let PerfilOnBeneficiario = null
 let RolOnPerfil = null
 let RolOnPermiso = null
-let DepartamentoOnPerfil = null
 let ArticuloOnAlmacen = null
 
 if (sequelize instanceof Sequelize) {
@@ -815,7 +814,6 @@ export {
   Cita,
   ColaPacientes,
   Departamento,
-  DepartamentoOnPerfil,
   Ente,
   Historia,
   Perfil,
