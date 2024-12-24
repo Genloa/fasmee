@@ -470,7 +470,7 @@ function TableUsers() {
         : '',
       telefono: user.perfil?.telefono || '',
       correo: user.perfil?.correo || '',
-      departamentoId: user.perfil?.departamentos[0]?.id || 0
+      departamentoId: user.perfil?.departamento.id || 0
     })
   }
 
@@ -890,7 +890,7 @@ function TableUsers() {
                     <Controller
                       name="departamentoId"
                       control={control}
-                      defaultValue={usuarioSelected?.perfil?.departamentos[0]?.id || 0}
+                      defaultValue={usuarioSelected?.perfil?.departamento.id || 0}
                       render={({ field }) => (
                         <div>
                           <Select

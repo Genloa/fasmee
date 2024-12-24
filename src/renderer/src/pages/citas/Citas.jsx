@@ -6,10 +6,12 @@ import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
 
 function Citas() {
+  const [departamentos, setDepartamentos] = useState([])
   const [citasPacientes, setCitasPaciente] = useState([])
 
   useEffect(() => {
     fetchCitasPacientes()
+    fetchDepartamentos()
   }, [])
 
   const fetchCitasPacientes = async () => {
@@ -22,6 +24,12 @@ function Citas() {
     }
   }
 
+  const fetchDepartamentos = async () => {
+    const fetchedDepartamentos = await window.api.getDepartamentos()
+    setDepartamentos(fetchedDepartamentos)
+    console.log('Departamentos:', fetchedDepartamentos)
+  }
+
   const [currentPage, setCurrentPage] = useState(0)
   const usersPerPage = 10
   const pagesVisited = currentPage * usersPerPage
@@ -31,15 +39,48 @@ function Citas() {
     return today.toISOString().split('T')[0] // Formato YYYY-MM-DD
   })
 
+  const [searchDepartamentoName, setSearchDepartamentoName] = useState('')
+
   const handleDateChange = (event) => {
     setSearchDate(event.target.value)
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
 
-  const filteredCitasPacientes = citasPacientes.filter((citaPaciente) => {
-    const citaPacienteDate = new Date(citaPaciente.fecha).toISOString().split('T')[0] // Ajusta según el nombre del campo de fecha
-    return citaPacienteDate === searchDate
-  })
+  const handleDepartamentoNameChange = (event) => {
+    setSearchDepartamentoName(event.target.value)
+    setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
+  }
+
+  const getDepartamentoIdByName = (name) => {
+    const departamento = departamentos.find((d) => d.nombre === name)
+    return departamento ? departamento.id : ''
+  }
+
+  const getDepartamentoNameById = (id) => {
+    const departamento = departamentos.find((d) => d.id === id)
+    return departamento ? departamento.nombre : ''
+  }
+
+  const filteredCitasPacientes = citasPacientes.flatMap((paciente) =>
+    paciente.citasSolicitadas
+      .filter((cita) => {
+        const citaPacienteDate = new Date(cita.fecha_cita).toISOString().split('T')[0]
+        const departamentoId = getDepartamentoIdByName(searchDepartamentoName)
+        return (
+          citaPacienteDate === searchDate &&
+          (!departamentoId || cita.departamentoId === departamentoId)
+        )
+      })
+      .map((cita) => ({
+        ...cita,
+        nombres: paciente.nombres,
+        apellidos: paciente.apellidos,
+        cedula: paciente.cedula,
+        telefono: paciente.telefono,
+        correo: paciente.correo,
+        departamentoName: getDepartamentoNameById(cita.departamentoId) // Obteniendo el nombre del departamento basado en cita.departamentoId
+      }))
+  )
 
   const displayUsers = filteredCitasPacientes
     .slice(pagesVisited, pagesVisited + usersPerPage)
@@ -59,6 +100,13 @@ function Citas() {
             <h5 className="card-title">
               {citaPaciente.nombres} {citaPaciente.apellidos}
             </h5>
+            <p className="card-text">Cédula: {citaPaciente.cedula}</p>
+            <p className="card-text">Teléfono: {citaPaciente.telefono}</p>
+            <p className="card-text">Correo: {citaPaciente.correo}</p>
+            <p className="card-text">
+              Fecha de la cita: {new Date(citaPaciente.fecha_cita).toLocaleString()}
+            </p>
+            <p className="card-text">Departamento: {citaPaciente.departamentoName}</p>
             <div>
               <div
                 className="btn-group btn-group-sm mt-2"
@@ -102,6 +150,24 @@ function Citas() {
             <label htmlFor="floatingInput">Fecha Citas</label>
           </div>
 
+          <div className="form-floating mb-3 mt-3">
+            <select
+              className="form-control"
+              id="floatingDepartamentoName"
+              aria-label="Buscar por Nombre de Departamento"
+              value={searchDepartamentoName}
+              onChange={handleDepartamentoNameChange}
+            >
+              <option value="">Seleccione un Departamento</option>
+              {departamentos.map((departamento) => (
+                <option key={departamento.id} value={departamento.nombre}>
+                  {departamento.nombre}
+                </option>
+              ))}
+            </select>
+            <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
+          </div>
+
           <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">{displayUsers}</div>
           <ReactPaginate
             previousLabel={'Anterior'}
@@ -121,5 +187,4 @@ function Citas() {
     </>
   )
 }
-
 export default Citas
