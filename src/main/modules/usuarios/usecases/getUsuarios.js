@@ -15,7 +15,7 @@ ipcMain.handle('getUsuarios', async () => {
             },
             {
               model: Departamento,
-              as: 'departamentos'
+              as: 'departamento'
             }
           ]
         }
