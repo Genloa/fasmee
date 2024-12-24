@@ -10,6 +10,12 @@ ipcMain.handle('updateUserRol', async (event, { perfilId, rolId }) => {
       throw new Error('perfilId o rolId no pueden ser nulos.')
     }
 
+    await RolOnPerfil.destroy({
+      where: {
+        perfilId: perfilId
+      }
+    })
+
     // Crear la relación entre el perfil y el rol
     await RolOnPerfil.create(
       {

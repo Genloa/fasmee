@@ -315,8 +315,7 @@ function Usuarios() {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  {' '}
-                  Cancelar{' '}
+                  Cancelar
                 </button>
                 <button
                   type="submit"
@@ -324,7 +323,7 @@ function Usuarios() {
                   form="form-create-user"
                   id="liveToastBtnCrear"
                 >
-                  Guardar Usuario{' '}
+                  Guardar Usuario
                 </button>
               </div>
             </div>
@@ -448,21 +447,9 @@ function TableUsers() {
       }
 
       const usuario = await window.api.updateUserRol(usuarioSelected.perfil.id, selectedRol)
-      console.log(usuario)
-      setUsuarios((prevUsuarios) =>
-        prevUsuarios.map((u) =>
-          u.id === usuario.id
-            ? {
-                ...u,
-                perfil: {
-                  ...u.perfil,
-                  ...usuario.perfil, // Combina el perfil existente con el actualizado, incluyendo roles
-                  roles: usuario.perfil.roles // Asegúrate de que los roles se asignen correctamente
-                }
-              }
-            : u
-        )
-      )
+      setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
+      fetchUsers()
+
       console.log('todos los usuarios', usuarios)
 
       setToastMessage('Rol asignado correctamente')
@@ -483,13 +470,12 @@ function TableUsers() {
     const fetchedUsers = await window.api.getUsuarios()
     setUsuarios(fetchedUsers)
     setUsuarioSelected(fetchedUsers[0])
-    console.log(fetchedUsers)
   }
 
   const fetchRoles = async () => {
     const fetchedRoles = await window.api.getRoles()
     setRoles(fetchedRoles)
-    console.log(fetchedRoles)
+    setSelectedRol(fetchedRoles[0].id)
   }
 
   const fetchDepartamentos = async () => {
@@ -663,7 +649,7 @@ function TableUsers() {
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h5 className="modal-title" id="modalTitleId">
-                Asignar Rol Usuario {usuarioSelected?.perfil.nombres}{' '}
+                Asignar Rol Usuario {usuarioSelected?.perfil.nombres}
                 {usuarioSelected?.perfil.apellidos}
               </h5>
             </div>
