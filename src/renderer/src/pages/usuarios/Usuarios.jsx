@@ -64,7 +64,7 @@ function Usuarios() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
-  function openModalCrearUser() {
+  const openModalCrearUser = () => {
     let modal = new Modal(modalCrearUserRef)
     modal.show()
   }
@@ -378,18 +378,20 @@ function Usuarios() {
 }
 
 function TableUsers() {
-  //paginacion
-  const [currentPage, setCurrentPage] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
-  const usersPerPage = 3
-  // usuarios
+  // Usuarios
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
-  const [showPassword, setShowPassword] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
   const [roles, setRoles] = useState([])
   const [selectedRol, setSelectedRol] = useState('')
   const [departamentos, setDepartamentos] = useState([])
+
+  const [showPassword, setShowPassword] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
+
+  // Paginación
+  const [currentPage, setCurrentPage] = useState(0)
+  const [searchTerm, setSearchTerm] = useState('')
+  const usersPerPage = 3
 
   const {
     register,
@@ -423,93 +425,6 @@ function TableUsers() {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
-  const modalEditUserRef = document.getElementById('modal-edit-user')
-  const modalDeleteUserRef = document.getElementById('modal-delete-user')
-  const modalRolUserRef = document.getElementById('modal-rol-user')
-  const fetchUsers = async () => {
-    const fetchedUsers = await window.api.getUsuarios()
-    setUsuarios(fetchedUsers)
-    setUsuarioSelected(fetchedUsers[0])
-    console.log(fetchedUsers)
-  }
-
-  useEffect(() => {
-    fetchUsers()
-    fetchRoles()
-    fetchDepartamentos()
-  }, [])
-
-  const departamentoOptions = departamentos.map((departamento) => ({
-    value: departamento.id,
-    label: departamento.nombre
-  }))
-
-  // FETCH
-  const fetchDepartamentos = async () => {
-    const fetchedDepartamentos = await window.api.getDepartamentos()
-    setDepartamentos(fetchedDepartamentos)
-  }
-
-  function openModalEditUser(id) {
-    let user = usuarios.find((user) => user.id === id)
-    setUsuarioSelected(user)
-    let modal = new Modal(modalEditUserRef)
-    modal.show()
-
-    reset({
-      mode: 'onChange',
-      nombres: user.perfil?.nombres || '',
-      apellidos: user.perfil?.apellidos || '',
-      tipoCedula: user.perfil?.tipo_cedula || 'V',
-      cedula: user.perfil?.cedula || '',
-      username: user?.username || '',
-      password: user?.password || '',
-      confirmtPassword: user?.password || '',
-      fechaNacimiento: user.perfil?.fecha_nacimiento
-        ? new Date(user.perfil.fecha_nacimiento).toISOString().split('T')[0]
-        : '',
-      telefono: user.perfil?.telefono || '',
-      correo: user.perfil?.correo || '',
-      departamentoId: user.perfil?.departamento.id || 0
-    })
-  }
-
-  function closeModalEditUser() {
-    const modal = Modal.getInstance(modalEditUserRef)
-    modal.hide()
-  }
-
-  function openModalDeleteUser(id) {
-    let user = usuarios.find((user) => user.id === id)
-    setUsuarioSelected(user)
-    let modal = new Modal(modalDeleteUserRef)
-    modal.show()
-  }
-
-  async function closeModalDeleteUser() {
-    try {
-      // Eliminar el usuario
-      await window.api.deleteUsuario(usuarioSelected.id)
-
-      // Actualizar el estado de usuarios
-      setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
-
-      setToastMessage('Usuario eliminado correctamente')
-
-      // Cerrar el modal
-      const modal = Modal.getInstance(modalDeleteUserRef)
-      modal.hide()
-
-      // Mostrar el toast
-      const toastElement = document.getElementById('liveToast')
-      const toast = new Toast(toastElement)
-      toast.show()
-    } catch (error) {
-      console.error('Error al eliminar el usuario:', error)
-      // Aquí podrías mostrar un toast de error si lo deseas
-    }
-  }
-
   const onSubmit = async (data) => {
     let usuario = await window.api.updateUsuario(usuarioSelected.id, data)
     setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
@@ -522,21 +437,6 @@ function TableUsers() {
     toast.show()
   }
 
-  const handleSelectChange = (event) => {
-    setSelectedRol(Number(event.target.value))
-  }
-
-  const fetchRoles = async () => {
-    const fetchedRoles = await window.api.getRoles()
-    setRoles(fetchedRoles)
-    console.log(fetchedRoles)
-  }
-  function openModalRolUser(id) {
-    let user = usuarios.find((user) => user.id === id)
-    setUsuarioSelected(user)
-    let modal = new Modal(modalRolUserRef)
-    modal.show()
-  }
   const onSubmitRol = async () => {
     try {
       if (!usuarioSelected) {
@@ -577,7 +477,116 @@ function TableUsers() {
     }
   }
 
-  //paginacion
+  // FETCH
+
+  const fetchUsers = async () => {
+    const fetchedUsers = await window.api.getUsuarios()
+    setUsuarios(fetchedUsers)
+    setUsuarioSelected(fetchedUsers[0])
+    console.log(fetchedUsers)
+  }
+
+  const fetchRoles = async () => {
+    const fetchedRoles = await window.api.getRoles()
+    setRoles(fetchedRoles)
+    console.log(fetchedRoles)
+  }
+
+  const fetchDepartamentos = async () => {
+    const fetchedDepartamentos = await window.api.getDepartamentos()
+    setDepartamentos(fetchedDepartamentos)
+  }
+
+  useEffect(() => {
+    fetchUsers()
+    fetchRoles()
+    fetchDepartamentos()
+  }, [])
+
+  const departamentoOptions = departamentos.map((departamento) => ({
+    value: departamento.id,
+    label: departamento.nombre
+  }))
+
+  const modalEditUserRef = document.getElementById('modal-edit-user')
+
+  const openModalEditUser = (id) => {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalEditUserRef)
+    modal.show()
+
+    reset({
+      mode: 'onChange',
+      nombres: user.perfil?.nombres || '',
+      apellidos: user.perfil?.apellidos || '',
+      tipoCedula: user.perfil?.tipo_cedula || 'V',
+      cedula: user.perfil?.cedula || '',
+      username: user?.username || '',
+      password: user?.password || '',
+      confirmtPassword: user?.password || '',
+      fechaNacimiento: user.perfil?.fecha_nacimiento
+        ? new Date(user.perfil.fecha_nacimiento).toISOString().split('T')[0]
+        : '',
+      telefono: user.perfil?.telefono || '',
+      correo: user.perfil?.correo || '',
+      departamentoId: user.perfil?.departamento.id || 0
+    })
+  }
+
+  const closeModalEditUser = () => {
+    const modal = Modal.getInstance(modalEditUserRef)
+    modal.hide()
+  }
+
+  const modalDeleteUserRef = document.getElementById('modal-delete-user')
+
+  const openModalDeleteUser = (id) => {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalDeleteUserRef)
+    modal.show()
+  }
+
+  const closeModalDeleteUser = async () => {
+    try {
+      // Eliminar el usuario
+      await window.api.deleteUsuario(usuarioSelected.id)
+
+      // Actualizar el estado de usuarios
+      setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
+
+      setToastMessage('Usuario eliminado correctamente')
+
+      // Cerrar el modal
+      const modal = Modal.getInstance(modalDeleteUserRef)
+      modal.hide()
+
+      // Mostrar el toast
+      const toastElement = document.getElementById('liveToast')
+      const toast = new Toast(toastElement)
+      toast.show()
+    } catch (error) {
+      console.error('Error al eliminar el usuario:', error)
+      // Aquí podrías mostrar un toast de error si lo deseas
+    }
+  }
+
+  const modalRolUserRef = document.getElementById('modal-rol-user')
+
+  const openModalRolUser = (id) => {
+    let user = usuarios.find((user) => user.id === id)
+    setUsuarioSelected(user)
+    let modal = new Modal(modalRolUserRef)
+    modal.show()
+  }
+
+  const handleSelectChange = (event) => {
+    setSelectedRol(Number(event.target.value))
+  }
+
+  // Search
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
@@ -588,6 +597,8 @@ function TableUsers() {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   )
+
+  // Paginación
 
   const pagesVisited = currentPage * usersPerPage
   const displayUsers = filteredUsuarios
@@ -626,7 +637,6 @@ function TableUsers() {
         </td>
       </tr>
     ))
-
   const pageCount = Math.ceil(filteredUsuarios.length / usersPerPage)
 
   const changePage = ({ selected }) => {
