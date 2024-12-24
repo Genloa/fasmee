@@ -4,3 +4,5 @@ import './usecases/getUsuarios'
 import './usecases/updateUsuario'
 
 import './usecases/updateUserRol'
+
+import './usecases/getMedicos'

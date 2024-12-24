@@ -20,7 +20,7 @@ const api = {
   updateUsuario: (id, data) => ipcRenderer.invoke('updateUsuario', { id, data }),
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
-
+  getMedicos: () => ipcRenderer.invoke('getMedicos'),
   // Casos de uso para pacientes
   createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
   createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
