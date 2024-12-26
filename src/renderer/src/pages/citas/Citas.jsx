@@ -2,13 +2,19 @@ import Dash from '../../components/layouts/Dash'
 import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-icons'
+import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { useEffect } from 'react'
+import ModalCrearCita from './components/ModalCrearCita'
 
 function Citas() {
   const [departamentos, setDepartamentos] = useState([])
   const [citasPacientes, setCitasPaciente] = useState([])
   const [medicos, setMedicos] = useState([])
+
+  //modal crear
+  const [showModal, setShowModal] = useState(false)
+  const handleShowModal = () => setShowModal(true)
+  const handleCloseModal = () => setShowModal(false)
 
   useEffect(() => {
     fetchCitasPacientes()
@@ -65,6 +71,7 @@ function Citas() {
 
   const handleDepartamentoNameChange = (event) => {
     setSearchDepartamentoName(event.target.value)
+    setSearchMedicoName('') // Reinicia la selección de médicos al cambiar el departamento
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
 
@@ -84,14 +91,19 @@ function Citas() {
   }
 
   const getMedicoIdByName = (name) => {
-    const medico = medicos.find((m) => m.nombres === name)
+    const medico = medicos.find((m) => `${m.nombres} ${m.apellidos}` === name)
     return medico ? medico.id : ''
   }
 
   const getMedicoNameById = (id) => {
     const medico = medicos.find((m) => m.id === id)
-    return medico ? medico.nombres : ''
+    return medico ? `${medico.nombres} ${medico.apellidos}` : ''
   }
+
+  const filteredMedicos = medicos.filter((medico) => {
+    const departamentoId = getDepartamentoIdByName(searchDepartamentoName)
+    return !departamentoId || medico.departamentoId === departamentoId
+  })
 
   const filteredCitasPacientes = citasPacientes.flatMap((paciente) =>
     paciente.citasSolicitadas
@@ -102,7 +114,7 @@ function Citas() {
         return (
           (!searchDate || citaPacienteDate === searchDate) &&
           (!searchDepartamentoName || cita.departamentoId === departamentoId) &&
-          (!searchMedicoName || cita.medicoId === medicoId)
+          (!searchMedicoName || cita.perfilId === medicoId)
         )
       })
       .map((cita) => ({
@@ -113,7 +125,7 @@ function Citas() {
         telefono: paciente.telefono,
         correo: paciente.correo,
         departamentoName: getDepartamentoNameById(cita.departamentoId),
-        medicoName: getMedicoNameById(cita.medicoId) // Obteniendo el nombre del doctor basado en cita.medicoId
+        medicoName: getMedicoNameById(cita.perfilId) // Obteniendo el nombre del doctor basado en cita.medicoId
       }))
   )
 
@@ -130,13 +142,6 @@ function Citas() {
         <td>{citaPaciente.medicoName}</td>
 
         <td className="text-end">
-          <button
-            type="button"
-            className="btn btn-sm btn-primary me-2"
-            //onClick={() => openModalRolUser(user.id)}
-          >
-            <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
-          </button>
           <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
             <button
               type="button"
@@ -166,15 +171,18 @@ function Citas() {
   return (
     <>
       <Dash>
+        <ModalCrearCita
+          show={showModal}
+          handleClose={handleCloseModal}
+          fetchPacientes={fetchCitasPacientes}
+          departamentos={departamentos}
+          medico={medicos}
+        />
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title">Citas</h5>
             <div className="text-end">
-              <button
-                type="button"
-                className="btn btn-primary"
-                //onClick={() => openModalCrearUser()}
-              >
+              <button type="button" className="btn btn-primary" onClick={handleShowModal}>
                 Nueva Cita
               </button>
             </div>
@@ -218,9 +226,9 @@ function Citas() {
                   value={searchMedicoName}
                   onChange={handleMedicoNameChange}
                 >
-                  <option value=""></option>
-                  {medicos.map((medico) => (
-                    <option key={medico.id} value={medico.nombres}>
+                  <option value="">Seleccione un Doctor</option>
+                  {filteredMedicos.map((medico) => (
+                    <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
                       {medico.nombres} {medico.apellidos}
                     </option>
                   ))}
