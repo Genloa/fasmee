@@ -19,6 +19,7 @@ function Citas() {
     try {
       const fetchedCitasPacientes = await window.api.getCitasPacientes()
       setCitasPaciente(fetchedCitasPacientes)
+      console.log('Citas pacientes:', fetchedCitasPacientes)
     } catch (error) {
       console.error('Error fetching citas pacientes:', error)
     }
@@ -31,12 +32,14 @@ function Citas() {
     const departamentosFil = fetchedDepartamentos.filter((d) => !excludedIds.includes(d.id))
 
     setDepartamentos(departamentosFil)
+    console.log('Departamentos:', departamentosFil)
   }
 
   const fetchMedicos = async () => {
     try {
       const fetchedMedicos = await window.api.getMedicos()
       setMedicos(fetchedMedicos)
+      console.log('Medicos:', fetchedMedicos)
     } catch (error) {
       console.error('Error fetching Medicos:', error)
     }
