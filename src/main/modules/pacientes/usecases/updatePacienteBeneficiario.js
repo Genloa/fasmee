@@ -64,7 +64,6 @@ ipcMain.handle('updatePacienteBeneficiario', async (event, { id, data }) => {
       perfilId: perfilOnBeneficiario.perfilId
     }
 
-    console.log(beneficiario, 'beneficiario------------------')
     return beneficiario
   } catch (error) {
     console.error('Error creating paciente and perfil:', error)

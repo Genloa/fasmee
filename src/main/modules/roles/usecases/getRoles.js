@@ -5,7 +5,6 @@ ipcMain.handle('getRoles', async () => {
   try {
     const roles = await Rol.findAll()
     const RolSerializables = roles.map((rol) => rol.toJSON())
-    console.log(RolSerializables)
     return RolSerializables
   } catch (error) {
     console.error('Error fetching roles:', error)

@@ -1,6 +1,6 @@
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown, Modal, Toast } from 'bootstrap'
+import { Modal, Toast } from 'bootstrap'
 import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Dash from '../../components/layouts/Dash'
@@ -11,31 +11,36 @@ import ModalEditTrabajador from './components/ModalEditTrabajador'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
-function Pacientes() {
+export default function Pacientes() {
   // Pacientes
   const [pacientes, setPacientes] = useState([])
   const [pacienteSelected, setPacienteSelected] = useState(null)
-  const [toastMessagePa, setToastMessagePa] = useState('')
 
-  // Modales
+  // Modales crear
   const [showModal, setShowModal] = useState(false)
   const [showModalTrabajador, setShowModalTrabajador] = useState(false)
-  const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
+
+  // Modales Editar
   const [ShowBeneficiarioEdit, setShowBeneficiarioEdit] = useState(false)
+  const [ShowTrabajadorEdit, setShowTrabajadorEdit] = useState(false)
+
+  // Toast
+  const [toastMessagePa, setToastMessagePa] = useState('')
 
   // Paginacion
   const [currentPage, setCurrentPage] = useState(0)
-  const [searchTerm, setSearchTerm] = useState('')
-
   const usersPerPage = 3
   const pagesVisited = currentPage * usersPerPage
 
-  const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
-
+  // Busqueda
+  const [searchTerm, setSearchTerm] = useState('')
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value)
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
+
+  // Modal Eliminar Paciente
+  const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
 
   // Modal Beneficiario
   const handleShowModal = () => setShowModal(true)
@@ -69,7 +74,6 @@ function Pacientes() {
     let modal = new Modal(modalDeletePacienteRef)
     modal.show()
   }
-
   const closeModalDeletePaciente = async () => {
     try {
       // Eliminar el usuario
@@ -77,7 +81,6 @@ function Pacientes() {
       const beneficiariosEliminados = Array.isArray(response.beneficiariosEliminados)
         ? response.beneficiariosEliminados
         : []
-      console.log(beneficiariosEliminados)
 
       // Actualizar el estado de usuarios falta
       setPacientes((prevPacientes) =>
@@ -118,10 +121,10 @@ function Pacientes() {
   useEffect(() => {
     fetchPacientes()
 
-    const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
-    dropdownMenus.forEach((dropdownMenu) => {
-      new Dropdown(dropdownMenu)
-    })
+    // const dropdownMenus = document.querySelectorAll('.dropdown-toggle')
+    // dropdownMenus.forEach((dropdownMenu) => {
+    //   new Dropdown(dropdownMenu)
+    // })
   }, [])
 
   // Paginacion
@@ -204,11 +207,6 @@ function Pacientes() {
           handleClose={handleCloseModal}
           fetchPacientes={fetchPacientes}
         />
-        <ModalCrearTrabajador
-          show={showModalTrabajador}
-          handleClose={handleCloseModalTrabajador}
-          fetchPacientes={fetchPacientes}
-        />
         {pacienteSelected && (
           <ModalEditBeneficiario
             show={ShowBeneficiarioEdit}
@@ -218,6 +216,11 @@ function Pacientes() {
           />
         )}
 
+        <ModalCrearTrabajador
+          show={showModalTrabajador}
+          handleClose={handleCloseModalTrabajador}
+          fetchPacientes={fetchPacientes}
+        />
         {pacienteSelected && pacienteSelected.enteId && (
           <ModalEditTrabajador
             show={ShowTrabajadorEdit}
@@ -359,4 +362,4 @@ function Pacientes() {
   )
 }
 
-export default Pacientes
+export { PacientesContext }

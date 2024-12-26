@@ -1,10 +1,11 @@
 import { Toast } from 'bootstrap'
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useContext, useEffect, useState } from 'react'
 import FormPacienteTrabajador from '../../../forms/FormPacienteTrabajador'
+import { PacientesContext } from '../Pacientes'
 
 function ModalEditTrabajador({ show, handleClose, fetchPacientes, pacienteSelected }) {
-  const [pacientes, setPacientes] = useState([])
+  const { setPacientes } = useContext(PacientesContext)
   const [toastMessage, setToastMessage] = useState('')
   const [showToastTrabajadorEdit, setShowToastTrabajadorEdit] = useState(false)
   const [entes, setEntes] = useState([])
@@ -60,14 +61,12 @@ function ModalEditTrabajador({ show, handleClose, fetchPacientes, pacienteSelect
 
   const onSubmitTrabajador = async (data) => {
     let pacienteTrabajador = await window.api.updatePacienteTrabajador(pacienteSelected.id, data)
-    console.log(pacienteTrabajador)
     fetchPacientes()
     if (pacienteTrabajador) {
       setPacientes((prevPacientes) =>
         prevPacientes.map((p) => (p.id === pacienteTrabajador.id ? pacienteTrabajador : p))
       )
       setToastMessage('Trabajador actualizado correctamente')
-      console.log(pacientes)
     } else {
       setToastMessage('No se pudo actualizar el trabajador')
     }

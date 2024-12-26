@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { beneficiarioSchema } from '../validations/beneficiarioSchema'
-import Select from 'react-select'
-import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { beneficiarioSchema } from '../validations/beneficiarioSchema'
 
 function FormPacienteBeneficiario({
   onSubmit,
@@ -42,6 +41,7 @@ function FormPacienteBeneficiario({
     }
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
+
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
       <div className="row mt-4">
@@ -152,7 +152,6 @@ function FormPacienteBeneficiario({
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="trabajador"
@@ -294,8 +293,7 @@ function FormPacienteBeneficiario({
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}
