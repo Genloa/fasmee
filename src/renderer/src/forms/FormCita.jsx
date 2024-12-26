@@ -1,12 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { beneficiarioSchema } from '../validations/beneficiarioSchema'
+import { citaSchema } from '../validations/citaSchema'
 import Select from 'react-select'
 import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handleClose }) {
+  const [pacientes, setPacientes] = useState([])
+
   const {
     register,
     handleSubmit,
@@ -18,6 +20,35 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
     defaultValues,
     resolver: zodResolver(citaSchema)
   })
+
+  useEffect(() => {
+    fetchPacientes()
+  }, [])
+
+  const fetchPacientes = async () => {
+    try {
+      const fetchedPacientes = await window.api.getPacientes()
+      setPacientes(fetchedPacientes)
+      console.log('Pacientes:', fetchedPacientes)
+    } catch (error) {
+      console.error('Error fetching pacientes:', error)
+    }
+  }
+
+  const pacienteOptions = pacientes.map((paciente) => ({
+    value: paciente.id,
+    label: paciente.cedula
+  }))
+
+  const medicoOptions = medicos.map((medico) => ({
+    value: medico.id,
+    label: medico.nombre
+  }))
+
+  const departamentoOptions = departamentos.map((departamento) => ({
+    value: departamento.id,
+    label: departamento.nombre
+  }))
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {

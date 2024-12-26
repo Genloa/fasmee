@@ -3,10 +3,12 @@ import { useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
-import { useEffect } from 'react'
+import { createContext, useEffect } from 'react'
 import ModalCrearCita from './components/ModalCrearCita'
 
-function Citas() {
+const CitasPacientesContext = createContext({ citasPacientes: [], setCitasPacientes: () => {} })
+
+export default function Citas() {
   const [departamentos, setDepartamentos] = useState([])
   const [citasPacientes, setCitasPaciente] = useState([])
   const [medicos, setMedicos] = useState([])
@@ -171,105 +173,109 @@ function Citas() {
   return (
     <>
       <Dash>
-        <ModalCrearCita
-          show={showModal}
-          handleClose={handleCloseModal}
-          fetchPacientes={fetchCitasPacientes}
-          departamentos={departamentos}
-          medico={medicos}
-        />
-        <div className="card border-white">
-          <div className="card-body">
-            <h5 className="card-title">Citas</h5>
-            <div className="text-end">
-              <button type="button" className="btn btn-primary" onClick={handleShowModal}>
-                Nueva Cita
-              </button>
-            </div>
-            <div className="d-flex flex-wrap justify-content-around mb-4">
-              <div className="col form-floating mb-3 mt-3 me-3">
-                <input
-                  type="date"
-                  className="form-control"
-                  id="floatingInput"
-                  placeholder="Buscar"
-                  aria-label="Buscar"
-                  value={searchDate}
-                  onChange={handleDateChange}
-                />
-                <label htmlFor="floatingInput">Fecha Citas</label>
-              </div>
+        <CitasPacientesContext.Provider value={{ citasPacientes, setCitasPaciente }}>
+          {departamentos && medicos && (
+            <ModalCrearCita
+              show={showModal}
+              handleClose={handleCloseModal}
+              fetchPacientes={fetchCitasPacientes}
+              departamentos={departamentos}
+              medico={medicos}
+            />
+          )}
 
-              <div className="col form-floating mb-3 mt-3 me-3">
-                <select
-                  className="form-control"
-                  id="floatingDepartamentoName"
-                  aria-label="Buscar por Nombre de Departamento"
-                  value={searchDepartamentoName}
-                  onChange={handleDepartamentoNameChange}
-                >
-                  <option value="">Seleccione un Departamento</option>
-                  {departamentos.map((departamento) => (
-                    <option key={departamento.id} value={departamento.nombre}>
-                      {departamento.nombre}
-                    </option>
-                  ))}
-                </select>
-                <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
+          <div className="card border-white">
+            <div className="card-body">
+              <h5 className="card-title">Citas</h5>
+              <div className="text-end">
+                <button type="button" className="btn btn-primary" onClick={handleShowModal}>
+                  Nueva Cita
+                </button>
               </div>
+              <div className="d-flex flex-wrap justify-content-around mb-4">
+                <div className="col form-floating mb-3 mt-3 me-3">
+                  <input
+                    type="date"
+                    className="form-control"
+                    id="floatingInput"
+                    placeholder="Buscar"
+                    aria-label="Buscar"
+                    value={searchDate}
+                    onChange={handleDateChange}
+                  />
+                  <label htmlFor="floatingInput">Fecha Citas</label>
+                </div>
 
-              <div className="col form-floating mb-3 mt-3">
-                <select
-                  className="form-control"
-                  id="floatingMedicoName"
-                  aria-label="Buscar por Nombre de Doctor"
-                  value={searchMedicoName}
-                  onChange={handleMedicoNameChange}
-                >
-                  <option value="">Seleccione un Doctor</option>
-                  {filteredMedicos.map((medico) => (
-                    <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
-                      {medico.nombres} {medico.apellidos}
-                    </option>
-                  ))}
-                </select>
-                <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
+                <div className="col form-floating mb-3 mt-3 me-3">
+                  <select
+                    className="form-control"
+                    id="floatingDepartamentoName"
+                    aria-label="Buscar por Nombre de Departamento"
+                    value={searchDepartamentoName}
+                    onChange={handleDepartamentoNameChange}
+                  >
+                    <option value="">Seleccione un Departamento</option>
+                    {departamentos.map((departamento) => (
+                      <option key={departamento.id} value={departamento.nombre}>
+                        {departamento.nombre}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
+                </div>
+
+                <div className="col form-floating mb-3 mt-3">
+                  <select
+                    className="form-control"
+                    id="floatingMedicoName"
+                    aria-label="Buscar por Nombre de Doctor"
+                    value={searchMedicoName}
+                    onChange={handleMedicoNameChange}
+                  >
+                    <option value="">Seleccione un Doctor</option>
+                    {filteredMedicos.map((medico) => (
+                      <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
+                        {medico.nombres} {medico.apellidos}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
+                </div>
               </div>
-            </div>
-            <div className="mt-5">
-              <div className="container">
-                <table className="table table-sm table-hover align-middle">
-                  <thead>
-                    <tr>
-                      <th scope="col">Paciente</th>
-                      <th scope="col">Cedula</th>
-                      <th scope="col">Fecha de Cita</th>
-                      <th scope="col">Departamento</th>
-                      <th scope="col">Medico</th>
-                    </tr>
-                  </thead>
-                  <tbody>{displayUsers}</tbody>
-                </table>
+              <div className="mt-5">
+                <div className="container">
+                  <table className="table table-sm table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Paciente</th>
+                        <th scope="col">Cedula</th>
+                        <th scope="col">Fecha de Cita</th>
+                        <th scope="col">Departamento</th>
+                        <th scope="col">Medico</th>
+                      </tr>
+                    </thead>
+                    <tbody>{displayUsers}</tbody>
+                  </table>
 
-                <ReactPaginate
-                  previousLabel={'Anterior'}
-                  nextLabel={'Siguiente'}
-                  pageCount={pageCount}
-                  onPageChange={changePage}
-                  containerClassName={'pagination'}
-                  previousLinkClassName={'page-link'}
-                  nextLinkClassName={'page-link'}
-                  disabledClassName={'disabled'}
-                  activeClassName={'active'}
-                  pageClassName={'page-item'}
-                  pageLinkClassName={'page-link'}
-                />
+                  <ReactPaginate
+                    previousLabel={'Anterior'}
+                    nextLabel={'Siguiente'}
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    containerClassName={'pagination'}
+                    previousLinkClassName={'page-link'}
+                    nextLinkClassName={'page-link'}
+                    disabledClassName={'disabled'}
+                    activeClassName={'active'}
+                    pageClassName={'page-item'}
+                    pageLinkClassName={'page-link'}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </CitasPacientesContext.Provider>
       </Dash>
     </>
   )
 }
-export default Citas

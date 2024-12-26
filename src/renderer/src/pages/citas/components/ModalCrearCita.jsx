@@ -1,7 +1,7 @@
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import FormCita from '../forms/FormCita'
+import FormCita from '../../../forms/FormCita'
 
 function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos, medicos }) {
   //  const [citasPacientes, setCitasPaciente] = useState([])
