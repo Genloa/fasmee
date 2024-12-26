@@ -41,7 +41,9 @@ const api = {
   getDepartamentos: () => ipcRenderer.invoke('getDepartamentos'),
 
   // Casos de uso para Citas
-  getCitasPacientes: () => ipcRenderer.invoke('getCitasPacientes')
+  getCitasPacientes: () => ipcRenderer.invoke('getCitasPacientes'),
+  createCita: (data) => ipcRenderer.invoke('createCita', data),
+  validateCita: (data) => ipcRenderer.invoke('validateCita', data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

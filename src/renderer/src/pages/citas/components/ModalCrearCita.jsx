@@ -1,12 +1,14 @@
 import { Toast } from 'bootstrap'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import FormCita from '../../../forms/FormCita'
+import { CitasPacientesContext } from '../Citas'
 
 function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos, medicos }) {
-  //  const [citasPacientes, setCitasPaciente] = useState([])
-  //const [toastMessage, setToastMessage] = useState('')
+  const { citasPacientes, setCitasPaciente } = useContext(CitasPacientesContext) // Desestructurar el contexto correctamente
+  const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
 
   // HOOK
 
@@ -26,11 +28,30 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
     medicoId: 0
   }
 
-  const onSubmitCita = async (data) => {
-    console.log(data)
-    fetchCitasPacientes()
-    setShowToast(true)
-    handleClose(true)
+  const onSubmitCita = async (data, resetForm) => {
+    try {
+      console.log(data)
+      const disponibilidadCita = await window.api.validateCita(data)
+      if (disponibilidadCita) {
+        const nuevaCita = await window.api.createCita(data)
+        console.log('Cita creada:', nuevaCita)
+        if (nuevaCita) {
+          setCitasPaciente([...citasPacientes, nuevaCita])
+          fetchCitasPacientes()
+          setToastMessage('Cita creada correctamente')
+          setShowToast(true)
+          handleClose(true)
+          resetForm() // Resetear el formulario después de crear la cita
+          setAlertMessage('') // Ocultar el mensaje de alerta
+        } else {
+          setToastMessage('No se pudo Crear Cita')
+        }
+      } else {
+        setAlertMessage('No hay disponibilidad para la fecha seleccionada.')
+      }
+    } catch (error) {
+      console.error('Error creando la cita:', error)
+    }
   }
 
   return (
@@ -57,13 +78,19 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
               ></button>
             </div>
             <div className="modal-body m-2">
+              {alertMessage && (
+                <div className="alert alert-danger" role="alert">
+                  {alertMessage}
+                </div>
+              )}
               <FormCita
                 onSubmit={onSubmitCita}
                 defaultValues={defaultValues}
                 departamentos={departamentos}
-                medico={medicos}
+                medicos={medicos} // Cambiar medico a medicos
                 mode="create"
                 handleClose={handleClose}
+                clearAlert={() => setAlertMessage('')} // Pasar la función para limpiar el mensaje de alerta
               />
             </div>
           </div>
@@ -86,7 +113,7 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
               aria-label="Close"
             ></button>
           </div>
-          <div className="toast-body"></div>
+          <div className="toast-body">{toastMessage}</div>
         </div>
       </div>
     </>

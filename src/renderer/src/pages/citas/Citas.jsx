@@ -178,9 +178,9 @@ export default function Citas() {
             <ModalCrearCita
               show={showModal}
               handleClose={handleCloseModal}
-              fetchPacientes={fetchCitasPacientes}
+              fetchCitasPacientes={fetchCitasPacientes} // Cambiar fetchPacientes a fetchCitasPacientes
               departamentos={departamentos}
-              medico={medicos}
+              medicos={medicos}
             />
           )}
 
@@ -279,3 +279,5 @@ export default function Citas() {
     </>
   )
 }
+
+export { CitasPacientesContext }

@@ -1,20 +1,29 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { citaSchema } from '../validations/citaSchema'
 import Select from 'react-select'
-import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handleClose }) {
+function FormCita({
+  onSubmit,
+  defaultValues,
+  departamentos,
+  medicos,
+  mode,
+  handleClose,
+  clearAlert
+}) {
   const [pacientes, setPacientes] = useState([])
+  const [filteredMedicos, setFilteredMedicos] = useState([])
 
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    formState: { errors, dirtyFields }
+    formState: { errors, dirtyFields },
+    reset
   } = useForm({
     mode: 'onChange',
     defaultValues,
@@ -24,6 +33,12 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
   useEffect(() => {
     fetchPacientes()
   }, [])
+
+  useEffect(() => {
+    if (defaultValues.departamentoId) {
+      filterMedicos(defaultValues.departamentoId)
+    }
+  }, [defaultValues.departamentoId])
 
   const fetchPacientes = async () => {
     try {
@@ -35,14 +50,19 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
     }
   }
 
+  const filterMedicos = (departamentoId) => {
+    const filtered = medicos.filter((medico) => medico.departamentoId === departamentoId)
+    setFilteredMedicos(filtered)
+  }
+
   const pacienteOptions = pacientes.map((paciente) => ({
     value: paciente.id,
     label: paciente.cedula
   }))
 
-  const medicoOptions = medicos.map((medico) => ({
+  const medicoOptions = filteredMedicos.map((medico) => ({
     value: medico.id,
-    label: medico.nombre
+    label: medico.nombres
   }))
 
   const departamentoOptions = departamentos.map((departamento) => ({
@@ -56,8 +76,20 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
     }
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
+
+  const getSelectClassName = (fieldName) => {
+    if (!dirtyFields[fieldName]) {
+      return ''
+    }
+    return `${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
+  }
+
+  const onSubmitForm = (data) => {
+    onSubmit(data, reset) // Pasar reset como callback
+  }
+
   return (
-    <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
+    <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
       <div className="row mt-4">
         <div className="col">
           <div className="form-floating ">
@@ -67,6 +99,10 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
               id="floatingDate"
               placeholder="fechaCita"
               {...register('fechaCita')}
+              onChange={(e) => {
+                setValue('fechaCita', e.target.value)
+                clearAlert() // Limpiar el mensaje de alerta al cambiar la fecha
+              }}
             />
             <label htmlFor="floatingDate"> fecha de Cita</label>
             {errors.fechaCita?.message && (
@@ -89,6 +125,7 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
                   options={pacienteOptions}
                   placeholder="Buscar Paciente"
                   isClearable
+                  value={pacienteOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
                     setValue('pacienteId', selectedOption ? selectedOption.value : null) // Registrar el valor
@@ -114,11 +151,14 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
                 <Select
                   {...field}
                   options={departamentoOptions}
-                  placeholder="Buscar Trabajador"
+                  placeholder="Buscar Departamento"
                   isClearable
+                  className={getSelectClassName('departamentoId')}
+                  value={departamentoOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => {
-                    field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
-                    setValue('departamentoId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    field.onChange(selectedOption)
+                    setValue('departamentoId', selectedOption ? selectedOption.value : null)
+                    filterMedicos(selectedOption ? selectedOption.value : null)
                   }}
                 />
                 {errors.departamentoId && (
@@ -143,6 +183,8 @@ function FormCita({ onSubmit, defaultValues, departamentos, medicos, mode, handl
                   options={medicoOptions}
                   placeholder="Buscar Medico"
                   isClearable
+                  className={getSelectClassName('medicoId')}
+                  value={medicoOptions.find((option) => option.value === field.value) || null}
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
                     setValue('medicoId', selectedOption ? selectedOption.value : null) // Registrar el valor
@@ -185,7 +227,8 @@ FormCita.propTypes = {
   departamentos: PropTypes.array.isRequired,
   medicos: PropTypes.array.isRequired,
   mode: PropTypes.oneOf(['create', 'edit']).isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  clearAlert: PropTypes.func.isRequired
 }
 
 export default FormCita
