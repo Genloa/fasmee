@@ -1,10 +1,11 @@
 import { Toast } from 'bootstrap'
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useContext, useEffect, useState } from 'react'
 import FormPacienteBeneficiario from '../../../forms/FormPacienteBeneficiario'
+import { PacientesContext } from '../Pacientes'
 
 function ModalCrearBeneficiario({ show, handleClose, fetchPacientes }) {
-  const [pacientes, setPacientes] = useState([])
+  const { pacientes, setPacientes } = useContext(PacientesContext)
   const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
 
@@ -54,7 +55,6 @@ function ModalCrearBeneficiario({ show, handleClose, fetchPacientes }) {
   }
 
   const onSubmitBeneficiario = async (data) => {
-    console.log(pacientes)
     let pacienteBeneficiario = await window.api.createPacienteBeneficiario(data)
     fetchPacientes()
     if (pacienteBeneficiario) {

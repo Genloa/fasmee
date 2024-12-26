@@ -1,10 +1,11 @@
 import { Toast } from 'bootstrap'
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useContext, useEffect, useState } from 'react'
 import FormPacienteBeneficiario from '../../../forms/FormPacienteBeneficiario'
+import { PacientesContext } from '../Pacientes'
 
 function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSelected }) {
-  const [pacientes, setPacientes] = useState([])
+  const { setPacientes } = useContext(PacientesContext)
   const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
 
@@ -33,7 +34,6 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
   const fetchTrabajadores = async () => {
     const fetchedTrabajadores = await window.api.getTrabajadores()
     setTrabajadores(fetchedTrabajadores)
-    console.log(fetchedTrabajadores)
   }
 
   const findTrabajadorIdByBeneficiarioId = (trabajadores, beneficiarioId) => {
@@ -68,23 +68,19 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
     altura: pacienteSelected.perfilMedico.altura
   }
 
-  console.log(defaultValues)
-
   const onSubmitBeneficiario = async (data) => {
-    console.log(pacientes)
-    let pacienteBeneficiario = await window.api.updatePacienteBeneficiario(
-      data,
-      pacienteSelected.id
-    )
+    let beneficiario = await window.api.updatePacienteBeneficiario(data, pacienteSelected.id)
+
     fetchPacientes()
-    if (pacienteBeneficiario) {
+    if (beneficiario) {
       setPacientes((prevPacientes) =>
-        prevPacientes.map((p) => (p.id === pacienteBeneficiario.id ? pacienteBeneficiario : p))
+        prevPacientes.map((p) => (p.id === beneficiario.id ? beneficiario : p))
       )
       setToastMessage('Beneficiario creado correctamente')
     } else {
       setToastMessage('No se pudo crear el usuario')
     }
+
     setShowToast(true)
     handleClose(true)
   }
@@ -105,7 +101,7 @@ function ModalEditBeneficiario({ show, handleClose, fetchPacientes, pacienteSele
                 Editar Paciente Beneficiario
               </h1>
               <button
-                type="submit"
+                type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"

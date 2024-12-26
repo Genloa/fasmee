@@ -1,10 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { trabajadorSchema } from '../validations/trabajadorSchema'
-import Select from 'react-select'
-import { Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useEffect } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { trabajadorSchema } from '../validations/trabajadorSchema'
 function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, handleClose }) {
   const {
     register,
@@ -282,8 +281,7 @@ function FormPacienteTrabajador({ onSubmit, defaultValues, enteOptions, mode, ha
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}

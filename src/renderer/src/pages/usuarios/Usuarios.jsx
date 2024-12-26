@@ -450,8 +450,6 @@ function TableUsers() {
       setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
       fetchUsers()
 
-      console.log('todos los usuarios', usuarios)
-
       setToastMessage('Rol asignado correctamente')
 
       const modal = Modal.getInstance(modalRolUserRef)

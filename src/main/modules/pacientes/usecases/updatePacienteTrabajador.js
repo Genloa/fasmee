@@ -62,7 +62,6 @@ ipcMain.handle('updatePacienteTrabajador', async (event, { id, data }) => {
       ...perfilActualizado.toJSON(), // Usa toJSON() en la instancia, no en el resultado del update
       perfilMedico: perfilMedicoActualizado.toJSON() // Incluye perfilMedico como objeto
     }
-    console.log(trabajador, 'trabajador------------------')
     return trabajador
   } catch (error) {
     console.error('Error actualizando paciente:', error)

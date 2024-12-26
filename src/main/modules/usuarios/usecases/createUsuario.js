@@ -1,6 +1,12 @@
 import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
-import { Departamento, Perfil, Rol, Usuario } from '../../../singletons/database/schema'
+import {
+  Departamento,
+  Perfil,
+  PerfilMedico,
+  Rol,
+  Usuario
+} from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
 
 ipcMain.handle('createUsuario', async (event, data) => {
@@ -48,6 +54,19 @@ ipcMain.handle('createUsuario', async (event, data) => {
             as: 'departamento'
           }
         ]
+      },
+      { transaction: t }
+    )
+
+    await PerfilMedico.create(
+      {
+        perfilId: perfil.id,
+        patologias: null,
+        medicamentos: null,
+        alergias: null,
+        cirugias: null,
+        peso: null,
+        altura: null
       },
       { transaction: t }
     )
