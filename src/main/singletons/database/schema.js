@@ -268,6 +268,14 @@ if (sequelize instanceof Sequelize) {
           model: Perfil,
           key: 'id'
         }
+      },
+      departamentoId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Departamento,
+          key: 'id'
+        }
       }
     },
     {

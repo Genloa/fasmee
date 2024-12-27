@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { createContext, useEffect } from 'react'
 import ModalCrearCita from './components/ModalCrearCita'
-
+import ModalEditCita from './components/ModalEditCita'
+import { Modal, Toast } from 'bootstrap'
 const CitasPacientesContext = createContext({ citasPacientes: [], setCitasPacientes: () => {} })
 
 export default function Citas() {
@@ -17,6 +18,42 @@ export default function Citas() {
   const [showModal, setShowModal] = useState(false)
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
+
+  // Modal Eliminar Cita
+  const modalDeleteCitaRef = document.getElementById('modal-delete-cita')
+  const [citaSelected, setCitaSelected] = useState(null)
+
+  const openModalDeleteCita = (id) => {
+    let cita = citasPacientes
+      .flatMap((paciente) => paciente.citasSolicitadas.map((c) => ({ ...c, paciente })))
+      .find((cita) => cita.id === id)
+    setCitaSelected(cita)
+    console.log('Cita seleccionada:', cita)
+    let modal = new Modal(modalDeleteCitaRef)
+    modal.show()
+  }
+
+  const closeModalDeleteCita = async () => {
+    try {
+      // Eliminar la cita
+      await window.api.deleteCita(citaSelected.id)
+      setCitasPaciente((prevCitas) =>
+        prevCitas.map((paciente) => ({
+          ...paciente,
+          citasSolicitadas: paciente.citasSolicitadas.filter((cita) => cita.id !== citaSelected.id)
+        }))
+      )
+      setToastMessage('Cita eliminada correctamente')
+      setShowToast(true)
+
+      // Cerrar el modal
+      const modal = Modal.getInstance(modalDeleteCitaRef)
+      modal.hide()
+    } catch (error) {
+      console.error('Error al eliminar la cita:', error)
+      // Aquí podrías mostrar un toast de error si lo deseas
+    }
+  }
 
   useEffect(() => {
     fetchCitasPacientes()
@@ -131,6 +168,20 @@ export default function Citas() {
       }))
   )
 
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedCita, setSelectedCita] = useState(null)
+
+  const handleShowEditModal = (cita) => {
+    setSelectedCita(cita)
+    console.log('Cita seleccionada:', cita)
+    setShowEditModal(true)
+  }
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false)
+    setSelectedCita(null)
+  }
+
   const displayUsers = filteredCitasPacientes
     .slice(pagesVisited, pagesVisited + usersPerPage)
     .map((citaPaciente) => (
@@ -148,14 +199,14 @@ export default function Citas() {
             <button
               type="button"
               className="btn btn-primary"
-              // onClick={() => openModalEditUser(user.id)}
+              onClick={() => handleShowEditModal(citaPaciente)}
             >
               <FontAwesomeIcon icon={faUserPen} className="fs-5" />
             </button>
             <button
               type="button"
               className="btn btn-danger"
-              // onClick={() => openModalDeleteUser(user.id)}
+              onClick={() => openModalDeleteCita(citaPaciente.id)}
             >
               <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
             </button>
@@ -170,18 +221,54 @@ export default function Citas() {
     setCurrentPage(selected)
   }
 
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
+
   return (
     <>
       <Dash>
         <CitasPacientesContext.Provider value={{ citasPacientes, setCitasPaciente }}>
           {departamentos && medicos && (
-            <ModalCrearCita
-              show={showModal}
-              handleClose={handleCloseModal}
-              fetchPacientes={fetchCitasPacientes}
-              departamentos={departamentos}
-              medico={medicos}
-            />
+            <>
+              <ModalCrearCita
+                show={showModal}
+                handleClose={handleCloseModal}
+                fetchCitasPacientes={fetchCitasPacientes}
+                departamentos={departamentos}
+                medicos={medicos}
+                handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+              />
+              {selectedCita && (
+                <ModalEditCita
+                  show={showEditModal}
+                  handleClose={handleCloseEditModal}
+                  fetchCitasPacientes={fetchCitasPacientes}
+                  departamentos={departamentos}
+                  medicos={medicos}
+                  citaSelected={selectedCita}
+                  handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+                />
+              )}
+            </>
           )}
 
           <div className="card border-white">
@@ -274,8 +361,83 @@ export default function Citas() {
               </div>
             </div>
           </div>
+          <div
+            className="modal fade"
+            id="modal-delete-cita"
+            tabIndex="-1"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            role="dialog"
+            aria-labelledby="modalTitleId"
+            aria-hidden="true"
+          >
+            <div
+              className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+              role="document"
+            >
+              <div className="modal-content">
+                <div className="modal-header bg-danger text-white">
+                  <h5 className="modal-title" id="modalTitleId">
+                    Eliminar Cita
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  {citaSelected && (
+                    <>
+                      <p>
+                        Paciente: {citaSelected.paciente.nombres} {citaSelected.paciente.apellidos}
+                      </p>
+                      <p>Fecha de Cita: {new Date(citaSelected.fecha_cita).toLocaleString()}</p>
+                    </>
+                  )}
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    onClick={() => closeModalDeleteCita()}
+                    id="liveToastBtn"
+                  >
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="toast-container position-fixed bottom-0 end-0 p-3">
+            <div
+              id="liveToast"
+              className="toast"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div className="toast-header">
+                <strong className="me-auto">Notificacion</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="toast-body">{toastMessage}</div>
+            </div>
+          </div>
         </CitasPacientesContext.Provider>
       </Dash>
     </>
   )
 }
+
+export { CitasPacientesContext }

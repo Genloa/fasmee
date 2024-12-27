@@ -12,7 +12,8 @@ import {
   faHospitalUser,
   faHouse,
   faUser,
-  faUserDoctor
+  faUserDoctor,
+  faUserShield
 } from '@fortawesome/free-solid-svg-icons'
 
 import '../../assets/css/dash.css'
@@ -152,6 +153,19 @@ function Sidebar({ children }) {
                 >
                   <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Citas</span>}
+                </NavLink>
+              </li>
+              <li className="nav-item disabled">
+                <NavLink
+                  // to="/dash/guardias"
+                  className={({ isActive }) =>
+                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                  }
+                >
+                  <FontAwesomeIcon icon={faUserShield} className="fs-5" />
+                  {!isCollapsed && (
+                    <span className="fs-5 d-none ms-3 d-sm-inline">Cronograma de Guardias</span>
+                  )}
                 </NavLink>
               </li>
               <li className="nav-item disabled">
