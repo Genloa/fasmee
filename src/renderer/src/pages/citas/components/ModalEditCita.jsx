@@ -1,5 +1,4 @@
-import { Toast } from 'bootstrap'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
 import FormCita from '../../../forms/FormCita'
 import { CitasPacientesContext } from '../Citas'
@@ -10,20 +9,11 @@ function ModalEditCita({
   fetchCitasPacientes,
   departamentos,
   medicos,
-  citaSelected
+  citaSelected,
+  handleShowToast
 }) {
   const { setCitasPaciente } = useContext(CitasPacientesContext)
-  const [toastMessageEdit, setToastMessageEdit] = useState('')
-  const [showToastEdit, setShowToastEdit] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
-
-  useEffect(() => {
-    if (showToastEdit) {
-      const toastEdit = document.getElementById('liveToastEdit')
-      const toastedits = new Toast(toastEdit)
-      toastedits.show()
-    }
-  }, [showToastEdit])
 
   const onSubmitCita = async (data, resetForm) => {
     try {
@@ -48,14 +38,12 @@ function ModalEditCita({
             )
           )
           fetchCitasPacientes()
-          setToastMessageEdit('Cita actualizada correctamente')
-          setShowToastEdit(true)
+          handleShowToast('Cita actualizada correctamente')
           handleClose(true)
           resetForm()
           setAlertMessage('')
         } else {
-          setToastMessageEdit('No se pudo actualizar la cita')
-          setShowToastEdit(true)
+          handleShowToast('No se pudo actualizar la cita')
         }
       } else {
         setAlertMessage('No hay disponibilidad para la fecha seleccionada.')
@@ -116,26 +104,6 @@ function ModalEditCita({
           </div>
         </div>
       </div>
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div
-          id="liveToastEdit"
-          className="toast"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessageEdit}</div>
-        </div>
-      </div>
     </>
   )
 }
@@ -146,7 +114,8 @@ ModalEditCita.propTypes = {
   fetchCitasPacientes: PropTypes.func.isRequired,
   departamentos: PropTypes.array.isRequired,
   medicos: PropTypes.array.isRequired,
-  citaSelected: PropTypes.object.isRequired
+  citaSelected: PropTypes.object.isRequired,
+  handleShowToast: PropTypes.func.isRequired
 }
 
 export default ModalEditCita

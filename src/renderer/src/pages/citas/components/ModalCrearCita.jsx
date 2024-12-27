@@ -4,10 +4,17 @@ import PropTypes from 'prop-types'
 import FormCita from '../../../forms/FormCita'
 import { CitasPacientesContext } from '../Citas'
 
-function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos, medicos }) {
+function ModalCrearCita({
+  show,
+  handleClose,
+  fetchCitasPacientes,
+  departamentos,
+  medicos,
+  handleShowToast
+}) {
   const { citasPacientes, setCitasPaciente } = useContext(CitasPacientesContext) // Desestructurar el contexto correctamente
-  const [toastMessage, setToastMessage] = useState('')
-  const [showToast, setShowToast] = useState(false)
+  const [toastMessage] = useState('')
+  const [showToast] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
   // HOOK
@@ -38,13 +45,12 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
         if (nuevaCita) {
           setCitasPaciente([...citasPacientes, nuevaCita])
           fetchCitasPacientes()
-          setToastMessage('Cita creada correctamente')
-          setShowToast(true)
+          handleShowToast('Cita creada correctamente')
           handleClose(true)
           resetForm() // Resetear el formulario después de crear la cita
           setAlertMessage('') // Ocultar el mensaje de alerta
         } else {
-          setToastMessage('No se pudo Crear Cita')
+          handleShowToast('No se pudo Crear Cita')
         }
       } else {
         setAlertMessage('No hay disponibilidad para la fecha seleccionada.')
@@ -95,8 +101,9 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
             </div>
           </div>
         </div>
-      </div>
+      </div>{' '}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        {' '}
         <div
           id="liveToastCrear"
           className="toast"
@@ -104,28 +111,30 @@ function ModalCrearCita({ show, handleClose, fetchCitasPacientes, departamentos,
           aria-live="assertive"
           aria-atomic="true"
         >
+          {' '}
           <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
+            {' '}
+            <strong className="me-auto">Notificacion</strong>{' '}
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="toast"
               aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessage}</div>
-        </div>
-      </div>
+            ></button>{' '}
+          </div>{' '}
+          <div className="toast-body">{toastMessage}</div>{' '}
+        </div>{' '}
+      </div>{' '}
     </>
   )
 }
-
 ModalCrearCita.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   fetchCitasPacientes: PropTypes.func.isRequired,
   departamentos: PropTypes.array.isRequired,
-  medicos: PropTypes.array.isRequired
+  medicos: PropTypes.array.isRequired,
+  handleShowToast: PropTypes.func.isRequired
 }
 
 export default ModalCrearCita

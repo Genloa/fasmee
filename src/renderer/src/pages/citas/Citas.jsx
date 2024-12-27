@@ -22,7 +22,6 @@ export default function Citas() {
   // Modal Eliminar Cita
   const modalDeleteCitaRef = document.getElementById('modal-delete-cita')
   const [citaSelected, setCitaSelected] = useState(null)
-  const [toastMessageCita, setToastMessageCita] = useState('')
 
   const openModalDeleteCita = (id) => {
     let cita = citasPacientes
@@ -44,16 +43,12 @@ export default function Citas() {
           citasSolicitadas: paciente.citasSolicitadas.filter((cita) => cita.id !== citaSelected.id)
         }))
       )
-      setToastMessageCita('Cita eliminada correctamente')
+      setToastMessage('Cita eliminada correctamente')
+      setShowToast(true)
 
       // Cerrar el modal
       const modal = Modal.getInstance(modalDeleteCitaRef)
       modal.hide()
-
-      // Mostrar el toast
-      const toastElement = document.getElementById('liveToastCita')
-      const toast = new Toast(toastElement)
-      toast.show()
     } catch (error) {
       console.error('Error al eliminar la cita:', error)
       // Aquí podrías mostrar un toast de error si lo deseas
@@ -226,6 +221,28 @@ export default function Citas() {
     setCurrentPage(selected)
   }
 
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
+
   return (
     <>
       <Dash>
@@ -238,6 +255,7 @@ export default function Citas() {
                 fetchCitasPacientes={fetchCitasPacientes}
                 departamentos={departamentos}
                 medicos={medicos}
+                handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
               />
               {selectedCita && (
                 <ModalEditCita
@@ -247,7 +265,7 @@ export default function Citas() {
                   departamentos={departamentos}
                   medicos={medicos}
                   citaSelected={selectedCita}
-                  mode="edit"
+                  handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
                 />
               )}
             </>
@@ -398,7 +416,7 @@ export default function Citas() {
           </div>
           <div className="toast-container position-fixed bottom-0 end-0 p-3">
             <div
-              id="liveToastCita"
+              id="liveToast"
               className="toast"
               role="alert"
               aria-live="assertive"
@@ -413,7 +431,7 @@ export default function Citas() {
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="toast-body">{toastMessageCita}</div>
+              <div className="toast-body">{toastMessage}</div>
             </div>
           </div>
         </CitasPacientesContext.Provider>
