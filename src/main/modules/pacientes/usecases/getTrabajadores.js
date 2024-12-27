@@ -1,25 +1,19 @@
 import { ipcMain } from 'electron'
-import { Perfil } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 import { Op } from 'sequelize'
+import { Perfil } from '../../../singletons/database/schema'
+
 ipcMain.handle('getTrabajadores', async () => {
   try {
     const perfiles = await Perfil.findAll({
-      include: [
-        {
-          model: Perfil,
-          as: 'beneficiarios' // Alias de la asociación
-        }
-      ],
-
       where: {
         enteId: {
           [Op.ne]: null // Busca perfiles donde enteId no es nulo
         }
       }
     })
-    const perfilTrabajadores = perfiles.map((perfil) => perfil.toJSON())
 
-    return perfilTrabajadores
+    const result = perfiles.map((perfil) => perfil.toJSON())
+    return result
   } catch (error) {
     console.error('Error fetching users:', error)
     throw error
