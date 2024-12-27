@@ -518,6 +518,14 @@ if (sequelize instanceof Sequelize) {
       },
       perfilId: {
         type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+          model: Perfil,
+          key: 'id'
+        }
+      },
+      pacienteId: {
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: Perfil,
@@ -687,6 +695,7 @@ if (sequelize instanceof Sequelize) {
   Perfil.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
   Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId', as: 'perfilMedico' })
   Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
+  Perfil.hasMany(ColaPacientes, { foreignKey: 'pacienteId', as: 'colasMedicos' })
   Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
   Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
   Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
@@ -793,6 +802,7 @@ if (sequelize instanceof Sequelize) {
   // Relaciones del modelo cola_pacientes
 
   ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  ColaPacientes.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
   ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
 
   // Relaciones del modelo perfil_on_beneficiario
