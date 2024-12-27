@@ -80,7 +80,17 @@ export default function ColaPacientes() {
       const pacientesPorDepartamento = ColaPacientes.filter((paciente) =>
         paciente.colasMedicos.some((colaMedico) => colaMedico.departamentoId === departamento.id)
       ).sort(
-        (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
+        (a, b) =>
+          new Date(
+            a.colasMedicos.find(
+              (colaMedico) => colaMedico.departamentoId === departamento.id
+            ).createdAt
+          ) -
+          new Date(
+            b.colasMedicos.find(
+              (colaMedico) => colaMedico.departamentoId === departamento.id
+            ).createdAt
+          )
       )
 
       const medicosPorDepartamento = medicos.filter(
@@ -98,9 +108,34 @@ export default function ColaPacientes() {
         }))
         .filter(({ pacientes }) => pacientes.length > 0)
 
+      const pacientesSinMedico = pacientesPorDepartamento
+        .filter((paciente) =>
+          paciente.colasMedicos.some(
+            (colaMedico) =>
+              colaMedico.departamentoId === departamento.id && colaMedico.perfilId === null
+          )
+        )
+        .sort(
+          (a, b) =>
+            new Date(
+              a.colasMedicos.find(
+                (colaMedico) => colaMedico.departamentoId === departamento.id
+              ).createdAt
+            ) -
+            new Date(
+              b.colasMedicos.find(
+                (colaMedico) => colaMedico.departamentoId === departamento.id
+              ).createdAt
+            )
+        )
+        .map((paciente, index) => ({ ...paciente, numero: index + 1 }))
+
       return {
         departamento,
-        medicos: medicosConPacientes
+        medicos:
+          departamento.id === 1
+            ? [{ medico: null, pacientes: pacientesSinMedico }]
+            : medicosConPacientes
       }
     })
     .filter(({ medicos }) => medicos.length > 0)
@@ -162,9 +197,11 @@ export default function ColaPacientes() {
                       </div>
                       <div className="card-body">
                         {medicos.map(({ medico, pacientes }) => (
-                          <div key={medico.id} className="mb-3">
+                          <div key={medico ? medico.id : 'no-medico'} className="mb-3">
                             <h6 className="text-primary">
-                              {medico.nombres} {medico.apellidos}
+                              {medico
+                                ? `${medico.nombres} ${medico.apellidos}`
+                                : 'En la espera de Medico'}
                             </h6>
                             <ul className="list-group">
                               {pacientes.map((paciente) => (

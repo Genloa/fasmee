@@ -47,8 +47,12 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
   }
 
   const filterMedicos = (departamentoId) => {
-    const filtered = medicos.filter((medico) => medico.departamentoId === departamentoId)
-    setFilteredMedicos(filtered)
+    if (departamentoId === 1) {
+      setFilteredMedicos([])
+    } else {
+      const filtered = medicos.filter((medico) => medico.departamentoId === departamentoId)
+      setFilteredMedicos(filtered)
+    }
   }
 
   const pacienteOptions = pacientes.map((paciente) => ({
@@ -139,36 +143,38 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
           />
         </div>
       </div>
-      <div className="row mt-4">
-        {' '}
-        <div className="col">
-          <Controller
-            name="medicoId"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <div>
-                <Select
-                  {...field}
-                  options={medicoOptions}
-                  placeholder="Buscar Medico"
-                  isClearable
-                  className={getSelectClassName('medicoId')}
-                  value={medicoOptions.find((option) => option.value === field.value) || null}
-                  onChange={(selectedOption) => {
-                    field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
-                    setValue('medicoId', selectedOption ? selectedOption.value : null) // Registrar el valor
-                    trigger('medicoId') // Validar en tiempo real
-                  }}
-                />
-                {errors.medicoId && (
-                  <div className="invalid-feedback d-block">{errors.medicoId.message}</div>
-                )}
-              </div>
-            )}
-          />
+      {defaultValues.departamentoId !== 1 && (
+        <div className="row mt-4">
+          {' '}
+          <div className="col">
+            <Controller
+              name="medicoId"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <div>
+                  <Select
+                    {...field}
+                    options={medicoOptions}
+                    placeholder="Buscar Medico"
+                    isClearable
+                    className={getSelectClassName('medicoId')}
+                    value={medicoOptions.find((option) => option.value === field.value) || null}
+                    onChange={(selectedOption) => {
+                      field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
+                      setValue('medicoId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                      trigger('medicoId') // Validar en tiempo real
+                    }}
+                  />
+                  {errors.medicoId && (
+                    <div className="invalid-feedback d-block">{errors.medicoId.message}</div>
+                  )}
+                </div>
+              )}
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div className="modal-footer">
         <button
           type="button"

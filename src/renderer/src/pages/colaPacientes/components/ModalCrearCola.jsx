@@ -43,14 +43,17 @@ function ModalCrearCola({
         (cita) =>
           cita.pacienteId === data.pacienteId &&
           cita.departamentoId === data.departamentoId &&
-          cita.perfilId === data.medicoId &&
+          (data.departamentoId === 1 || cita.perfilId === data.medicoId) &&
           new Date(cita.fecha_cita).toDateString() === new Date().toDateString()
       )
 
       citaValida = true
 
       if (citaValida) {
-        const nuevaCola = await window.api.createColaPaciente(data)
+        const nuevaCola = await window.api.createColaPaciente({
+          ...data,
+          medicoId: data.departamentoId === 1 ? null : data.medicoId // Asignar null si el departamento es 1
+        })
         console.log('Cola creada:', nuevaCola)
         if (nuevaCola) {
           setColaPacientes([...ColaPacientes, nuevaCola]) // Usar ColaPacientes en lugar de colaPacientes

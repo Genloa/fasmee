@@ -549,6 +549,14 @@ if (sequelize instanceof Sequelize) {
     {
       tableName: 'colas_pacientes',
       timestamps: true
+    },
+    {
+      indexes: [
+        {
+          unique: true,
+          fields: ['departamentoId', 'pacienteId']
+        }
+      ]
     }
   )
 
