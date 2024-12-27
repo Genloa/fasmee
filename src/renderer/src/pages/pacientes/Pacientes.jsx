@@ -274,6 +274,7 @@ export default function Pacientes() {
             </div>
           </div>
         </div>
+
         <div className="card border-white">
           <div className="card-body">
             <div className="d-flex justify-content-between align-items-center ">
@@ -320,6 +321,7 @@ export default function Pacientes() {
               </div>
 
               <div className="row row-cols-1 row-cols-md-3 g-4 mt-2">{displayUsers}</div>
+
               <ReactPaginate
                 previousLabel={'Anterior'}
                 nextLabel={'Siguiente'}
@@ -336,6 +338,7 @@ export default function Pacientes() {
             </div>
           </div>
         </div>
+
         {/* Toast */}
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
           <div
