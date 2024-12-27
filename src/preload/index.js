@@ -44,7 +44,8 @@ const api = {
   getCitasPacientes: () => ipcRenderer.invoke('getCitasPacientes'),
   createCita: (data) => ipcRenderer.invoke('createCita', data),
   validateCita: (data) => ipcRenderer.invoke('validateCita', data),
-  deleteCita: (id) => ipcRenderer.invoke('deleteCita', id)
+  deleteCita: (id) => ipcRenderer.invoke('deleteCita', id),
+  updateCita: (id, data) => ipcRenderer.invoke('updateCita', { id, data })
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

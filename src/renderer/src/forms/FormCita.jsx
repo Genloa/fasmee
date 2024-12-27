@@ -22,6 +22,7 @@ function FormCita({
     handleSubmit,
     control,
     setValue,
+    trigger,
     formState: { errors, dirtyFields },
     reset
   } = useForm({
@@ -39,6 +40,10 @@ function FormCita({
       filterMedicos(defaultValues.departamentoId)
     }
   }, [defaultValues.departamentoId])
+
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
   const fetchPacientes = async () => {
     try {
@@ -98,11 +103,13 @@ function FormCita({
               className={getInputClassName('fechaCita')}
               id="floatingDate"
               placeholder="fechaCita"
-              {...register('fechaCita')}
-              onChange={(e) => {
-                setValue('fechaCita', e.target.value)
-                clearAlert() // Limpiar el mensaje de alerta al cambiar la fecha
-              }}
+              {...register('fechaCita', {
+                onChange: (e) => {
+                  setValue('fechaCita', e.target.value)
+                  clearAlert() // Limpiar el mensaje de alerta al cambiar la fecha
+                  trigger('fechaCita') // Validar en tiempo real
+                }
+              })}
             />
             <label htmlFor="floatingDate"> fecha de Cita</label>
             {errors.fechaCita?.message && (
@@ -129,6 +136,7 @@ function FormCita({
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
                     setValue('pacienteId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    trigger('pacienteId') // Validar en tiempo real
                   }}
                 />
                 {errors.pacienteId && (
@@ -159,6 +167,7 @@ function FormCita({
                     field.onChange(selectedOption)
                     setValue('departamentoId', selectedOption ? selectedOption.value : null)
                     filterMedicos(selectedOption ? selectedOption.value : null)
+                    trigger('departamentoId') // Validar en tiempo real
                   }}
                 />
                 {errors.departamentoId && (
@@ -188,6 +197,7 @@ function FormCita({
                   onChange={(selectedOption) => {
                     field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
                     setValue('medicoId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    trigger('medicoId') // Validar en tiempo real
                   }}
                 />
                 {errors.medicoId && (

@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { createContext, useEffect } from 'react'
 import ModalCrearCita from './components/ModalCrearCita'
+import ModalEditCita from './components/ModalEditCita'
 import { Modal, Toast } from 'bootstrap'
 const CitasPacientesContext = createContext({ citasPacientes: [], setCitasPacientes: () => {} })
 
@@ -172,6 +173,20 @@ export default function Citas() {
       }))
   )
 
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [selectedCita, setSelectedCita] = useState(null)
+
+  const handleShowEditModal = (cita) => {
+    setSelectedCita(cita)
+    console.log('Cita seleccionada:', cita)
+    setShowEditModal(true)
+  }
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false)
+    setSelectedCita(null)
+  }
+
   const displayUsers = filteredCitasPacientes
     .slice(pagesVisited, pagesVisited + usersPerPage)
     .map((citaPaciente) => (
@@ -189,7 +204,7 @@ export default function Citas() {
             <button
               type="button"
               className="btn btn-primary"
-              // onClick={() => openModalEditUser(user.id)}
+              onClick={() => handleShowEditModal(citaPaciente)}
             >
               <FontAwesomeIcon icon={faUserPen} className="fs-5" />
             </button>
@@ -216,13 +231,26 @@ export default function Citas() {
       <Dash>
         <CitasPacientesContext.Provider value={{ citasPacientes, setCitasPaciente }}>
           {departamentos && medicos && (
-            <ModalCrearCita
-              show={showModal}
-              handleClose={handleCloseModal}
-              fetchCitasPacientes={fetchCitasPacientes} // Cambiar fetchPacientes a fetchCitasPacientes
-              departamentos={departamentos}
-              medicos={medicos}
-            />
+            <>
+              <ModalCrearCita
+                show={showModal}
+                handleClose={handleCloseModal}
+                fetchCitasPacientes={fetchCitasPacientes}
+                departamentos={departamentos}
+                medicos={medicos}
+              />
+              {selectedCita && (
+                <ModalEditCita
+                  show={showEditModal}
+                  handleClose={handleCloseEditModal}
+                  fetchCitasPacientes={fetchCitasPacientes}
+                  departamentos={departamentos}
+                  medicos={medicos}
+                  citaSelected={selectedCita}
+                  mode="edit"
+                />
+              )}
+            </>
           )}
 
           <div className="card border-white">
