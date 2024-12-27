@@ -21,22 +21,27 @@ const api = {
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
   getMedicos: () => ipcRenderer.invoke('getMedicos'),
+
   // Casos de uso para pacientes
-  createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
-  createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
-  deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
   getPacientes: () => ipcRenderer.invoke('getPacientes'),
   getTrabajadores: () => ipcRenderer.invoke('getTrabajadores'),
-  updatePacienteTrabajador: (id, data) =>
-    ipcRenderer.invoke('updatePacienteTrabajador', { id, data }),
-  updatePacienteBeneficiario: (id, data) =>
-    ipcRenderer.invoke('updatePacienteBeneficiario', { id, data }),
+  createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
+  updatePaciente: (id, data) => ipcRenderer.invoke('updatePaciente', { id, data }),
+  deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
+
+  // createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
+  // createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
+  // updatePacienteTrabajador: (id, data) =>
+  //   ipcRenderer.invoke('updatePacienteTrabajador', { id, data }),
+  // updatePacienteBeneficiario: (id, data) =>
+  //   ipcRenderer.invoke('updatePacienteBeneficiario', { id, data }),
 
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),
 
   // Casos de uso para Entes
   getEntes: () => ipcRenderer.invoke('getEntes'),
+
   // Casos de uso para departamentos
   getDepartamentos: () => ipcRenderer.invoke('getDepartamentos'),
 

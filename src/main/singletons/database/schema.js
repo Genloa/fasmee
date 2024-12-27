@@ -168,6 +168,10 @@ if (sequelize instanceof Sequelize) {
       indexes: [
         {
           unique: true,
+          fields: ['usuarioId']
+        },
+        {
+          unique: true,
           fields: ['tipo_cedula', 'cedula']
         }
       ]
@@ -188,7 +192,8 @@ if (sequelize instanceof Sequelize) {
         allowNull: false,
         references: {
           model: Perfil,
-          key: 'id'
+          key: 'id',
+          unique: true
         }
       },
 
@@ -694,6 +699,12 @@ if (sequelize instanceof Sequelize) {
     as: 'beneficiarios',
     foreignKey: 'perfilId',
     otherKey: 'beneficiarioId'
+  })
+  Perfil.belongsToMany(Perfil, {
+    through: PerfilOnBeneficiario,
+    as: 'trabajadores',
+    foreignKey: 'beneficiarioId',
+    otherKey: 'perfilId'
   })
   Perfil.belongsToMany(Rol, {
     through: RolOnPerfil,
