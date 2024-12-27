@@ -6,7 +6,6 @@ import FormPaciente from '../../../forms/FormPaciente'
 import { pacienteSchema } from '../../../validations/pacienteSchema'
 
 export default function ModalEditPaciente({ paciente, handleCloseModalEditPaciente }) {
-  console.log('ModalEditPaciente', paciente)
   const tipoPaciente = paciente?.enteId != null ? 'T' : 'B'
 
   const {

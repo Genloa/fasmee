@@ -57,6 +57,6 @@ export default function ModalDeletePaciente({ paciente, handleCloseModalDeletePa
 }
 
 ModalDeletePaciente.propTypes = {
-  paciente: PropTypes.object.isRequired,
+  paciente: PropTypes.object,
   handleCloseModalDeletePaciente: PropTypes.func.isRequired
 }

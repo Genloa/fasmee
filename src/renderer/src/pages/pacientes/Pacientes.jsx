@@ -107,12 +107,13 @@ export default function Pacientes() {
   const displayUsers = filteredPacientes
     .slice(pagesVisited, pagesVisited + usersPerPage)
     .map((paciente) => (
-      <CardPaciente
-        key={paciente.id}
-        paciente={paciente}
-        handleOpenModalEditPaciente={openModalEditPaciente}
-        handleOpenModalDeletePaciente={openModalDeletePaciente}
-      />
+      <div className="col" key={paciente.id}>
+        <CardPaciente
+          paciente={paciente}
+          handleOpenModalEditPaciente={openModalEditPaciente}
+          handleOpenModalDeletePaciente={openModalDeletePaciente}
+        />
+      </div>
     ))
 
   const pageCount = Math.ceil(filteredPacientes.length / usersPerPage)
