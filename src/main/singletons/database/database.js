@@ -40,7 +40,8 @@ class Database {
       dialect: 'postgres',
       host: host,
       port: port,
-      schema: schema
+      schema: schema,
+      timezone: '-04:00'
     })
 
     return this.connection
