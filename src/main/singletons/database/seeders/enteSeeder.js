@@ -1,7 +1,11 @@
 import { Ente } from '../schema'
 
 async function enteSeeder() {
-  await Ente.bulkCreate([{ nombre: 'MPPE' }, { nombre: 'FASMEE' }])
+  try {
+    await Ente.bulkCreate([{ nombre: 'MPPE' }, { nombre: 'FASMEE' }])
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export default enteSeeder
