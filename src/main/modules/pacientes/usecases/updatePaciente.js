@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
 import { Perfil, PerfilMedico, PerfilOnBeneficiario } from '../../../singletons/database/schema'
+import momentDate from '../../../utils/momentDate'
 
 ipcMain.handle('updatePaciente', async (event, { id, data }) => {
   const t = await db.getConnection().transaction()
@@ -10,7 +11,7 @@ ipcMain.handle('updatePaciente', async (event, { id, data }) => {
       {
         nombres: data.nombres,
         apellidos: data.apellidos,
-        fecha_nacimiento: new Date(data.fechaNacimiento),
+        fecha_nacimiento: momentDate(data.fechaNacimiento),
         tipo_cedula: data.tipoCedula,
         cedula: data.cedula,
         correo: data.correo,
