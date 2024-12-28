@@ -7,6 +7,7 @@ import { createContext, useEffect } from 'react'
 import ModalCrearCita from './components/ModalCrearCita'
 import ModalEditCita from './components/ModalEditCita'
 import { Modal, Toast } from 'bootstrap'
+import momentDate from '../../../../main/utils/momentDate'
 const CitasPacientesContext = createContext({ citasPacientes: [], setCitasPacientes: () => {} })
 
 export default function Citas() {
@@ -147,7 +148,8 @@ export default function Citas() {
   const filteredCitasPacientes = citasPacientes.flatMap((paciente) =>
     paciente.citasSolicitadas
       .filter((cita) => {
-        const citaPacienteDate = new Date(cita.fecha_cita).toISOString().split('T')[0]
+        // const citaPacienteDate = new Date(cita.fecha_cita).toISOString().split('T')[0]
+        const citaPacienteDate = momentDate(cita.fecha_cita, 'YYYY-MM-DD')
         const departamentoId = getDepartamentoIdByName(searchDepartamentoName)
         const medicoId = getMedicoIdByName(searchMedicoName)
         return (

@@ -1,11 +1,12 @@
 import { ipcMain } from 'electron'
 import { Cita, Perfil } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import momentDate from '../../../utils/momentDate'
 
 ipcMain.handle('createCita', async (event, data) => {
   try {
     const cita = await Cita.create({
       fecha_solicitud: new Date(),
-      fecha_cita: new Date(data.fechaCita),
+      fecha_cita: momentDate(data.fechaCita),
       estado: 'Pendiente',
       perfilId: data.medicoId,
       pacienteId: data.pacienteId,

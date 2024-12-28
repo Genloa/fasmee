@@ -33,6 +33,7 @@ function ModalCrearCola({
     departamentoId: 0,
     medicoId: 0
   }
+  console.log('hoy', new Date().toLocaleDateString())
 
   const onSubmitCola = async (data, resetForm) => {
     try {
@@ -40,16 +41,16 @@ function ModalCrearCola({
       const verificarCita = await window.api.getCitasPacientes()
 
       let citaValida = verificarCita.some(
-        (cita) =>
-          cita.pacienteId === data.pacienteId &&
-          cita.departamentoId === data.departamentoId &&
-          (data.departamentoId === 1 || cita.perfilId === data.medicoId) &&
-          new Date(cita.fecha_cita).toDateString() === new Date().toDateString()
+        (paciente) =>
+          paciente.id === data.pacienteId &&
+          paciente.citasSolicitadas.some(
+            (cita) =>
+              cita.departamentoId === data.departamentoId &&
+              (data.departamentoId === 1 || cita.perfilId === data.medicoId) &&
+              new Date(cita.fecha_cita).toLocaleDateString() === new Date().toLocaleDateString()
+          )
       )
-
-      citaValida = true
-
-      if (citaValida) {
+      if (citaValida || data.departamentoId === 1) {
         const nuevaCola = await window.api.createColaPaciente({
           ...data,
           medicoId: data.departamentoId === 1 ? null : data.medicoId // Asignar null si el departamento es 1
