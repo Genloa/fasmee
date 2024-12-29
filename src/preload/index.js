@@ -51,10 +51,14 @@ const api = {
   validateCita: (data) => ipcRenderer.invoke('validateCita', data),
   deleteCita: (id) => ipcRenderer.invoke('deleteCita', id),
   updateCita: (id, data) => ipcRenderer.invoke('updateCita', { id, data }),
+  getCitaPacientesMedico: (medicoId, departamentoId) =>
+    ipcRenderer.invoke('getCitaPacientesMedico', { medicoId, departamentoId }),
 
   // Casos de uso para colaPacientes
   getColaPacientes: () => ipcRenderer.invoke('getColaPacientes'),
-  createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data)
+  createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data),
+  getColaPacientesMedico: (medicoId, departamentoId) =>
+    ipcRenderer.invoke('getColaPacientesMedico', { medicoId, departamentoId })
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

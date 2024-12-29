@@ -33,6 +33,7 @@ export default function ColaPacientes() {
     try {
       const fetchedPacientes = await window.api.getColaPacientes()
       console.log('colaPacientes:', fetchedPacientes)
+
       setColaPacientes(fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
@@ -57,16 +58,6 @@ export default function ColaPacientes() {
     }
   }
 
-  /*  const getDepartamentoNameById = (id) => {
-    const departamento = departamentos.find((d) => d.id === id)
-    return departamento ? departamento.nombre : ''
-  }
-
-  const getMedicoNameById = (id) => {
-    const medico = medicos.find((m) => m.id === id)
-    return medico ? `${medico.nombres} ${medico.apellidos}` : ''
-  }
-*/
   const handleDepartamentoNameChange = (event) => {
     setSearchDepartamentoName(event.target.value)
   }
@@ -79,18 +70,6 @@ export default function ColaPacientes() {
     .map((departamento) => {
       const pacientesPorDepartamento = ColaPacientes.filter((paciente) =>
         paciente.colasMedicos.some((colaMedico) => colaMedico.departamentoId === departamento.id)
-      ).sort(
-        (a, b) =>
-          new Date(
-            a.colasMedicos.find(
-              (colaMedico) => colaMedico.departamentoId === departamento.id
-            ).createdAt
-          ) -
-          new Date(
-            b.colasMedicos.find(
-              (colaMedico) => colaMedico.departamentoId === departamento.id
-            ).createdAt
-          )
       )
 
       const medicosPorDepartamento = medicos.filter(
@@ -100,35 +79,18 @@ export default function ColaPacientes() {
       const medicosConPacientes = medicosPorDepartamento
         .map((medico) => ({
           medico,
-          pacientes: pacientesPorDepartamento
-            .filter((paciente) =>
-              paciente.colasMedicos.some((colaMedico) => colaMedico.perfilId === medico.id)
-            )
-            .map((paciente, index) => ({ ...paciente, numero: index + 1 }))
+          pacientes: pacientesPorDepartamento.filter((paciente) =>
+            paciente.colasMedicos.some((colaMedico) => colaMedico.perfilId === medico.id)
+          )
         }))
         .filter(({ pacientes }) => pacientes.length > 0)
 
-      const pacientesSinMedico = pacientesPorDepartamento
-        .filter((paciente) =>
-          paciente.colasMedicos.some(
-            (colaMedico) =>
-              colaMedico.departamentoId === departamento.id && colaMedico.perfilId === null
-          )
+      const pacientesSinMedico = pacientesPorDepartamento.filter((paciente) =>
+        paciente.colasMedicos.some(
+          (colaMedico) =>
+            colaMedico.departamentoId === departamento.id && colaMedico.perfilId === null
         )
-        .sort(
-          (a, b) =>
-            new Date(
-              a.colasMedicos.find(
-                (colaMedico) => colaMedico.departamentoId === departamento.id
-              ).createdAt
-            ) -
-            new Date(
-              b.colasMedicos.find(
-                (colaMedico) => colaMedico.departamentoId === departamento.id
-              ).createdAt
-            )
-        )
-        .map((paciente, index) => ({ ...paciente, numero: index + 1 }))
+      )
 
       return {
         departamento,
@@ -204,11 +166,17 @@ export default function ColaPacientes() {
                                 : 'En la espera de Medico'}
                             </h6>
                             <ul className="list-group">
-                              {pacientes.map((paciente) => (
-                                <li key={paciente.id} className="list-group-item">
-                                  {paciente.numero}. {paciente.nombres} {paciente.apellidos}
-                                </li>
-                              ))}
+                              {pacientes
+                                .sort(
+                                  (a, b) =>
+                                    new Date(a.colasMedicos[0].createdAt) -
+                                    new Date(b.colasMedicos[0].createdAt)
+                                )
+                                .map((paciente, index) => (
+                                  <li key={paciente.id} className="list-group-item">
+                                    {index + 1}. {paciente.nombres} {paciente.apellidos}
+                                  </li>
+                                ))}
                             </ul>
                           </div>
                         ))}
