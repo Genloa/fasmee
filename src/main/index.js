@@ -8,7 +8,7 @@ function createWindow() {
     width: 900,
     height: 670,
     show: false,
-    autoHideMenuBar: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -17,7 +17,7 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    mainWindow.maximize()
+    // mainWindow.maximize()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -83,7 +83,7 @@ import './modules/colaPacientes/colaPacientes'
 import './modules/cronograma/cronograma'
 import './modules/departamentos/departamentos'
 import './modules/entes/entes'
+import './modules/inventario/inventario'
 import './modules/pacientes/pacientes'
 import './modules/roles/roles'
 import './modules/usuarios/usuarios'
-import './modules/inventario/inventario'

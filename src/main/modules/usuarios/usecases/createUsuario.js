@@ -2,15 +2,19 @@ import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
 import {
   Departamento,
+  Ente,
   Perfil,
   PerfilMedico,
   Rol,
   Usuario
 } from '../../../singletons/database/schema'
 import hashPassword from '../../../utils/hashPassword'
+import momentDate from '../../../utils/momentDate'
 
 ipcMain.handle('createUsuario', async (event, data) => {
   const t = await db.getConnection().transaction()
+
+  const ente = await Ente.findOne({ where: { nombre: 'FASMEE' } }, { transaction: t })
 
   try {
     data.password = await hashPassword(data.password)
@@ -22,12 +26,12 @@ ipcMain.handle('createUsuario', async (event, data) => {
         perfil: {
           nombres: data.nombres,
           apellidos: data.apellidos,
-          fecha_nacimiento: new Date(data.fechaNacimiento),
+          fecha_nacimiento: momentDate(data.fechaNacimiento),
           tipo_cedula: data.tipoCedula,
           cedula: data.cedula,
           correo: data.correo,
           telefono: data.telefono,
-          enteId: 1,
+          enteId: ente.id,
           departamentoId: data.departamentoId
         }
       },

@@ -35,7 +35,8 @@ if (sequelize instanceof Sequelize) {
 
       username: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
 
       password: {
