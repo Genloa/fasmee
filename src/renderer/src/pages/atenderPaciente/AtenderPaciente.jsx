@@ -1,6 +1,8 @@
 import { NavLink } from 'react-router-dom'
 import Dash from '../../components/layouts/Dash'
 import { useState, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
 
 export default function AtenderPaciente() {
   const [colaPacientes, setColaPacientes] = useState([])
@@ -84,7 +86,16 @@ export default function AtenderPaciente() {
                 <div className="col">
                   <div className="card mb-3 border-primary">
                     <div className="card-header">
-                      <h5>Cola Pacientes</h5>
+                      <div className="d-flex justify-content-between">
+                        <h5>Cola Pacientes</h5>
+                        <button
+                          type="button"
+                          className="btn  btn-sm  text-primary "
+                          onClick={fetchColaPacientes}
+                        >
+                          <FontAwesomeIcon icon={faArrowsRotate} className="fs-5" />
+                        </button>
+                      </div>
                     </div>
                     <div className="card-body">
                       <div className="mb-3">

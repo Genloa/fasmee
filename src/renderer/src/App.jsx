@@ -4,12 +4,13 @@ import { AuthProvider } from './hooks/useAuth'
 import Login from './pages/auth/Login'
 import Citas from './pages/citas/Citas'
 import Connection from './pages/connection/Connection'
-import Home from './pages/home/home'
+import Home from './pages/home/Home'
 import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
 import ColaPacientes from './pages/colaPacientes/ColaPacientes'
 import AtenderPaciente from './pages/atenderPaciente/AtenderPaciente'
 import Inventario from './pages/Inventario/Inventario'
+import Cronograma from './pages/cronograma/Cronograma'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
@@ -31,6 +32,7 @@ function App() {
           element={<AtenderPaciente />}
         />*/}
         <Route path="/dash/inventario" element={<Inventario />} />
+        <Route path="/dash/cronograma" element={<Cronograma />} />
       </Routes>
     </AuthProvider>
   )
