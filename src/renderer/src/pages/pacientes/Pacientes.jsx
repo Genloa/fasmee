@@ -124,7 +124,7 @@ export default function Pacientes() {
     <Dash>
       <PacientesContext.Provider value={{ pacientes, setPacientes }}>
         <div className="d-flex justify-content-between align-items-center">
-          <h5>Pacientes</h5>
+          <h5 className="card-title fs-3">Pacientes</h5>
           <button
             type="button"
             className="btn btn-primary dropdown-toggle"

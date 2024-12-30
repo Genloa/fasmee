@@ -333,7 +333,7 @@ function Usuarios() {
         {/* Card */}
         <div className="card border-white">
           <div className="card-body">
-            <h5 className="card-title">Usuarios</h5>
+            <h5 className="card-title fs-3">Usuarios</h5>
 
             <div className="mt-5">
               <div className="text-end mb-3">
