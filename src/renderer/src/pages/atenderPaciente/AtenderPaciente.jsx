@@ -52,7 +52,7 @@ export default function AtenderPaciente() {
       <Dash>
         <div className="card border-white">
           <div className="card-body">
-            <h5 className="card-title">Atender Pacientes</h5>
+            <h5 className="card-title fs-3">Atender Pacientes</h5>
             <div className="text-end">
               <button type="button" className="btn btn-danger">
                 Emergencia

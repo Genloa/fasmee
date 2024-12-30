@@ -58,7 +58,12 @@ const api = {
   getColaPacientes: () => ipcRenderer.invoke('getColaPacientes'),
   createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data),
   getColaPacientesMedico: (medicoId, departamentoId) =>
-    ipcRenderer.invoke('getColaPacientesMedico', { medicoId, departamentoId })
+    ipcRenderer.invoke('getColaPacientesMedico', { medicoId, departamentoId }),
+
+  //Casos de uso para inventario
+  getArticulos: () => ipcRenderer.invoke('getArticulos'),
+  getAlmacenes: () => ipcRenderer.invoke('getAlmacenes'),
+  getArticulosAlmacenes: () => ipcRenderer.invoke('getArticulosAlmacenes')
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

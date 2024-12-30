@@ -57,14 +57,9 @@ function Navbar() {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Usuario
+              Admin
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-              <li>
-                <a className="dropdown-item" href="#">
-                  Perfil
-                </a>
-              </li>
               <li>
                 <a className="dropdown-item" href="#">
                   Configuración
@@ -148,7 +143,7 @@ function Sidebar({ children }) {
                 <NavLink
                   to="/dash/citas"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger ' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
@@ -159,7 +154,7 @@ function Sidebar({ children }) {
                 <NavLink
                   // to="/dash/guardias"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faUserShield} className="fs-5" />
@@ -172,7 +167,7 @@ function Sidebar({ children }) {
                 <NavLink
                   to="/dash/ColaPacientes"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faClipboardUser} className="fs-5" />
@@ -185,7 +180,7 @@ function Sidebar({ children }) {
                 <NavLink
                   to="/dash/atenderPaciente"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faUserDoctor} className="fs-5" />
@@ -196,9 +191,9 @@ function Sidebar({ children }) {
               </li>
               <li className="nav-item disabled">
                 <NavLink
-                  to=""
+                  to="/"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faHandHoldingMedical} className="fs-5" />
@@ -207,9 +202,9 @@ function Sidebar({ children }) {
               </li>
               <li className="nav-item disabled">
                 <NavLink
-                  to=""
+                  to="/"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faBookMedical} className="fs-5" />
@@ -218,9 +213,9 @@ function Sidebar({ children }) {
               </li>
               <li className="nav-item disabled">
                 <NavLink
-                  to=""
+                  to="/dash/inventario"
                   className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active' : ''}`
+                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }
                 >
                   <FontAwesomeIcon icon={faBoxesStacked} className="fs-5" />

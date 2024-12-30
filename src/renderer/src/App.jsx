@@ -9,6 +9,7 @@ import Pacientes from './pages/pacientes/Pacientes'
 import Usuarios from './pages/usuarios/Usuarios'
 import ColaPacientes from './pages/colaPacientes/ColaPacientes'
 import AtenderPaciente from './pages/atenderPaciente/AtenderPaciente'
+import Inventario from './pages/Inventario/Inventario'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
@@ -29,6 +30,7 @@ function App() {
           path="/dash/atenderPaciente/:departamentoId/:pacienteId"
           element={<AtenderPaciente />}
         />*/}
+        <Route path="/dash/inventario" element={<Inventario />} />
       </Routes>
     </AuthProvider>
   )

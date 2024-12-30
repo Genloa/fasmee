@@ -2,6 +2,7 @@ import Dash from '../../components/layouts/Dash'
 import { useState, useEffect, createContext } from 'react'
 import { Toast } from 'bootstrap'
 import ModalCrearCola from './components/ModalCrearCola'
+import ReactPaginate from 'react-paginate'
 
 const ColaPacientesContext = createContext({ ColaPacientes: [], setColaPacientes: () => {} })
 
@@ -102,6 +103,49 @@ export default function ColaPacientes() {
     })
     .filter(({ medicos }) => medicos.length > 0)
 
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(0)
+  const usersPerPage = 3
+  const pagesVisited = currentPage * usersPerPage
+
+  const handleChangePage = ({ selected }) => setCurrentPage(selected)
+
+  const displayPacientes = groupedPacientes
+    .slice(pagesVisited, pagesVisited + usersPerPage)
+    .map(({ departamento, medicos }) => (
+      <div className="col" key={departamento.id}>
+        <div key={departamento.id} className="card mb-3 border-primary">
+          <div className="card-header">
+            <h5>{departamento.nombre}</h5>
+          </div>
+          <div className="card-body">
+            {medicos.map(({ medico, pacientes }) => (
+              <div key={medico ? medico.id : 'no-medico'} className="mb-3">
+                <h6 className="text-primary">
+                  {medico ? `${medico.nombres} ${medico.apellidos}` : 'En la espera de Medico'}
+                </h6>
+                <ul className="list-group">
+                  {pacientes
+                    .sort(
+                      (a, b) =>
+                        new Date(a.colasMedicos[0].createdAt) -
+                        new Date(b.colasMedicos[0].createdAt)
+                    )
+                    .map((paciente, index) => (
+                      <li key={paciente.id} className="list-group-item">
+                        {index + 1}. {paciente.nombres} {paciente.apellidos}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    ))
+
+  const pageCount = Math.ceil(groupedPacientes.length / usersPerPage)
+
   useEffect(() => {
     if (showToast) {
       const toastEl = document.getElementById('liveToast')
@@ -131,7 +175,7 @@ export default function ColaPacientes() {
         )}
         <div className="card border-white">
           <div className="card-body">
-            <h5 className="card-title">Cola Atencion Pacientes</h5>
+            <h5 className="card-title fs-3 ">Cola de Atención Pacientes</h5>
             <div className="text-end">
               <button type="button" className="btn btn-primary" onClick={handleShowModal}>
                 Asignar Paciente a Cola
@@ -150,45 +194,23 @@ export default function ColaPacientes() {
                 />
                 <label htmlFor="floatingInput">Buscar por Departamento</label>
               </div>
-              <div className="row row-cols-1 row-cols-md-3 g-4">
-                {groupedPacientes.map(({ departamento, medicos }) => (
-                  <div className="col" key={departamento.id}>
-                    <div key={departamento.id} className="card mb-3 border-primary">
-                      <div className="card-header">
-                        <h5>{departamento.nombre}</h5>
-                      </div>
-                      <div className="card-body">
-                        {medicos.map(({ medico, pacientes }) => (
-                          <div key={medico ? medico.id : 'no-medico'} className="mb-3">
-                            <h6 className="text-primary">
-                              {medico
-                                ? `${medico.nombres} ${medico.apellidos}`
-                                : 'En la espera de Medico'}
-                            </h6>
-                            <ul className="list-group">
-                              {pacientes
-                                .sort(
-                                  (a, b) =>
-                                    new Date(a.colasMedicos[0].createdAt) -
-                                    new Date(b.colasMedicos[0].createdAt)
-                                )
-                                .map((paciente, index) => (
-                                  <li key={paciente.id} className="list-group-item">
-                                    {index + 1}. {paciente.nombres} {paciente.apellidos}
-                                  </li>
-                                ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <div className="row row-cols-1 row-cols-md-3 g-4">{displayPacientes}</div>
             </div>
           </div>
         </div>
-
+        <ReactPaginate
+          previousLabel={'Anterior'}
+          nextLabel={'Siguiente'}
+          pageCount={pageCount}
+          onPageChange={handleChangePage}
+          containerClassName={'pagination'}
+          previousLinkClassName={'page-link'}
+          nextLinkClassName={'page-link'}
+          disabledClassName={'disabled'}
+          activeClassName={'active'}
+          pageClassName={'page-item'}
+          pageLinkClassName={'page-link'}
+        />
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
           <div
             id="liveToast"

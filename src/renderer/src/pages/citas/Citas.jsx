@@ -275,7 +275,7 @@ export default function Citas() {
 
           <div className="card border-white">
             <div className="card-body">
-              <h5 className="card-title">Citas</h5>
+              <h5 className="card-title fs-3">Citas</h5>
               <div className="text-end">
                 <button type="button" className="btn btn-primary" onClick={handleShowModal}>
                   Nueva Cita
