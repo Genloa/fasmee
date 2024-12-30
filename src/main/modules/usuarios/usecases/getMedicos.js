@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Departamento, Perfil, Rol } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Departamento, Horarios, Perfil, Rol } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('getMedicos', async () => {
   try {
@@ -15,6 +15,10 @@ ipcMain.handle('getMedicos', async () => {
         {
           model: Departamento,
           as: 'departamento'
+        },
+        {
+          model: Horarios,
+          as: 'horarios'
         }
       ]
     })

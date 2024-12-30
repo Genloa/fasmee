@@ -29,13 +29,6 @@ const api = {
   updatePaciente: (id, data) => ipcRenderer.invoke('updatePaciente', { id, data }),
   deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
 
-  // createPacienteTrabajador: (data) => ipcRenderer.invoke('createPacienteTrabajador', data),
-  // createPacienteBeneficiario: (data) => ipcRenderer.invoke('createPacienteBeneficiario', data),
-  // updatePacienteTrabajador: (id, data) =>
-  //   ipcRenderer.invoke('updatePacienteTrabajador', { id, data }),
-  // updatePacienteBeneficiario: (id, data) =>
-  //   ipcRenderer.invoke('updatePacienteBeneficiario', { id, data }),
-
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),
 
@@ -54,7 +47,10 @@ const api = {
 
   // Casos de uso para colaPacientes
   getColaPacientes: () => ipcRenderer.invoke('getColaPacientes'),
-  createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data)
+  createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data),
+
+  // Casos de uso para cronograma
+  changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

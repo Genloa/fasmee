@@ -21,6 +21,7 @@ let PerfilOnBeneficiario = null
 let RolOnPerfil = null
 let RolOnPermiso = null
 let ArticuloOnAlmacen = null
+let Horarios = null
 
 if (sequelize instanceof Sequelize) {
   Usuario = sequelize.define(
@@ -693,6 +694,48 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
+  Horarios = sequelize.define(
+    'horarios',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      perfilId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Perfil,
+          key: 'id'
+        }
+      },
+      dia: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      turno: {
+        type: DataTypes.ENUM('M', 'T', 'C'),
+        allowNull: false
+      },
+      fecha: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        comment: 'Fecha en que asistira el medico rotativo'
+      }
+    },
+    {
+      tableName: 'horarios',
+      timestamps: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ['perfilId', 'dia', 'turno']
+        }
+      ]
+    }
+  )
+
   // Relaciones del modelo usuario
 
   Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
@@ -713,6 +756,7 @@ if (sequelize instanceof Sequelize) {
   Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
   Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
   Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
+  Perfil.hasMany(Horarios, { foreignKey: 'perfilId', as: 'horarios' })
   Perfil.belongsToMany(Articulo, {
     through: PerfilOnArticulo,
     as: 'articulos',
@@ -843,6 +887,10 @@ if (sequelize instanceof Sequelize) {
 
   ArticuloOnAlmacen.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
   ArticuloOnAlmacen.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
+
+  // Relaciones del modelo horarios
+
+  Horarios.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
 }
 
 export {
@@ -855,6 +903,7 @@ export {
   Departamento,
   Ente,
   Historia,
+  Horarios,
   Perfil,
   PerfilMedico,
   PerfilOnArticulo,
