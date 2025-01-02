@@ -425,7 +425,7 @@ export default function Citas() {
               aria-atomic="true"
             >
               <div className="toast-header">
-                <strong className="me-auto">Notificacion</strong>
+                <strong className="me-auto">Notificación</strong>
                 <button
                   type="button"
                   className="btn-close"

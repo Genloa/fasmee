@@ -360,7 +360,7 @@ function Usuarios() {
             aria-atomic="true"
           >
             <div className="toast-header">
-              <strong className="me-auto">Notificacion</strong>
+              <strong className="me-auto">Notificación</strong>
               <button
                 type="button"
                 className="btn-close"
@@ -985,7 +985,7 @@ function TableUsers() {
             value={searchTerm}
             onChange={handleSearchChange}
           />
-          <label htmlFor="floatingInput">Buscar Paciente</label>
+          <label htmlFor="floatingInput">Buscar Usuario</label>
         </div>
 
         <table className="table table-sm table-hover align-middle">
@@ -1019,7 +1019,7 @@ function TableUsers() {
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
           <div className="toast-header">
-            <strong className="me-auto">Notificacion</strong>
+            <strong className="me-auto">Notificación</strong>
             <button
               type="button"
               className="btn-close"

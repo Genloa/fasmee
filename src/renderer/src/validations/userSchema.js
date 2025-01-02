@@ -17,7 +17,7 @@ export const userSchema = z
     apellidos: z
       .string()
       .min(3, {
-        message: 'Ingresa tus apellidos maximo 3 caracteres'
+        message: 'Ingresa tus apellidos minimo 3 caracteres'
       })
       .max(200, {
         message: 'Este campo tiene que tener un maximo de 200 caracteres'
