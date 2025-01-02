@@ -21,6 +21,8 @@ const api = {
   deleteUsuario: (id) => ipcRenderer.invoke('deleteUsuario', id),
   updateUserRol: (perfilId, rolId) => ipcRenderer.invoke('updateUserRol', { perfilId, rolId }),
   getMedicos: () => ipcRenderer.invoke('getMedicos'),
+  createPhoto: (perfilId, photoBase64) =>
+    ipcRenderer.invoke('createPhoto', { perfilId, photoBase64 }),
 
   // Casos de uso para pacientes
   getPacientes: () => ipcRenderer.invoke('getPacientes'),
@@ -55,6 +57,7 @@ const api = {
 
   // Casos de uso para cronograma
   changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId),
+
   //casos de uso para inventario
   getArticulosAlmacenes: () => ipcRenderer.invoke('getArticulosAlmacenes'),
   getAlmacenes: () => ipcRenderer.invoke('getAlmacenes'),

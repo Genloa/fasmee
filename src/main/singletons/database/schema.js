@@ -162,6 +162,11 @@ if (sequelize instanceof Sequelize) {
           model: Departamento,
           key: 'id'
         }
+      },
+
+      profilePhotoPath: {
+        type: DataTypes.STRING,
+        allowNull: true
       }
     },
     {

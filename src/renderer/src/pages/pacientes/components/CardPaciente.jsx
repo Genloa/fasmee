@@ -1,9 +1,10 @@
-import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
+import { faCameraRetro, faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import propTypes from 'prop-types'
 
 export default function CardPaciente({
   paciente,
+  handleOpenModalTakePhoto,
   handleOpenModalEditPaciente,
   handleOpenModalDeletePaciente
 }) {
@@ -21,23 +22,28 @@ export default function CardPaciente({
         ) : (
           <div className="card-text">Beneficiario</div>
         )}
-        <div>
-          <div className="btn-group btn-group-sm mt-2" role="group">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => handleOpenModalEditPaciente(paciente)}
-            >
-              <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => handleOpenModalDeletePaciente(paciente)}
-            >
-              <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-            </button>
-          </div>
+        <div className="btn-group btn-group-sm mt-2" role="group">
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleOpenModalTakePhoto(paciente)}
+          >
+            <FontAwesomeIcon icon={faCameraRetro} className="fs-5" />
+          </button>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => handleOpenModalEditPaciente(paciente)}
+          >
+            <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+          </button>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={() => handleOpenModalDeletePaciente(paciente)}
+          >
+            <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+          </button>
         </div>
       </div>
     </div>
@@ -46,6 +52,7 @@ export default function CardPaciente({
 
 CardPaciente.propTypes = {
   paciente: propTypes.object.isRequired,
+  handleOpenModalTakePhoto: propTypes.func.isRequired,
   handleOpenModalEditPaciente: propTypes.func.isRequired,
   handleOpenModalDeletePaciente: propTypes.func.isRequired
 }

@@ -1,6 +1,6 @@
 import hashPassword from '../../../utils/hashPassword'
 import momentDate from '../../../utils/momentDate'
-import { Departamento, Ente, Perfil, Usuario } from '../schema'
+import { Departamento, Ente, Perfil, PerfilMedico, Usuario } from '../schema'
 
 async function userSeeder() {
   try {
@@ -22,11 +22,30 @@ async function userSeeder() {
           correo: 'admin@proyecto.com',
           telefono: '04121234567',
           enteId: ente.id,
-          departamentoId: departamento.id
+          departamentoId: departamento.id,
+          perfilMedico: {
+            patologias: null,
+            medicamentos: null,
+            alergias: null,
+            cirugias: null,
+            peso: null,
+            altura: null
+          }
         }
       },
       {
-        include: [{ model: Perfil, as: 'perfil' }]
+        include: [
+          {
+            model: Perfil,
+            as: 'perfil',
+            include: [
+              {
+                model: PerfilMedico,
+                as: 'perfilMedico'
+              }
+            ]
+          }
+        ]
       }
     )
   } catch (error) {

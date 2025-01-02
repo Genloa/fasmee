@@ -6,6 +6,7 @@ import CardPaciente from './components/CardPaciente'
 import ModalCreatePaciente from './components/ModalCreatePaciente'
 import ModalDeletePaciente from './components/ModalDeletePaciente'
 import ModalEditPaciente from './components/ModalEditPaciente'
+import ModalTakePhoto from './components/ModalTakePhoto'
 
 const PacientesContext = createContext({ pacientes: [], setPacientes: () => {} })
 
@@ -90,6 +91,20 @@ export default function Pacientes() {
     }
   }
 
+  const openModalTakePhoto = (paciente) => {
+    setShowToast(false)
+    setPacienteSelected(paciente)
+    new Modal(document.getElementById('modal-take-photo')).show()
+  }
+  const closeModalTakePhoto = (message) => {
+    fetchPacientes()
+    Modal.getInstance(document.getElementById('modal-take-photo')).hide()
+    if (message) {
+      setToastMessage(message)
+      setShowToast(true)
+    }
+  }
+
   // Search
 
   const handleSearchChange = (event) => {
@@ -110,6 +125,7 @@ export default function Pacientes() {
       <div className="col" key={paciente.id}>
         <CardPaciente
           paciente={paciente}
+          handleOpenModalTakePhoto={openModalTakePhoto}
           handleOpenModalEditPaciente={openModalEditPaciente}
           handleOpenModalDeletePaciente={openModalDeletePaciente}
         />
@@ -167,6 +183,10 @@ export default function Pacientes() {
         <ModalDeletePaciente
           paciente={pacienteSelected}
           handleCloseModalDeletePaciente={closeModalDeletePaciente}
+        />
+        <ModalTakePhoto
+          paciente={pacienteSelected}
+          handleCloseModalTakePhoto={closeModalTakePhoto}
         />
 
         <div className="container">

@@ -2,8 +2,24 @@ import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
 import Semana from './components/Semana'
 
+const meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]
+
 function Cronograma() {
   const [medicos, setMedicos] = useState([])
+  const [mesSelected, setMesSelected] = useState(0)
 
   const fetchMedicos = async () => {
     let medicosAux = await window.api.getMedicos()
@@ -12,10 +28,10 @@ function Cronograma() {
 
   useEffect(() => {
     fetchMedicos()
+    setMesSelected(new Date().getMonth())
   }, [])
 
   const changeTurno = async (horarioId) => {
-    console.log(horarioId)
     if (await window.api.changeTurno(horarioId)) {
       fetchMedicos()
     }
@@ -37,20 +53,15 @@ function Cronograma() {
       </div>
 
       <div className="input-group input-group-sm mb-3">
-        <select className="form-select form-select-lg" name="" id="">
-          <option selected>Seleccione un mes</option>
-          <option value="">Enero</option>
-          <option value="">Febrero</option>
-          <option value="">Marzo</option>
-          <option value="">Abril</option>
-          <option value="">Mayo</option>
-          <option value="">Junio</option>
-          <option value="">Julio</option>
-          <option value="">Agosto</option>
-          <option value="">Septiembre</option>
-          <option value="">Octubre</option>
-          <option value="">Noviembre</option>
-          <option value="">Diciembre</option>
+        <select
+          className="form-select form-select-lg"
+          onChange={(e) => setMesSelected(e.target.value)}
+        >
+          {meses.map((mes, index) => (
+            <option key={index} value={index} selected={index === mesSelected}>
+              {mes}
+            </option>
+          ))}
         </select>
 
         <select className="form-select form-select-lg" name="" id="">
