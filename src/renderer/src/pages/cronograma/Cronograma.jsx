@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
-import Semana from './components/Semana'
 
 const meses = [
   'Enero',
@@ -84,8 +83,24 @@ function Cronograma() {
         <table className="table table-sm align-middle">
           <thead>
             <tr>
-              <th scope="col">Doctor</th>
-              <th scope="col">Semana</th>
+              <th className="text-center" scope="col">
+                Doctor
+              </th>
+              <th className="text-center" scope="col">
+                Lunes
+              </th>
+              <th className="text-center" scope="col">
+                Martes
+              </th>
+              <th className="text-center" scope="col">
+                Miércoles
+              </th>
+              <th className="text-center" scope="col">
+                Jueves
+              </th>
+              <th className="text-center" scope="col">
+                Viernes
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -95,9 +110,40 @@ function Cronograma() {
                 <td scope="row">
                   {medico.nombres} {medico.apellidos}
                 </td>
-                <td>
-                  <Semana medico={medico} changeTurno={changeTurno} />
-                </td>
+                {[...Array(5)].map((_, i) => {
+                  const day = i
+                  const horario = medico.horarios.find((horario) => horario.dia === day)
+
+                  let color = 'bg-light'
+                  let turno = '-'
+                  if (horario) {
+                    switch (horario.turno) {
+                      case 'M':
+                        turno = 'Mañana'
+                        color = 'bg-primary'
+                        break
+                      case 'T':
+                        turno = 'Tarde'
+                        color = 'bg-success'
+                        break
+                      case 'C':
+                        turno = 'Completo'
+                        color = 'bg-danger'
+                        break
+                    }
+                  }
+
+                  return (
+                    <td
+                      key={i}
+                      onClick={() => changeTurno(horario?.id)}
+                      className={`${color}`}
+                      style={{ width: '90px' }}
+                    >
+                      <div className="text-center text-white mx-2">{turno}</div>
+                    </td>
+                  )
+                })}
               </tr>
             ))}
           </tbody>

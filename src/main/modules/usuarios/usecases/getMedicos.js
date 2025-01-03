@@ -9,7 +9,7 @@ ipcMain.handle('getMedicos', async () => {
           model: Rol, // Incluye el modelo Rol
           as: 'roles', // Alias de la asociación
           where: {
-            id: 2
+            id: 6
           }
         },
         {
