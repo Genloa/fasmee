@@ -3,6 +3,8 @@ import Dash from '../../components/layouts/Dash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPersonChalkboard, faTrashCan, faTruckRampBox } from '@fortawesome/free-solid-svg-icons'
 import ReactPaginate from 'react-paginate'
+import ModalCrearArticulo from './components/ModalCrearArticulo'
+import ModalCrearAlmacen from './components/ModalCrearAlamacen'
 
 const InventarioContext = createContext({ inventario: [], setInventario: () => {} })
 export default function Inventario() {
@@ -16,6 +18,16 @@ export default function Inventario() {
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 10
   const pagesVisited = currentPage * itemsPerPage
+
+  // Modal Crear Articulo
+  const [showModalArticulo, setShowModalArticulo] = useState(false)
+  const handleShowModalArticulo = () => setShowModalArticulo(true)
+  const handleCloseModalArticulo = () => setShowModalArticulo(false)
+
+  // Modal Crear Almacen
+  const [showModalAlmacen, setShowModalAlmacen] = useState(false)
+  const handleShowModalAlmacen = () => setShowModalAlmacen(true)
+  const handleCloseModalAlmacen = () => setShowModalAlmacen(false)
 
   useEffect(() => {
     fetchInventario()
@@ -117,14 +129,24 @@ export default function Inventario() {
     <>
       <Dash>
         <InventarioContext.Provider value={{ inventario, setInventario }}>
+          <ModalCrearArticulo
+            show={showModalArticulo}
+            handleClose={handleCloseModalArticulo}
+            fetchArticulos={fetchArticulos}
+          />
+          <ModalCrearAlmacen
+            show={showModalAlmacen}
+            handleClose={handleCloseModalAlmacen}
+            fetchAlmacenes={fetchAlmacenes}
+          />
           <div className="card border-white">
             <div className="card-body">
               <h5 className="card-title fs-3">Inventario</h5>
               <div className="text-end">
-                <button type="button" className="btn btn-primary me-2">
+                <button type="button" className="btn btn-primary me-2" onClick={handleShowModalAlmacen}>
                   Nuevo Almacén
                 </button>
-                <button type="button" className="btn btn-primary">
+                <button type="button" className="btn btn-primary" onClick={handleShowModalArticulo}>
                   Nuevo Artículo
                 </button>
               </div>
