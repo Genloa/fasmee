@@ -5,6 +5,7 @@ import { faPersonChalkboard, faTrashCan, faTruckRampBox } from '@fortawesome/fre
 import ReactPaginate from 'react-paginate'
 import ModalCrearArticulo from './components/ModalCrearArticulo'
 import ModalCrearAlmacen from './components/ModalCrearAlamacen'
+import { Toast } from 'bootstrap'
 
 const InventarioContext = createContext({ inventario: [], setInventario: () => {} })
 export default function Inventario() {
@@ -37,7 +38,7 @@ export default function Inventario() {
 
   const fetchInventario = async () => {
     try {
-      const fetchedInventario = await window.api.getArticulosAlmacenes()
+      const fetchedInventario = await window.api.getArticulosAlmacen()
       setInventario(fetchedInventario)
       console.log('Inventario:', inventario)
       console.log('Inventario:', fetchedInventario)
@@ -124,6 +125,26 @@ export default function Inventario() {
   const changePage = ({ selected }) => {
     setCurrentPage(selected)
   }
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
 
   return (
     <>
@@ -132,7 +153,9 @@ export default function Inventario() {
           <ModalCrearArticulo
             show={showModalArticulo}
             handleClose={handleCloseModalArticulo}
+            fetchInventario={fetchInventario}
             fetchArticulos={fetchArticulos}
+            handleShowToast={handleShowToast}
           />
           <ModalCrearAlmacen
             show={showModalAlmacen}
@@ -143,7 +166,11 @@ export default function Inventario() {
             <div className="card-body">
               <h5 className="card-title fs-3">Inventario</h5>
               <div className="text-end">
-                <button type="button" className="btn btn-primary me-2" onClick={handleShowModalAlmacen}>
+                <button
+                  type="button"
+                  className="btn btn-primary me-2"
+                  onClick={handleShowModalAlmacen}
+                >
                   Nuevo Almacén
                 </button>
                 <button type="button" className="btn btn-primary" onClick={handleShowModalArticulo}>
@@ -215,6 +242,26 @@ export default function Inventario() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="toast-container position-fixed bottom-0 end-0 p-3">
+            <div
+              id="liveToast"
+              className="toast"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div className="toast-header">
+                <strong className="me-auto">Notificación</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="toast-body">{toastMessage}</div>
             </div>
           </div>
         </InventarioContext.Provider>

@@ -4,16 +4,10 @@ import PropTypes from 'prop-types'
 import FormArticulo from '../../../forms/FormArticulo'
 import { InventarioContext } from '../Inventario'
 
-function ModalCrearArticulo({
-  show,
-  handleClose,
-  fetchArticulos,
-  handleShowToast
-}) {
+function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToast }) {
   const { inventario, setInventario } = useContext(InventarioContext) // Desestructurar el contexto correctamente
   const [toastMessage] = useState('')
   const [showToast] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
 
   // HOOK
 
@@ -28,13 +22,23 @@ function ModalCrearArticulo({
   // FORM VALIDATION
   const defaultValues = {
     nombre: '',
-    cantidad: 0,
+    cantidad: 0
   }
 
   const onSubmitArticulo = async (data, resetForm) => {
     try {
       console.log(data)
-      
+      const nuevoArticulo = await window.api.createArticulo(data)
+      console.log('Cita creada:', nuevoArticulo)
+      if (nuevoArticulo) {
+        setInventario([...inventario, nuevoArticulo])
+        fetchInventario()
+        handleShowToast('Producto creado correctamente')
+        handleClose(true)
+        resetForm() // Resetear el formulario después de crear la cita
+      } else {
+        handleShowToast('No se pudo Crear el Producto')
+      }
     } catch (error) {
       console.error('Error creando la cita:', error)
     }
@@ -64,17 +68,11 @@ function ModalCrearArticulo({
               ></button>
             </div>
             <div className="modal-body m-2">
-              {alertMessage && (
-                <div className="alert alert-danger" role="alert">
-                  {alertMessage}
-                </div>
-              )}
               <FormArticulo
                 onSubmit={onSubmitArticulo}
                 defaultValues={defaultValues}
                 mode="create"
                 handleClose={handleClose}
-                clearAlert={() => setAlertMessage('')} // Pasar la función para limpiar el mensaje de alerta
               />
             </div>
           </div>
@@ -109,7 +107,7 @@ function ModalCrearArticulo({
 ModalCrearArticulo.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchArticulos: PropTypes.func.isRequired,
+  fetchInventario: PropTypes.func.isRequired,
   handleShowToast: PropTypes.func.isRequired
 }
 

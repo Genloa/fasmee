@@ -1,3 +1,5 @@
-import './usecase/getArticulosAlmacenes'
+import './usecase/getArticulosAlmacen'
 import './usecase/getArticulos'
 import './usecase/getAlmacenes'
+import './usecase/createArticulo'
+import './usecase/createAlmacen'
