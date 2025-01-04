@@ -20,7 +20,6 @@ let ColaPacientes = null
 let PerfilOnBeneficiario = null
 let RolOnPerfil = null
 let RolOnPermiso = null
-let ArticuloOnAlmacen = null
 let Horarios = null
 
 if (sequelize instanceof Sequelize) {
@@ -326,8 +325,20 @@ if (sequelize instanceof Sequelize) {
         type: DataTypes.STRING,
         allowNull: false
       },
+      almacenId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Almacen,
+          key: 'id'
+        }
+      },
       cantidad: {
         type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      fecha_ingreso: {
+        type: DataTypes.DATE,
         allowNull: false
       }
     },
@@ -661,45 +672,6 @@ if (sequelize instanceof Sequelize) {
     }
   )
 
-  ArticuloOnAlmacen = sequelize.define(
-    'articulo_on_almacen',
-    {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
-      },
-      almacenId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Almacen,
-          key: 'id'
-        }
-      },
-      articuloId: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        references: {
-          model: Articulo,
-          key: 'id'
-        }
-      },
-      cantidad: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
-      fecha_ingreso: {
-        type: DataTypes.DATE,
-        allowNull: false
-      }
-    },
-    {
-      tableName: 'articulos_on_almacenes',
-      timestamps: true
-    }
-  )
-
   Horarios = sequelize.define(
     'horarios',
     {
@@ -806,26 +778,17 @@ if (sequelize instanceof Sequelize) {
 
   // Relaciones del modelo almacen
 
-  Almacen.belongsToMany(Articulo, {
-    through: ArticuloOnAlmacen,
-    as: 'articulos',
-    foreignKey: 'almacenId',
-    otherKey: 'articuloId'
-  })
+  Almacen.hasMany(Articulo, { foreignKey: 'almacenId', as: 'articulos' })
 
   // Relaciones del modelo articulo
+
+  Articulo.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
 
   Articulo.belongsToMany(Perfil, {
     through: PerfilOnArticulo,
     as: 'perfiles',
     foreignKey: 'articuloId',
     otherKey: 'perfilId'
-  })
-  Articulo.belongsToMany(Almacen, {
-    through: ArticuloOnAlmacen,
-    as: 'almacenes',
-    foreignKey: 'articuloId',
-    otherKey: 'almacenId'
   })
 
   // Relaciones del modelo historia
@@ -889,11 +852,6 @@ if (sequelize instanceof Sequelize) {
   RolOnPermiso.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
   RolOnPermiso.belongsTo(Permiso, { foreignKey: 'permisoId', as: 'permiso' })
 
-  // Relaciones del modelo articulo_on_almacen
-
-  ArticuloOnAlmacen.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
-  ArticuloOnAlmacen.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
-
   // Relaciones del modelo horarios
 
   Horarios.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
@@ -903,7 +861,6 @@ export {
   Almacen,
   Archivos,
   Articulo,
-  ArticuloOnAlmacen,
   Cita,
   ColaPacientes,
   Departamento,
