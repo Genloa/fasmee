@@ -11,6 +11,7 @@ let Departamento = null
 let Cita = null
 let Almacen = null
 let Articulo = null
+let ArticuloIngresado = null
 let Historia = null
 let Archivos = null
 let Rol = null
@@ -344,6 +345,37 @@ if (sequelize instanceof Sequelize) {
     },
     {
       tableName: 'articulos',
+      timestamps: true
+    }
+  )
+
+  ArticuloIngresado = sequelize.define(
+    'articulo_ingresado',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+      },
+      articuloId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: Articulo,
+          key: 'id'
+        }
+      },
+      cantidad: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      fecha_ingreso: {
+        type: DataTypes.DATE,
+        allowNull: false
+      }
+    },
+    {
+      tableName: 'articulos_ingresados',
       timestamps: true
     }
   )
@@ -778,14 +810,20 @@ if (sequelize instanceof Sequelize) {
 
   // Relaciones del modelo almacen
   Almacen.hasMany(Articulo, { foreignKey: 'almacenId', as: 'articulos' })
+
   // Relaciones del modelo articulo
   Articulo.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
+  Articulo.hasMany(ArticuloIngresado, { foreignKey: 'articuloId', as: 'ingresos' })
   Articulo.belongsToMany(Perfil, {
     through: PerfilOnArticulo,
     as: 'perfiles',
     foreignKey: 'articuloId',
     otherKey: 'perfilId'
   })
+
+  // Relaciones del modelo articulo_ingresado
+
+  ArticuloIngresado.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
 
   // Relaciones del modelo historia
 
@@ -857,6 +895,7 @@ export {
   Almacen,
   Archivos,
   Articulo,
+  ArticuloIngresado,
   Cita,
   ColaPacientes,
   Departamento,
