@@ -1,19 +1,11 @@
 import { Toast } from 'bootstrap'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import FormArticulo from '../../../forms/FormArticulo'
-import { InventarioContext } from '../Inventario'
+import FormAlmacen from '../../../forms/FormAlmacen'
 
-function ModalCrearAlmacen({
-  show,
-  handleClose,
-  fetchAlamacenes,
-  handleShowToast
-}) {
-  const { inventario, setInventario } = useContext(InventarioContext) // Desestructurar el contexto correctamente
+function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast }) {
   const [toastMessage] = useState('')
   const [showToast] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
 
   // HOOK
 
@@ -27,14 +19,23 @@ function ModalCrearAlmacen({
 
   // FORM VALIDATION
   const defaultValues = {
-    nombre: '',
-    cantidad: 0,
+    cubiculo: '',
+    descripcion: ''
   }
 
-  const onSubmitArticulo = async (data, resetForm) => {
+  const onSubmitAlmacen = async (data, resetForm) => {
     try {
       console.log(data)
-      
+      const nuevoAlmacen = await window.api.createAlmacen(data)
+      console.log('Cita creada:', nuevoAlmacen)
+      if (nuevoAlmacen) {
+        fetchAlmacenes()
+        handleShowToast('Producto creado correctamente')
+        handleClose(true)
+        resetForm() // Resetear el formulario después de crear la cita
+      } else {
+        handleShowToast('No se pudo Crear el Producto')
+      }
     } catch (error) {
       console.error('Error creando la cita:', error)
     }
@@ -46,14 +47,14 @@ function ModalCrearAlmacen({
         className={`modal fade ${show ? 'show d-block' : 'd-none'}`}
         id="modal-create-trabajador"
         tabIndex="-1"
-        aria-labelledby="modal-create-paciente-label"
+        aria-labelledby="modal-create-almacen-label"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-lg modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="modal-create-paciente-label">
-                Crear Articulo
+              <h1 className="modal-title fs-5" id="modal-create-almacen-label">
+                Crear almacen
               </h1>
               <button
                 type="submit"
@@ -64,22 +65,17 @@ function ModalCrearAlmacen({
               ></button>
             </div>
             <div className="modal-body m-2">
-              {alertMessage && (
-                <div className="alert alert-danger" role="alert">
-                  {alertMessage}
-                </div>
-              )}
-              <FormArticulo
-                onSubmit={onSubmitArticulo}
+              <FormAlmacen
+                onSubmit={onSubmitAlmacen}
                 defaultValues={defaultValues}
                 mode="create"
                 handleClose={handleClose}
-                clearAlert={() => setAlertMessage('')} // Pasar la función para limpiar el mensaje de alerta
               />
             </div>
           </div>
         </div>
       </div>{' '}
+      {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         {' '}
         <div
@@ -109,7 +105,7 @@ function ModalCrearAlmacen({
 ModalCrearAlmacen.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchAlamacenes: PropTypes.func.isRequired,
+  fetchAlmacenes: PropTypes.func.isRequired,
   handleShowToast: PropTypes.func.isRequired
 }
 

@@ -102,6 +102,7 @@ function ModalCrearCita({
           </div>
         </div>
       </div>{' '}
+      {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         {' '}
         <div

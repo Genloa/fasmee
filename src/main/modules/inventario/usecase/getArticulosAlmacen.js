@@ -1,13 +1,13 @@
 import { ipcMain } from 'electron'
 import { Almacen, Articulo } from '../../../singletons/database/schema'
 
-ipcMain.handle('getArticulosAlmacenes', async () => {
+ipcMain.handle('getArticulosAlmacen', async () => {
   try {
     const Articulos = await Articulo.findAll({
       include: [
         {
           model: Almacen,
-          as: 'almacenes'
+          as: 'almacen'
         }
       ]
     })

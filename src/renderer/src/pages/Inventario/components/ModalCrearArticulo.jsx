@@ -4,16 +4,10 @@ import PropTypes from 'prop-types'
 import FormArticulo from '../../../forms/FormArticulo'
 import { InventarioContext } from '../Inventario'
 
-function ModalCrearArticulo({
-  show,
-  handleClose,
-  fetchArticulos,
-  handleShowToast
-}) {
+function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToast }) {
   const { inventario, setInventario } = useContext(InventarioContext) // Desestructurar el contexto correctamente
   const [toastMessage] = useState('')
   const [showToast] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
 
   // HOOK
 
@@ -29,12 +23,23 @@ function ModalCrearArticulo({
   const defaultValues = {
     nombre: '',
     cantidad: 0,
+    almacenId: 0
   }
 
   const onSubmitArticulo = async (data, resetForm) => {
     try {
       console.log(data)
-      
+      const nuevoArticulo = await window.api.createArticulo(data)
+      console.log('Cita creada:', nuevoArticulo)
+      if (nuevoArticulo) {
+        setInventario([...inventario, nuevoArticulo])
+        fetchInventario()
+        handleShowToast('Producto creado correctamente')
+        handleClose(true)
+        resetForm() // Resetear el formulario después de crear la cita
+      } else {
+        handleShowToast('No se pudo Crear el Producto')
+      }
     } catch (error) {
       console.error('Error creando la cita:', error)
     }
@@ -64,24 +69,19 @@ function ModalCrearArticulo({
               ></button>
             </div>
             <div className="modal-body m-2">
-              {alertMessage && (
-                <div className="alert alert-danger" role="alert">
-                  {alertMessage}
-                </div>
-              )}
               <FormArticulo
                 onSubmit={onSubmitArticulo}
                 defaultValues={defaultValues}
                 mode="create"
                 handleClose={handleClose}
-                clearAlert={() => setAlertMessage('')} // Pasar la función para limpiar el mensaje de alerta
+                hideNombre={false}
               />
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
+      {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        {' '}
         <div
           id="liveToastCrear"
           className="toast"
@@ -89,27 +89,25 @@ function ModalCrearArticulo({
           aria-live="assertive"
           aria-atomic="true"
         >
-          {' '}
           <div className="toast-header">
-            {' '}
-            <strong className="me-auto">Notificación</strong>{' '}
+            <strong className="me-auto">Notificación</strong>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="toast"
               aria-label="Close"
-            ></button>{' '}
-          </div>{' '}
-          <div className="toast-body">{toastMessage}</div>{' '}
-        </div>{' '}
-      </div>{' '}
+            ></button>
+          </div>
+          <div className="toast-body">{toastMessage}</div>
+        </div>
+      </div>
     </>
   )
 }
 ModalCrearArticulo.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchArticulos: PropTypes.func.isRequired,
+  fetchInventario: PropTypes.func.isRequired,
   handleShowToast: PropTypes.func.isRequired
 }
 

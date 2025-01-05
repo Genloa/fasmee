@@ -59,9 +59,15 @@ const api = {
   changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId),
 
   //casos de uso para inventario
-  getArticulosAlmacenes: () => ipcRenderer.invoke('getArticulosAlmacenes'),
+  getArticulosAlmacen: () => ipcRenderer.invoke('getArticulosAlmacen'),
   getAlmacenes: () => ipcRenderer.invoke('getAlmacenes'),
-  getArticulos: () => ipcRenderer.invoke('getArticulos')
+  getArticulos: () => ipcRenderer.invoke('getArticulos'),
+  createArticulo: (data) => ipcRenderer.invoke('createArticulo', data),
+  createAlmacen: (data) => ipcRenderer.invoke('createAlmacen', data),
+  updateCantidadArticulo: (cantidad, data) =>
+    ipcRenderer.invoke('updateCantidadArticulo', { cantidad, data }),
+  retirarArticulo: (dataR, data) => ipcRenderer.invoke('retirarArticulo', { dataR, data }),
+  deleteArticulo: (id) => ipcRenderer.invoke('deleteArticulo', id)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
