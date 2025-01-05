@@ -1,3 +1,4 @@
+import superFs from '@supercharge/fs'
 import { DataTypes, Sequelize } from 'sequelize'
 import db from './database'
 
@@ -166,7 +167,16 @@ if (sequelize instanceof Sequelize) {
 
       profilePhotoPath: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        get() {
+          // retorna la imagen de perfil en base64 si existe
+          if (this.getDataValue('profilePhotoPath')) {
+            let imageBase64 = superFs.readFileSync(this.getDataValue('profilePhotoPath'), 'base64')
+            return `data:image/jpeg;base64,${imageBase64}`
+          }
+
+          return ''
+        }
       }
     },
     {

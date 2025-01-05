@@ -8,11 +8,12 @@ export default function CardPaciente({
   handleOpenModalEditPaciente,
   handleOpenModalDeletePaciente
 }) {
+  console.log('CardPaciente', paciente)
   return (
     <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
       <div className="card-body">
         <div className="text-center">
-          <img src="../../src/assets/img/paciente.jpg" className="img-fluid rounded-circle" />
+          <img src={paciente.profilePhotoPath} className="img-fluid rounded-circle" />
         </div>
         <h5 className="card-title">
           {paciente.nombres} {paciente.apellidos}
