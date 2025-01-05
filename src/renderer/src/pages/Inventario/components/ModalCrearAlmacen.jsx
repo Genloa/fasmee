@@ -1,9 +1,9 @@
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import FormArticulo from '../../../forms/FormArticulo'
+import FormAlmacen from '../../../forms/FormAlmacen'
 
-function ModalCrearAlmacen({ show, handleClose, fetchAlamacenes, handleShowToast }) {
+function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast }) {
   const [toastMessage] = useState('')
   const [showToast] = useState(false)
 
@@ -29,7 +29,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlamacenes, handleShowToast
       const nuevoAlmacen = await window.api.createAlmacen(data)
       console.log('Cita creada:', nuevoAlmacen)
       if (nuevoAlmacen) {
-        fetchAlamacenes()
+        fetchAlmacenes()
         handleShowToast('Producto creado correctamente')
         handleClose(true)
         resetForm() // Resetear el formulario después de crear la cita
@@ -65,7 +65,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlamacenes, handleShowToast
               ></button>
             </div>
             <div className="modal-body m-2">
-              <FormArticulo
+              <FormAlmacen
                 onSubmit={onSubmitAlmacen}
                 defaultValues={defaultValues}
                 mode="create"
@@ -75,6 +75,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlamacenes, handleShowToast
           </div>
         </div>
       </div>{' '}
+      {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         {' '}
         <div
@@ -104,7 +105,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlamacenes, handleShowToast
 ModalCrearAlmacen.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchAlamacenes: PropTypes.func.isRequired,
+  fetchAlmacenes: PropTypes.func.isRequired,
   handleShowToast: PropTypes.func.isRequired
 }
 

@@ -5,7 +5,7 @@ import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
+function FormArticulo({ onSubmit, defaultValues, mode, handleClose, hideNombre }) {
   const [almacenes, setAlmacenes] = useState([])
 
   const {
@@ -38,7 +38,7 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
 
   const almacenOptions = almacenes.map((almacen) => ({
     value: almacen.id,
-    label: almacen.cubiculo
+    label: `Cubiculo ${almacen.cubiculo} ${almacen.descripcion}`
   }))
 
   const getInputClassName = (fieldName) => {
@@ -51,27 +51,32 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
   const onSubmitForm = (data) => {
     onSubmit(data, reset) // Pasar reset como callback
   }
+  useEffect(() => {
+    reset(defaultValues)
+  }, [defaultValues, reset])
 
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
-      <div className="row mt-4">
-        <div className="col">
-          <div className="form-floating">
-            <input
-              type="text"
-              id="nombre"
-              className={getInputClassName('nombre')}
-              placeholder="Nombre"
-              aria-label="nombre"
-              {...register('nombre')}
-            />
-            <label htmlFor="nombres">Nombre Articulo</label>
-            {errors.nombre?.message && (
-              <div className="invalid-feedback">{errors.nombre?.message}</div>
-            )}
+      {!hideNombre && (
+        <div className="row mt-4">
+          <div className="col">
+            <div className="form-floating">
+              <input
+                type="text"
+                id="nombre"
+                className={getInputClassName('nombre')}
+                placeholder="Nombre"
+                aria-label="nombre"
+                {...register('nombre')}
+              />
+              <label htmlFor="nombres">Nombre Articulo</label>
+              {errors.nombre?.message && (
+                <div className="invalid-feedback">{errors.nombre?.message}</div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="row mt-4">
         <div className="col">
           <div className="form-floating ">
@@ -93,36 +98,37 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
           </div>
         </div>
       </div>
-      <div className="row mt-4">
-        {' '}
-        <div className="col">
-          <Controller
-            name="pacienteId"
-            control={control}
-            defaultValue=""
-            render={({ field }) => (
-              <div>
-                <Select
-                  {...field}
-                  options={almacenOptions}
-                  placeholder="Buscar Almacen"
-                  isClearable
-                  value={almacenOptions.find((option) => option.value === field.value) || null}
-                  onChange={(selectedOption) => {
-                    field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
-                    setValue('almacenId', selectedOption ? selectedOption.value : null) // Registrar el valor
-                    trigger('almacenId') // Validar en tiempo real
-                  }}
-                />
-                {errors.almacenId && (
-                  <div className="invalid-feedback d-block">{errors.almacenId.message}</div>
-                )}
-              </div>
-            )}
-          />
+      {!hideNombre && (
+        <div className="row mt-4">
+          {' '}
+          <div className="col">
+            <Controller
+              name="almacenId"
+              control={control}
+              defaultValue=""
+              render={({ field }) => (
+                <div>
+                  <Select
+                    {...field}
+                    options={almacenOptions}
+                    placeholder="Buscar Almacen"
+                    isClearable
+                    value={almacenOptions.find((option) => option.value === field.value) || null}
+                    onChange={(selectedOption) => {
+                      field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
+                      setValue('almacenId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                      trigger('almacenId') // Validar en tiempo real
+                    }}
+                  />
+                  {errors.almacenId && (
+                    <div className="invalid-feedback d-block">{errors.almacenId.message}</div>
+                  )}
+                </div>
+              )}
+            />
+          </div>
         </div>
-      </div>
-
+      )}
       <div className="modal-footer">
         <button
           type="button"
@@ -148,7 +154,12 @@ FormArticulo.propTypes = {
     cantidad: PropTypes.number.isRequired
   }).isRequired,
   mode: PropTypes.oneOf(['create', 'edit']).isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  hideNombre: PropTypes.bool
+}
+
+FormArticulo.defaultProps = {
+  hideNombre: false
 }
 
 export default FormArticulo

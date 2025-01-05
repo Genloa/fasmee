@@ -327,7 +327,7 @@ if (sequelize instanceof Sequelize) {
       },
       almacenId: {
         type: DataTypes.INTEGER,
-        primaryKey: true,
+        allowNull: false,
         references: {
           model: Almacen,
           key: 'id'
@@ -777,9 +777,9 @@ if (sequelize instanceof Sequelize) {
   Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
 
   // Relaciones del modelo almacen
-
+  Almacen.hasMany(Articulo, { foreignKey: 'almacenId', as: 'articulos' })
   // Relaciones del modelo articulo
-
+  Articulo.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
   Articulo.belongsToMany(Perfil, {
     through: PerfilOnArticulo,
     as: 'perfiles',

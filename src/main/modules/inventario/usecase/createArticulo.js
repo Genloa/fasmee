@@ -7,6 +7,7 @@ ipcMain.handle('createArticulo', async (event, data) => {
       nombre: data.nombre,
       cantidad: data.cantidad,
       almacenId: data.almacenId,
+      fecha_ingreso: new Date(),
       include: [
         {
           model: Almacen,

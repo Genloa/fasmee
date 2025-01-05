@@ -1,11 +1,20 @@
 import { createContext, useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPersonChalkboard, faTrashCan, faTruckRampBox } from '@fortawesome/free-solid-svg-icons'
+import {
+  faClipboard,
+  faPersonChalkboard,
+  faTrashCan,
+  faTruckRampBox
+} from '@fortawesome/free-solid-svg-icons'
 import ReactPaginate from 'react-paginate'
 import ModalCrearArticulo from './components/ModalCrearArticulo'
-import ModalCrearAlmacen from './components/ModalCrearAlamacen'
+import ModalCrearAlmacen from './components/ModalCrearAlmacen'
 import { Toast } from 'bootstrap'
+import ModalHistorial from './components/ModalHistorial'
+import ModalCargar from './components/ModalCargar'
+import ModalRetirar from './components/ModalRetirar'
+import ModalEliminar from './components/ModalEliminar'
 
 const InventarioContext = createContext({ inventario: [], setInventario: () => {} })
 export default function Inventario() {
@@ -15,6 +24,7 @@ export default function Inventario() {
 
   const [searchArticuloName, setSearchArticuloName] = useState('')
   const [searchAlmacenName, setSearchAlmacenName] = useState('')
+  const [searchAlmacenDescription, setSearchAlmacenDescription] = useState('')
 
   const [currentPage, setCurrentPage] = useState(0)
   const itemsPerPage = 10
@@ -29,6 +39,36 @@ export default function Inventario() {
   const [showModalAlmacen, setShowModalAlmacen] = useState(false)
   const handleShowModalAlmacen = () => setShowModalAlmacen(true)
   const handleCloseModalAlmacen = () => setShowModalAlmacen(false)
+
+  const [showModalHistorial, setShowModalHistorial] = useState(false)
+  const handleShowModalHistorial = (articulo) => {
+    setSelectedArticulo(articulo)
+    setShowModalHistorial(true)
+  }
+  const handleCloseModalHistorial = () => setShowModalHistorial(false)
+
+  const [showModalCargar, setShowModalCargar] = useState(false)
+  const handleShowModalCargar = (data) => {
+    setSelectedArticulo(data)
+    setShowModalCargar(true)
+  }
+  const handleCloseModalCargar = () => setShowModalCargar(false)
+
+  const [showModalRetirar, setShowModalRetirar] = useState(false)
+  const handleShowModalRetirar = (articulo) => {
+    setSelectedArticulo(articulo)
+    setShowModalRetirar(true)
+  }
+  const handleCloseModalRetirar = () => setShowModalRetirar(false)
+
+  const [showModalEliminar, setShowModalEliminar] = useState(false)
+  const handleShowModalEliminar = (articulo) => {
+    setSelectedArticulo(articulo)
+    setShowModalEliminar(true)
+  }
+  const handleCloseModalEliminar = () => setShowModalEliminar(false)
+
+  const [selectedArticulo, setSelectedArticulo] = useState([])
 
   useEffect(() => {
     fetchInventario()
@@ -72,7 +112,9 @@ export default function Inventario() {
   }
 
   const handleAlmacenNameChange = (event) => {
-    setSearchAlmacenName(event.target.value)
+    const [name, description] = event.target.value.split(' - ')
+    setSearchAlmacenName(name)
+    setSearchAlmacenDescription(description || '')
   }
 
   const getArticuloIdByName = (name) => {
@@ -80,45 +122,84 @@ export default function Inventario() {
     return articulo ? articulo.id : ''
   }
 
-  const getAlmacenIdByName = (name) => {
-    const almacen = almacenes.find((a) => a.cubiculo === name)
+  const getAlmacenIdByName = (name, description) => {
+    const almacen = almacenes.find((a) => a.cubiculo === name && a.descripcion === description)
     return almacen ? almacen.id : ''
   }
 
   const filteredInventario = inventario.filter((item) => {
     const articuloId = getArticuloIdByName(searchArticuloName)
-    const almacenId = getAlmacenIdByName(searchAlmacenName)
+    const almacenId = getAlmacenIdByName(searchAlmacenName, searchAlmacenDescription)
     return (
       (!searchArticuloName || item.id === articuloId) &&
-      (!searchAlmacenName || item.almacenes.some((almacen) => almacen.id === almacenId))
+      (!searchAlmacenName || item.almacenId === almacenId)
     )
   })
 
   const displayItems = filteredInventario
     .slice(pagesVisited, pagesVisited + itemsPerPage)
-    .map((item) =>
-      item.almacenes.map((almacen) => (
-        <tr key={`${item.id}-${almacen.id}`}>
-          <td>{item.nombre}</td>
-          <td>{almacen.articulo_on_almacen.cantidad}</td>
-          <td>{almacen.cubiculo}</td>
-          <td>{almacen.descripcion}</td>
-          <td className="text-end">
-            <button type="button" className="btn btn-sm btn-primary me-2">
-              <FontAwesomeIcon icon={faPersonChalkboard} className="fs-5" />
-            </button>
-            <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
-              <button type="button" className="btn btn-success">
-                <FontAwesomeIcon icon={faTruckRampBox} className="fs-5" />
-              </button>
-              <button type="button" className="btn btn-danger">
-                <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-              </button>
-            </div>
-          </td>
-        </tr>
-      ))
-    )
+    .map((item) => (
+      <tr key={`${item.id}-${item.almacenId}`}>
+        <td>{item.nombre}</td>
+        <td>{item.cantidad}</td>
+        <td>{item.almacen?.cubiculo}</td>
+        <td>{item.almacen?.descripcion}</td>
+        <td className="text-end">
+          <div className="dropdown">
+            <button
+              className="btn btn-sm btn-primary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            ></button>
+            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => handleShowModalHistorial(item)}
+                >
+                  <FontAwesomeIcon icon={faClipboard} className="fs-5" />
+                  <span className="fs-6 d-none ms-3 d-sm-inline">Historial</span>
+                </button>
+              </li>
+              <li className="dropdown-divider"></li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => handleShowModalCargar(item)}
+                >
+                  <FontAwesomeIcon icon={faTruckRampBox} className="fs-5" />
+                  <span className="fs-6 d-none ms-3 d-sm-inline">Cargar</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => handleShowModalRetirar(item)}
+                >
+                  <FontAwesomeIcon icon={faPersonChalkboard} className="fs-5" />
+                  <span className="fs-6 d-none ms-3 d-sm-inline">Retirar</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => handleShowModalEliminar(item)}
+                >
+                  <FontAwesomeIcon icon={faTrashCan} className="fs-5 me-2" />
+                  <span className="fs-6 d-none ms-3 d-sm-inline">Eliminar</span>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    ))
 
   const pageCount = Math.ceil(filteredInventario.length / itemsPerPage)
 
@@ -161,7 +242,35 @@ export default function Inventario() {
             show={showModalAlmacen}
             handleClose={handleCloseModalAlmacen}
             fetchAlmacenes={fetchAlmacenes}
+            handleShowToast={handleShowToast}
           />
+          <ModalHistorial
+            show={showModalHistorial}
+            handleClose={handleCloseModalHistorial}
+            articulo={selectedArticulo}
+          />
+          <ModalCargar
+            show={showModalCargar}
+            handleClose={handleCloseModalCargar}
+            articulo={selectedArticulo}
+            fetchInventario={fetchInventario}
+            handleShowToast={handleShowToast}
+          />
+          <ModalRetirar
+            show={showModalRetirar}
+            handleClose={handleCloseModalRetirar}
+            articulo={selectedArticulo}
+            fetchInventario={fetchInventario}
+            handleShowToast={handleShowToast}
+          />
+          <ModalEliminar
+            show={showModalEliminar}
+            handleClose={handleCloseModalEliminar}
+            articulo={selectedArticulo}
+            fetchInventario={fetchInventario}
+            handleShowToast={handleShowToast}
+          />
+
           <div className="card border-white">
             <div className="card-body">
               <h5 className="card-title fs-3">Inventario</h5>
@@ -201,13 +310,16 @@ export default function Inventario() {
                     className="form-control"
                     id="floatingAlmacenName"
                     aria-label="Buscar por Nombre de Almacén"
-                    value={searchAlmacenName}
+                    value={`${searchAlmacenName} - ${searchAlmacenDescription}`}
                     onChange={handleAlmacenNameChange}
                   >
                     <option value="">Seleccione un Almacén</option>
                     {almacenes.map((almacen) => (
-                      <option key={almacen.id} value={almacen.cubiculo}>
-                        {almacen.cubiculo}
+                      <option
+                        key={almacen.id}
+                        value={`${almacen.cubiculo} - ${almacen.descripcion}`}
+                      >
+                        {almacen.cubiculo} - {almacen.descripcion}
                       </option>
                     ))}
                   </select>
@@ -221,7 +333,7 @@ export default function Inventario() {
                       <tr>
                         <th scope="col">Artículo</th>
                         <th scope="col">Cantidad</th>
-                        <th scope="col">Almacén</th>
+                        <th scope="col">Cubiculo</th>
                         <th scope="col">Descripción</th>
                       </tr>
                     </thead>

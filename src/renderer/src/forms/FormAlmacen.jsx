@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { almacenSchema } from '../validations/almacenSchema'
 
-function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
+function FormAlmacen({ onSubmit, defaultValues, mode, handleClose }) {
   const {
     register,
     handleSubmit,
@@ -84,7 +84,7 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose }) {
   )
 }
 
-FormArticulo.propTypes = {
+FormAlmacen.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.shape({
     cubiculo: PropTypes.string,
@@ -94,4 +94,4 @@ FormArticulo.propTypes = {
   handleClose: PropTypes.func.isRequired
 }
 
-export default FormArticulo
+export default FormAlmacen

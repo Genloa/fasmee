@@ -22,7 +22,8 @@ function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToas
   // FORM VALIDATION
   const defaultValues = {
     nombre: '',
-    cantidad: 0
+    cantidad: 0,
+    almacenId: 0
   }
 
   const onSubmitArticulo = async (data, resetForm) => {
@@ -73,13 +74,14 @@ function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToas
                 defaultValues={defaultValues}
                 mode="create"
                 handleClose={handleClose}
+                hideNombre={false}
               />
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
+      {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        {' '}
         <div
           id="liveToastCrear"
           className="toast"
@@ -87,20 +89,18 @@ function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToas
           aria-live="assertive"
           aria-atomic="true"
         >
-          {' '}
           <div className="toast-header">
-            {' '}
-            <strong className="me-auto">Notificación</strong>{' '}
+            <strong className="me-auto">Notificación</strong>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="toast"
               aria-label="Close"
-            ></button>{' '}
-          </div>{' '}
-          <div className="toast-body">{toastMessage}</div>{' '}
-        </div>{' '}
-      </div>{' '}
+            ></button>
+          </div>
+          <div className="toast-body">{toastMessage}</div>
+        </div>
+      </div>
     </>
   )
 }
