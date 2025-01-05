@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
-import { Articulo } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Articulo, ArticuloIngresado } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
-ipcMain.handle('updateCantidadArticulo', async (event, { cantidad, data }) => {
+ipcMain.handle('cargarArticulo', async (event, { cantidad, data }) => {
   try {
     const articulo = await Articulo.update(
       {
@@ -14,6 +14,11 @@ ipcMain.handle('updateCantidadArticulo', async (event, { cantidad, data }) => {
         }
       }
     )
+    await ArticuloIngresado.create({
+      articuloId: articulo,
+      cantidad: cantidad,
+      fecha_ingreso: new Date()
+    })
 
     const articuloActualizado = await Articulo.findOne(
       {},

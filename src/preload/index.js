@@ -30,6 +30,7 @@ const api = {
   createPaciente: (data) => ipcRenderer.invoke('createPaciente', data),
   updatePaciente: (id, data) => ipcRenderer.invoke('updatePaciente', { id, data }),
   deletePaciente: (id) => ipcRenderer.invoke('deletePaciente', id),
+  getPerfilPaciente: (id) => ipcRenderer.invoke('getPerfilPaciente', id),
 
   // Casos de uso para Roles
   getRoles: () => ipcRenderer.invoke('getRoles'),
@@ -64,10 +65,11 @@ const api = {
   getArticulos: () => ipcRenderer.invoke('getArticulos'),
   createArticulo: (data) => ipcRenderer.invoke('createArticulo', data),
   createAlmacen: (data) => ipcRenderer.invoke('createAlmacen', data),
-  updateCantidadArticulo: (cantidad, data) =>
-    ipcRenderer.invoke('updateCantidadArticulo', { cantidad, data }),
+  cargarArticulo: (cantidad, data) => ipcRenderer.invoke('cargarArticulo', { cantidad, data }),
   retirarArticulo: (dataR, data) => ipcRenderer.invoke('retirarArticulo', { dataR, data }),
-  deleteArticulo: (id) => ipcRenderer.invoke('deleteArticulo', id)
+  deleteArticulo: (id) => ipcRenderer.invoke('deleteArticulo', id),
+  getIngresosArticulo: (id) => ipcRenderer.invoke('getIngresosArticulo', id),
+  getRetirosArticulo: (id) => ipcRenderer.invoke('getRetirosArticulo', id)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

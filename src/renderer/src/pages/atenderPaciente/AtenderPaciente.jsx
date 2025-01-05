@@ -1,17 +1,19 @@
-import { NavLink } from 'react-router-dom'
 import Dash from '../../components/layouts/Dash'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
+import ConsultaNutricion from './components/ConsultaNutricion'
 
 export default function AtenderPaciente() {
   const [colaPacientes, setColaPacientes] = useState([])
   const [citaPacientes, setCitaPaciente] = useState([])
+  const [showConsultaNutricion, setShowConsultaNutricion] = useState(false)
+  const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const usuario = {
     nombre: 'heidy',
     apellidos: 'Sanchez',
-    medicoId: 3,
+    medicoId: 2,
     departamentoId: 4
   }
   useEffect(() => {
@@ -25,6 +27,8 @@ export default function AtenderPaciente() {
         usuario.medicoId,
         usuario.departamentoId
       )
+
+      console.log(fetchedPacientes)
       // Ordenar los pacientes por colasMedicos[0].createdAt
       const sortedPacientes = fetchedPacientes.sort(
         (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
@@ -49,9 +53,31 @@ export default function AtenderPaciente() {
     }
   }
 
+  const handleAtenderClick = (paciente) => {
+    if (usuario.departamentoId === 4) {
+      setSelectedPaciente(paciente)
+      setShowConsultaNutricion(true)
+    } else {
+      console.log('Atender paciente:', paciente)
+    }
+  }
+
+  const handleCloseConsultaNutricion = () => {
+    setShowConsultaNutricion(false)
+    setSelectedPaciente(null)
+  }
+
   return (
     <>
       <Dash>
+        {/* Modal ConsultaNutricion */}
+        {showConsultaNutricion && selectedPaciente && (
+          <ConsultaNutricion
+            show={showConsultaNutricion}
+            handleClose={handleCloseConsultaNutricion}
+            pacienteId={selectedPaciente.id}
+          />
+        )}
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title fs-3">Atender Pacientes</h5>
@@ -104,19 +130,17 @@ export default function AtenderPaciente() {
                             <li
                               key={paciente.id}
                               className="list-group-item text-primary d-flex justify-content-between align-items-center"
-                              onClick={() => console.log(paciente)}
                             >
                               <span>
                                 {index + 1}. {paciente.nombres} {paciente.apellidos}
                               </span>
-                              <NavLink
-                                to="/dash/ColaPacientes"
-                                className={({ isActive }) =>
-                                  `btn btn-primary btn-sm ${isActive ? 'active' : ''}`
-                                }
+                              <button
+                                type="button"
+                                className="btn btn-primary btn-sm"
+                                onClick={() => handleAtenderClick(paciente)}
                               >
                                 Atender
-                              </NavLink>
+                              </button>
                             </li>
                           ))}
                         </ul>

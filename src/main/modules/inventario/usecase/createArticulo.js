@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Almacen, Articulo } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Almacen, Articulo, ArticuloIngresado } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('createArticulo', async (event, data) => {
   try {
@@ -15,6 +15,12 @@ ipcMain.handle('createArticulo', async (event, data) => {
         }
       ]
     })
+    await ArticuloIngresado.create({
+      articuloId: articulo.id,
+      cantidad: data.cantidad,
+      fecha_ingreso: new Date()
+    })
+
     const articuloSerializables = articulo.toJSON()
     return articuloSerializables
   } catch (error) {
