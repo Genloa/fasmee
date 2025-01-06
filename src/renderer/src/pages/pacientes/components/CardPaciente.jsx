@@ -1,6 +1,7 @@
 import { faCameraRetro, faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import propTypes from 'prop-types'
+import pacienteImg from '../../../assets/img/paciente.jpg'
 
 export default function CardPaciente({
   paciente,
@@ -8,12 +9,14 @@ export default function CardPaciente({
   handleOpenModalEditPaciente,
   handleOpenModalDeletePaciente
 }) {
-  console.log('CardPaciente', paciente)
   return (
     <div className="card border-white text-center shadow p-3 mb-5 bg-body-tertiary rounded">
       <div className="card-body">
         <div className="text-center">
-          <img src={paciente.profilePhotoPath} className="img-fluid rounded-circle" />
+          <img
+            src={paciente?.profilePhotoPath ?? pacienteImg}
+            className="img-fluid rounded-circle"
+          />
         </div>
         <h5 className="card-title">
           {paciente.nombres} {paciente.apellidos}
