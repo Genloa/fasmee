@@ -2,12 +2,12 @@ import Dash from '../../components/layouts/Dash'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
-import ConsultaNutricion from './components/ConsultaNutricion'
+import ModalConsulta from './components/ModalConsulta'
 
 export default function AtenderPaciente() {
   const [colaPacientes, setColaPacientes] = useState([])
   const [citaPacientes, setCitaPaciente] = useState([])
-  const [showConsultaNutricion, setShowConsultaNutricion] = useState(false)
+  const [showConsulta, setShowConsulta] = useState(false)
   const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const usuario = {
@@ -54,28 +54,25 @@ export default function AtenderPaciente() {
   }
 
   const handleAtenderClick = (paciente) => {
-    if (usuario.departamentoId === 4) {
-      setSelectedPaciente(paciente)
-      setShowConsultaNutricion(true)
-    } else {
-      console.log('Atender paciente:', paciente)
-    }
+    setSelectedPaciente(paciente)
+    setShowConsulta(true)
   }
 
-  const handleCloseConsultaNutricion = () => {
-    setShowConsultaNutricion(false)
+  const handleCloseConsulta = () => {
+    setShowConsulta(false)
     setSelectedPaciente(null)
   }
 
   return (
     <>
       <Dash>
-        {/* Modal ConsultaNutricion */}
-        {showConsultaNutricion && selectedPaciente && (
-          <ConsultaNutricion
-            show={showConsultaNutricion}
-            handleClose={handleCloseConsultaNutricion}
+        {/* Modal Consultan */}
+        {showConsulta && selectedPaciente && (
+          <ModalConsulta
+            show={showConsulta}
+            handleClose={handleCloseConsulta}
             pacienteId={selectedPaciente.id}
+            departamentoId={usuario.departamentoId}
           />
         )}
         <div className="card border-white">
