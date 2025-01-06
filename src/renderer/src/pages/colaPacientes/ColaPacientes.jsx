@@ -95,17 +95,16 @@ export default function ColaPacientes() {
 
       return {
         departamento,
-        medicos:
-          departamento.id === 1
-            ? [{ medico: null, pacientes: pacientesSinMedico }]
-            : medicosConPacientes
+        medicos: [1, 9, 10].includes(departamento.id)
+          ? [{ medico: null, pacientes: pacientesSinMedico }]
+          : medicosConPacientes
       }
     })
     .filter(({ medicos }) => medicos.length > 0)
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(0)
-  const usersPerPage = 3
+  const usersPerPage = 6
   const pagesVisited = currentPage * usersPerPage
 
   const handleChangePage = ({ selected }) => setCurrentPage(selected)
@@ -122,7 +121,11 @@ export default function ColaPacientes() {
             {medicos.map(({ medico, pacientes }) => (
               <div key={medico ? medico.id : 'no-medico'} className="mb-3">
                 <h6 className="text-primary">
-                  {medico ? `${medico.nombres} ${medico.apellidos}` : 'En la espera de Medico'}
+                  {medico
+                    ? `${medico.nombres} ${medico.apellidos}`
+                    : departamento.id === 1
+                      ? 'En la espera de Medico'
+                      : 'En espera'}
                 </h6>
                 <ul className="list-group">
                   {pacientes

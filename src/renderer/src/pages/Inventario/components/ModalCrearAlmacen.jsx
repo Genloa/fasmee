@@ -30,11 +30,11 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast 
       console.log('Cita creada:', nuevoAlmacen)
       if (nuevoAlmacen) {
         fetchAlmacenes()
-        handleShowToast('Producto creado correctamente')
+        handleShowToast('Almacen creado correctamente')
         handleClose(true)
         resetForm() // Resetear el formulario después de crear la cita
       } else {
-        handleShowToast('No se pudo Crear el Producto')
+        handleShowToast('No se pudo Crear el Almacen')
       }
     } catch (error) {
       console.error('Error creando la cita:', error)

@@ -191,7 +191,7 @@ function Sidebar({ children }) {
               </li>
               <li className="nav-item disabled">
                 <NavLink
-                  to="/"
+                  to="/dash/servicios"
                   className={({ isActive }) =>
                     `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
                   }

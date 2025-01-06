@@ -46,14 +46,14 @@ function ModalCrearCola({
           paciente.citasSolicitadas.some(
             (cita) =>
               cita.departamentoId === data.departamentoId &&
-              (data.departamentoId === 1 || cita.perfilId === data.medicoId) &&
+              ([1, 9, 10].includes(data.departamentoId) || cita.perfilId === data.medicoId) &&
               new Date(cita.fecha_cita).toLocaleDateString() === new Date().toLocaleDateString()
           )
       )
-      if (citaValida || data.departamentoId === 1) {
+      if (citaValida || [1, 9, 10, 15].includes(data.departamentoId)) {
         const nuevaCola = await window.api.createColaPaciente({
           ...data,
-          medicoId: data.departamentoId === 1 ? null : data.medicoId // Asignar null si el departamento es 1
+          medicoId: [1, 9, 10, 15].includes(data.departamentoId) ? null : data.medicoId // Asignar null si el departamento es 1, 9, 10 o 15
         })
         console.log('Cola creada:', nuevaCola)
         if (nuevaCola) {
