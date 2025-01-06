@@ -175,7 +175,7 @@ if (sequelize instanceof Sequelize) {
             return `data:image/jpeg;base64,${imageBase64}`
           }
 
-          return ''
+          return null
         }
       }
     },
