@@ -69,7 +69,9 @@ const api = {
   retirarArticulo: (dataR, data) => ipcRenderer.invoke('retirarArticulo', { dataR, data }),
   deleteArticulo: (id) => ipcRenderer.invoke('deleteArticulo', id),
   getIngresosArticulo: (id) => ipcRenderer.invoke('getIngresosArticulo', id),
-  getRetirosArticulo: (id) => ipcRenderer.invoke('getRetirosArticulo', id)
+  getRetirosArticulo: (id) => ipcRenderer.invoke('getRetirosArticulo', id),
+  //Casos de Uso para historias
+  getHistoriasPacientes: () => ipcRenderer.invoke('getHistoriasPacientes'),
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

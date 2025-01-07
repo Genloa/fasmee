@@ -15,6 +15,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import Servicios from './pages/servicios/Servicios'
+import Historias from './pages/historias/Historias'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/dash/inventario" element={<Inventario />} />
         <Route path="/dash/cronograma" element={<Cronograma />} />
         <Route path="/dash/servicios" element={<Servicios />} />
+        <Route path="/dash/historias" element={<Historias />} />
       </Routes>
     </AuthProvider>
   )
