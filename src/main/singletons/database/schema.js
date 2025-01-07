@@ -138,6 +138,12 @@ if (sequelize instanceof Sequelize) {
         allowNull: false
       },
 
+      genero: {
+        type: DataTypes.ENUM('M', 'F'),
+        allowNull: false,
+        defaultValue: 'M'
+      },
+
       usuarioId: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -230,6 +236,11 @@ if (sequelize instanceof Sequelize) {
       },
 
       cirugias: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+
+      antecedentes: {
         type: DataTypes.STRING,
         allowNull: true
       },
@@ -452,6 +463,10 @@ if (sequelize instanceof Sequelize) {
       },
       medida_cadera: {
         type: DataTypes.DECIMAL,
+        allowNull: true
+      },
+      formulario: {
+        type: DataTypes.JSON,
         allowNull: true
       }
     },
