@@ -3,8 +3,9 @@ import { useState, useEffect, createContext } from 'react'
 import ReactPaginate from 'react-paginate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
-import { Modal, Toast } from 'bootstrap'
+
 import momentDate from '../../../../main/utils/momentDate'
+import ModalVerHistoria from './components/ModalVerHistoria'
 
 const HistoriasPacientesContext = createContext({ historiasPacientes: [], setHistoriasPacientes: () => {} })
 
@@ -13,8 +14,8 @@ export default function Historias() {
   const [historiasPacientes, setHistoriasPacientes] = useState([])
   const [medicos, setMedicos] = useState([])
   const [pacientes, setPacientes] = useState([])
+  const [showViewModal, setShowViewModal] = useState(false)
 
-  const [/*showViewModal,*/ setShowViewModal] = useState(false)
   const [selectedHistoria, setSelectedHistoria] = useState(null)
 
   const handleShowViewModal = (historia) => {
@@ -22,11 +23,11 @@ export default function Historias() {
     setShowViewModal(true)
   }
 
- /* const handleCloseViewModal = () => {
+ const handleCloseViewModal = () => {
     setShowViewModal(false)
     setSelectedHistoria(null)
   }
-*/
+
   useEffect(() => {
     fetchHistoriasPacientes()
     fetchDepartamentos()
@@ -216,6 +217,14 @@ export default function Historias() {
     <>
       <Dash>
         <HistoriasPacientesContext.Provider value={{ historiasPacientes, setHistoriasPacientes }}>
+      {showViewModal && selectedHistoria && (
+                <ModalVerHistoria
+                  show={showViewModal}
+                  handleClose={handleCloseViewModal}
+                  historiaPaciente={selectedHistoria}
+
+                />
+              )}
 
           <div className="card border-white">
             <div className="card-body">
@@ -334,72 +343,8 @@ export default function Historias() {
               </div>
             </div>
           </div>
-          <div
-            className="modal fade"
-            id="modal-view-historia"
-            tabIndex="-1"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="modalTitleId"
-            aria-hidden="true"
-          >
-            <div
-              className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg"
-              role="document"
-            >
-              <div className="modal-content">
-                <div className="modal-header bg-primary text-white">
-                  <h5 className="modal-title" id="modalTitleId">
-                    Ver Historia
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  {selectedHistoria && (
-                    <>
-                      <p><strong>Paciente:</strong> {selectedHistoria.nombres} {selectedHistoria.apellidos}</p>
-                      <p><strong>Cédula:</strong> {selectedHistoria.cedula}</p>
-                      <p><strong>Fecha de Historia:</strong> {new Date(selectedHistoria.fecha_atencion).toLocaleString()}</p>
-                      <p><strong>Departamento:</strong> {selectedHistoria.departamentoName}</p>
-                      <p><strong>Médico:</strong> {selectedHistoria.medicoName}</p>
-                      <p><strong>Detalles:</strong> {selectedHistoria.detalles}</p>
-                    </>
-                  )}
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                    Cerrar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div
-              id="liveToast"
-              className="toast"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div className="toast-header">
-                <strong className="me-auto">Notificación</strong>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="toast"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="toast-body"></div>
-            </div>
-          </div>
+
+
         </HistoriasPacientesContext.Provider>
       </Dash>
     </>
