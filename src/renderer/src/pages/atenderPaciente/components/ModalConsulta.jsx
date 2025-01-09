@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import FormNutricion from '../../../forms/FormNutricion'
 
-export default function ModalConsulta({ show, handleClose, pacienteId, departamentoId }) {
+export default function ModalConsulta({ show, handleClose, pacienteId, usuario, handleShowToast }) {
   const [paciente, setPaciente] = useState([])
   const [mostrarTarjeta, setMostrarTarjeta] = useState(true)
   const [departamentoNombre, setDepartamentoNombre] = useState('')
@@ -10,7 +10,7 @@ export default function ModalConsulta({ show, handleClose, pacienteId, departame
   useEffect(() => {
     fetchPaciente()
     fetchDepartamentos()
-  }, [departamentoId])
+  }, [usuario.departamentoId])
 
   const fetchPaciente = async () => {
     try {
@@ -24,7 +24,7 @@ export default function ModalConsulta({ show, handleClose, pacienteId, departame
   const fetchDepartamentos = async () => {
     try {
       const fetchedDepartamentos = await window.api.getDepartamentos()
-      const departamento = fetchedDepartamentos.find((dep) => dep.id === departamentoId)
+      const departamento = fetchedDepartamentos.find((dep) => dep.id === usuario.departamentoId)
       if (departamento) {
         setDepartamentoNombre(departamento.nombre)
       }
@@ -42,6 +42,22 @@ export default function ModalConsulta({ show, handleClose, pacienteId, departame
       edad--
     }
     return edad
+  }
+
+  const onSubmit = async (data, resetForm) => {
+    try {
+      console.log(data)
+      const consulta = await window.api.createHistoria(data, pacienteId, usuario)
+      if (consulta) {
+        handleShowToast('Consulta guardada correctamente')
+        handleClose(true)
+        resetForm()
+      } else {
+        handleShowToast('No se pudo guardar consulta')
+      }
+    } catch (error) {
+      console.error('Error creando guardando la consulta:', error)
+    }
   }
 
   return (
@@ -115,7 +131,17 @@ export default function ModalConsulta({ show, handleClose, pacienteId, departame
                   </div>
                 </div>
               )}
-              {departamentoId === 4 ? <FormNutricion handleClose={handleClose} /> : 'nada'}
+              {usuario.departamentoId === 4 ? (
+                <FormNutricion
+                  pacienteId={pacienteId}
+                  usuario={usuario}
+                  handleClose={handleClose}
+                  handleShowToast={handleShowToast}
+                  onSubmit={onSubmit}
+                />
+              ) : (
+                'nada'
+              )}
             </div>
           </div>
         </div>
@@ -129,5 +155,6 @@ ModalConsulta.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   pacienteId: PropTypes.number.isRequired,
-  departamentoId: PropTypes.number.isRequired
+  usuario: PropTypes.object.isRequired,
+  handleShowToast: PropTypes.func.isRequired
 }

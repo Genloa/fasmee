@@ -439,11 +439,11 @@ if (sequelize instanceof Sequelize) {
       },
       sintomas: {
         type: DataTypes.STRING(1000),
-        allowNull: false
+        allowNull: true
       },
       diagnostico: {
         type: DataTypes.STRING(100),
-        allowNull: false
+        allowNull: true
       },
       tratamiento: {
         type: DataTypes.STRING(100),

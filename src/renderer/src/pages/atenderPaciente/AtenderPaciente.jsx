@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
 import ModalConsulta from './components/ModalConsulta'
+import { Toast } from 'bootstrap'
 
 export default function AtenderPaciente() {
   const [colaPacientes, setColaPacientes] = useState([])
@@ -13,7 +14,7 @@ export default function AtenderPaciente() {
   const usuario = {
     nombre: 'heidy',
     apellidos: 'Sanchez',
-    medicoId: 2,
+    id: 2,
     departamentoId: 4
   }
   useEffect(() => {
@@ -24,7 +25,7 @@ export default function AtenderPaciente() {
   const fetchColaPacientes = async () => {
     try {
       const fetchedPacientes = await window.api.getColaPacientesMedico(
-        usuario.medicoId,
+        usuario.id,
         usuario.departamentoId
       )
 
@@ -43,7 +44,7 @@ export default function AtenderPaciente() {
   const fetchCitaPacientes = async () => {
     try {
       const fetchedCitaPacientes = await window.api.getCitaPacientesMedico(
-        usuario.medicoId,
+        usuario.id,
         usuario.departamentoId
       )
       setCitaPaciente(fetchedCitaPacientes)
@@ -63,6 +64,28 @@ export default function AtenderPaciente() {
     setSelectedPaciente(null)
   }
 
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
+
   return (
     <>
       <Dash>
@@ -72,7 +95,8 @@ export default function AtenderPaciente() {
             show={showConsulta}
             handleClose={handleCloseConsulta}
             pacienteId={selectedPaciente.id}
-            departamentoId={usuario.departamentoId}
+            usuario={usuario}
+            handleShowToast={handleShowToast}
           />
         )}
         <div className="card border-white">
@@ -147,6 +171,26 @@ export default function AtenderPaciente() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessage}</div>
           </div>
         </div>
       </Dash>

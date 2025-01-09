@@ -7,7 +7,10 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import momentDate from '../../../../main/utils/momentDate'
 import ModalVerHistoria from './components/ModalVerHistoria'
 
-const HistoriasPacientesContext = createContext({ historiasPacientes: [], setHistoriasPacientes: () => {} })
+const HistoriasPacientesContext = createContext({
+  historiasPacientes: [],
+  setHistoriasPacientes: () => {}
+})
 
 export default function Historias() {
   const [departamentos, setDepartamentos] = useState([])
@@ -23,7 +26,7 @@ export default function Historias() {
     setShowViewModal(true)
   }
 
- const handleCloseViewModal = () => {
+  const handleCloseViewModal = () => {
     setShowViewModal(false)
     setSelectedHistoria(null)
   }
@@ -144,7 +147,7 @@ export default function Historias() {
     return paciente ? paciente.id : ''
   }
 
- /* const getPacienteNameById = (id) => {
+  /* const getPacienteNameById = (id) => {
     const paciente = pacientes.find((p) => p.id === id)
     return paciente ? `${paciente.nombres} ${paciente.apellidos}` : ''
   }*/
@@ -177,7 +180,7 @@ export default function Historias() {
         telefono: paciente.telefono,
         correo: paciente.correo,
         departamentoName: getDepartamentoNameById(historia.departamentoId),
-        medicoName: getMedicoNameById(historia.perfilId),
+        medicoName: getMedicoNameById(historia.perfilId)
       }))
   )
 
@@ -217,14 +220,13 @@ export default function Historias() {
     <>
       <Dash>
         <HistoriasPacientesContext.Provider value={{ historiasPacientes, setHistoriasPacientes }}>
-      {showViewModal && selectedHistoria && (
-                <ModalVerHistoria
-                  show={showViewModal}
-                  handleClose={handleCloseViewModal}
-                  historiaPaciente={selectedHistoria}
-
-                />
-              )}
+          {showViewModal && selectedHistoria && (
+            <ModalVerHistoria
+              show={showViewModal}
+              handleClose={handleCloseViewModal}
+              historiaPaciente={selectedHistoria}
+            />
+          )}
 
           <div className="card border-white">
             <div className="card-body">
@@ -278,25 +280,6 @@ export default function Historias() {
                   </select>
                   <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
                 </div>
-
-                <div className="col form-floating mb-3 mt-3 ms-3">
-                  <select
-                    className="form-control"
-                    id="floatingPacienteName"
-                    aria-label="Buscar por Nombre de Paciente"
-                    value={searchPacienteName}
-                    onChange={handlePacienteNameChange}
-                  >
-                    <option value="">Seleccione un Paciente</option>
-                    {pacientes.map((paciente) => (
-                      <option key={paciente.id} value={`${paciente.nombres} ${paciente.apellidos}`}>
-                        {paciente.nombres} {paciente.apellidos}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="floatingPacienteName">Nombre del Paciente</label>
-                </div>
-
                 <div className="col form-floating mb-3 mt-3 ms-3">
                   <input
                     type="text"
@@ -343,8 +326,6 @@ export default function Historias() {
               </div>
             </div>
           </div>
-
-
         </HistoriasPacientesContext.Provider>
       </Dash>
     </>

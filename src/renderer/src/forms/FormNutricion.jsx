@@ -2,9 +2,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { nutricionSchema } from '../validations/nutricionSchema'
 import PropTypes from 'prop-types'
-import { useEffect } from 'react'
 
-function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
+function FormNutricion({ handleClose, onSubmit }) {
   const {
     register,
     handleSubmit,
@@ -13,13 +12,8 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
     reset
   } = useForm({
     mode: 'onChange',
-    defaultValues,
     resolver: zodResolver(nutricionSchema)
   })
-
-  useEffect(() => {
-    reset(defaultValues)
-  }, [defaultValues, reset])
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -27,10 +21,8 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
     }
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
-
   const onSubmitForm = (data) => {
-    console.log(data)
-    onSubmit(data, reset)
+    onSubmit(data, reset) // Pasar reset como callback
   }
 
   return (
@@ -55,6 +47,23 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
         <div className="col">
           <div className="form-floating">
             <input
+              type="text"
+              id="tension"
+              className={getInputClassName('tension')}
+              placeholder="tension"
+              aria-label="tension"
+              {...register('tension')}
+            />
+            <label htmlFor="tension">Tension </label>
+            {errors.tension?.message && (
+              <div className="invalid-feedback">{errors.tension?.message}</div>
+            )}
+          </div>
+        </div>
+
+        <div className="col">
+          <div className="form-floating">
+            <input
               type="number"
               id="cadera"
               className={getInputClassName('cadera')}
@@ -70,6 +79,8 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
             )}
           </div>
         </div>
+      </div>
+      <div className="row mt-4">
         <div className="col">
           <div className="form-floating">
             <input
@@ -88,8 +99,6 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
             )}
           </div>
         </div>
-      </div>
-      <div className="row mt-4">
         <div className="col">
           <div className="form-floating">
             <input
@@ -131,15 +140,15 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
         <div className="col">
           <div className="form-floating">
             <textarea
-              id="detalles"
-              className={getInputClassName('detalles')}
-              placeholder="Detalles de la consulta"
-              aria-label="detalles"
-              {...register('detalles')}
+              id="diagnostico"
+              className={getInputClassName('diagnostico')}
+              placeholder="diagnostico de la consulta"
+              aria-label="diagnostico"
+              {...register('diagnostico')}
             />
-            <label htmlFor="detalles">Detalles de la consulta</label>
-            {errors.detalles?.message && (
-              <div className="invalid-feedback">{errors.detalles?.message}</div>
+            <label htmlFor="diagnostico">Detalles de la consulta</label>
+            {errors.diagnostico?.message && (
+              <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}
           </div>
         </div>
@@ -155,7 +164,7 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
           Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
-          {mode === 'edit' ? 'Actualizar' : 'Guardar'}
+          Guardar
         </button>
       </div>
     </form>
@@ -164,12 +173,6 @@ function FormNutricion({ onSubmit, defaultValues, mode, handleClose }) {
 
 FormNutricion.propTypes = {
   onSubmit: PropTypes.func.isRequired,
-  defaultValues: PropTypes.shape({
-    peso: PropTypes.number,
-    altura: PropTypes.number,
-    detalles: PropTypes.string
-  }).isRequired,
-  mode: PropTypes.oneOf(['create', 'edit']).isRequired,
   handleClose: PropTypes.func.isRequired
 }
 

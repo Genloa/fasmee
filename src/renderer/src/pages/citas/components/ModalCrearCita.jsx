@@ -13,7 +13,7 @@ function ModalCrearCita({
   handleShowToast
 }) {
   const { citasPacientes, setCitasPaciente } = useContext(CitasPacientesContext) // Desestructurar el contexto correctamente
-  const [toastMessage] = useState('')
+
   const [showToast] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
 
@@ -103,29 +103,6 @@ function ModalCrearCita({
         </div>
       </div>{' '}
       {show && <div className="modal-backdrop fade show"></div>}
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        {' '}
-        <div
-          id="liveToastCrear"
-          className="toast"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-        >
-          {' '}
-          <div className="toast-header">
-            {' '}
-            <strong className="me-auto">Notificación</strong>{' '}
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>{' '}
-          </div>{' '}
-          <div className="toast-body">{toastMessage}</div>{' '}
-        </div>{' '}
-      </div>{' '}
     </>
   )
 }
