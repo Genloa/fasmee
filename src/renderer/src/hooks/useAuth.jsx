@@ -6,26 +6,26 @@ import { useLocalStorage } from './useLocalStorage'
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useLocalStorage('user', null)
+  const [session, setSession] = useLocalStorage('session', null)
   const navigate = useNavigate()
 
   const login = async (data) => {
-    setUser(data)
+    setSession(data)
     navigate('/home')
   }
 
   const logout = () => {
-    setUser(null)
+    setSession(null)
     navigate('/', { replace: true })
   }
 
   const value = useMemo(
     () => ({
-      user,
+      session,
       login,
       logout
     }),
-    [user]
+    [session]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

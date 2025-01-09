@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Usuario } from '../../../singletons/database/schema'
+import { Perfil, Usuario } from '../../../singletons/database/schema'
 import comparePassword from '../../../utils/comparePassword'
 
 ipcMain.handle('login', async (event, { username, password }) => {
@@ -10,6 +10,12 @@ ipcMain.handle('login', async (event, { username, password }) => {
   }
 
   const user = await Usuario.findOne({
+    include: [
+      {
+        model: Perfil,
+        as: 'perfil'
+      }
+    ],
     where: {
       username
     }
@@ -29,6 +35,6 @@ ipcMain.handle('login', async (event, { username, password }) => {
     return message
   }
 
-  message.user = user
+  message.user = user.toJSON()
   return message
 })
