@@ -20,11 +20,14 @@ import '../../assets/css/dash.css'
 
 // imagenes
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
+import { useAuth } from '../../hooks/useAuth'
 
 function Dash({ children }) {
+  const { session } = useAuth()
+
   return (
     <>
-      <Navbar />
+      <Navbar user={session.user} />
       <Sidebar>{children}</Sidebar>
     </>
   )
@@ -34,7 +37,13 @@ Dash.propTypes = {
   children: PropTypes.node.isRequired
 }
 
-function Navbar() {
+function Navbar({ user }) {
+  const { logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-white m-2">
       <div className="container-fluid">
@@ -57,7 +66,7 @@ function Navbar() {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              Admin
+              {user.perfil.nombres} {user.perfil.apellidos}
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
               <li>
@@ -66,9 +75,9 @@ function Navbar() {
                 </a>
               </li>
               <li>
-                <NavLink to="/" className="dropdown-item">
-                  Cerrar
-                </NavLink>
+                <a href="#" onClick={() => handleLogout()} className="dropdown-item">
+                  Cerrar sesión
+                </a>
               </li>
             </ul>
           </div>
@@ -76,6 +85,10 @@ function Navbar() {
       </div>
     </nav>
   )
+}
+
+Navbar.propTypes = {
+  user: PropTypes.object
 }
 
 function Sidebar({ children }) {
