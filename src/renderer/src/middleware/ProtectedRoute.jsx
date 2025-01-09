@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
-const ProtectedRoute = () => {
-  const { user } = useAuth()
-  if (!user) {
+const ProtectedRoute = ({ children }) => {
+  const { session } = useAuth()
+  if (!session) {
+    // user is not authenticated
     return <Navigate to="/login" />
   }
-  return <Outlet />
+  return children
 }
 
 ProtectedRoute.propTypes = {
