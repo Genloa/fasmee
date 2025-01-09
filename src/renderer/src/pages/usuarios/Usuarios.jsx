@@ -8,23 +8,22 @@ import ReactPaginate from 'react-paginate'
 import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
+import ModalCrearUsuario from './components/ModalCrearUsuario'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
-function Usuarios() {
+export default function Usuarios() {
   // Data
   const [usuarios, setUsuarios] = useState([])
-  const [departamentos, setDepartamentos] = useState([])
 
-  const [showPassword, setShowPassword] = useState(false)
+
+   //modal crear
+   const [showModal, setShowModal] = useState(false)
+   const handleShowModal = () => setShowModal(true)
+   const handleCloseModal = () => setShowModal(false)
+
   const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
-
-  const modalCrearUserRef = document.getElementById('modal-create-usuario')
-
-  useEffect(() => {
-    fetchDepartamentos()
-  }, [])
 
   useEffect(() => {
     if (showToast) {
@@ -34,301 +33,41 @@ function Usuarios() {
     }
   }, [showToast])
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    control,
-    setValue,
-    formState: { errors, dirtyFields }
-  } = useForm({
-    mode: 'onChange',
-    resolver: zodResolver(userSchema)
-  })
-
-  const departamentoOptions = departamentos.map((departamento) => ({
-    value: departamento.id,
-    label: departamento.nombre
-  }))
-
-  // FETCH
-  const fetchDepartamentos = async () => {
-    const fetchedDepartamentos = await window.api.getDepartamentos()
-    setDepartamentos(fetchedDepartamentos)
+  const fetchUsers = async () => {
+    const fetchedUsers = await window.api.getUsuarios()
+    setUsuarios(fetchedUsers)
   }
 
-  const getInputClassName = (fieldName) => {
-    if (!dirtyFields[fieldName]) {
-      return 'form-control'
-    }
-    return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
-  }
-
-  const openModalCrearUser = () => {
-    let modal = new Modal(modalCrearUserRef)
-    modal.show()
-  }
-
-  const onSubmit = async (data) => {
-    setShowToast(false)
-    let usuario = await window.api.createUsuario(data)
-    if (usuario) {
-      setUsuarios([...usuarios, usuario])
-      setToastMessage('Usuario creado correctamente')
-      const modal = Modal.getInstance(modalCrearUserRef)
-      modal.hide()
-    } else {
-      setToastMessage('No se pudo crear el usuario')
-    }
+  const handleShowToast = (message) => {
+    setToastMessage(message)
     setShowToast(true)
-    reset()
   }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
+
 
   return (
     <Dash>
       <UsuariosContext.Provider value={{ usuarios, setUsuarios }}>
-        {/* Modal Create User */}
-        <div
-          className="modal fade"
-          id="modal-create-usuario"
-          tabIndex="-1"
-          aria-labelledby="modal-create-usuario-label"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog modal-lg modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h1 className="modal-title fs-5" id="modal-create-usuario-label">
-                  Crear Usuario
-                </h1>
-                <button
-                  type="submit"
-                  className="btn-close"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="modal-body m-2">
-                <form onSubmit={handleSubmit(onSubmit)} className="row g-3" id="form-create-user">
-                  <div className="row mt-4">
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type="text"
-                          id="nombres"
-                          className={getInputClassName('nombres')}
-                          placeholder="Nombres"
-                          aria-label="nombres"
-                          {...register('nombres')}
-                        />
-                        <label htmlFor="nombres">Nombres</label>
-                        {errors.nombres?.message && (
-                          <div className="invalid-feedback">{errors.nombres?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type="text"
-                          className={getInputClassName('apellidos')}
-                          placeholder="apellidos"
-                          aria-label="apellidos"
-                          {...register('apellidos')}
-                        />
-                        <label htmlFor="apellidos">Apellidos</label>
-                        {errors.apellidos?.message && (
-                          <div className="invalid-feedback">{errors.apellidos?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className="input-group  col">
-                      <select
-                        className={`form-select flex-grow-0 bg-light ${errors.tipocedula ? 'is-invalid' : ''}`}
-                        style={{ width: '60px' }}
-                        aria-label="Tipo de documento"
-                        {...register('tipoCedula')}
-                      >
-                        <option value="V">V</option>
-                        <option value="E">E</option>
-                      </select>
-                      <input
-                        type="text"
-                        id="cedula"
-                        className={getInputClassName('cedula')}
-                        placeholder="Cedula"
-                        aria-label="Cedula"
-                        aria-describedby="basic-addon1"
-                        {...register('cedula')}
-                      />
-                      {errors.cedula?.message && (
-                        <div className="invalid-feedback">{errors.cedula?.message}</div>
-                      )}
-                    </div>
-
-                    <div className="col">
-                      <input
-                        type="text"
-                        id="username"
-                        className={getInputClassName('username')}
-                        placeholder="Nombre de Usuario"
-                        aria-label="Username"
-                        {...register('username')}
-                      />
-                      {errors.username?.message && (
-                        <div className="invalid-feedback">{errors.username?.message}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          id="floatingPassword"
-                          className={` ${getInputClassName('password')}`}
-                          placeholder="password"
-                          {...register('password')}
-                        />
-                        <label htmlFor="floatingPassword">Contraseña</label>
-
-                        {errors.password?.message && (
-                          <div className="invalid-feedback">{errors.password?.message}</div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          id="floatingPassword"
-                          className={getInputClassName('confirmtPassword')}
-                          placeholder="password"
-                          {...register('confirmtPassword')}
-                        />
-                        <label htmlFor="floatingPassword">Confirmar contraseña</label>
-                        {errors.confirmtPassword?.message && (
-                          <div className="invalid-feedback">{errors.confirmtPassword?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className=" col ">
-                      <input
-                        type="checkbox"
-                        className="form-check-input"
-                        id="exampleCheck1"
-                        checked={showPassword}
-                        onChange={() => setShowPassword(!showPassword)}
-                      />
-                      <label className="form-check-label ms-2" htmlFor="exampleCheck1">
-                        Mostrar contraseña.
-                      </label>
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type="date"
-                          className={getInputClassName('fechaNacimiento')}
-                          id="floatingDate"
-                          placeholder="fechaNacimiento"
-                          {...register('fechaNacimiento')}
-                        />
-                        <label htmlFor="floatingDate"> fecha de nacimiento</label>
-                        {errors.fechaNacimiento?.message && (
-                          <div className="invalid-feedback">{errors.fechaNacimiento?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type="phone"
-                          className={getInputClassName('telefono')}
-                          aria-label="Telefono"
-                          placeholder="Telefono"
-                          aria-describedby="basic-addon1"
-                          {...register('telefono')}
-                        />
-                        <label htmlFor="floatingPassword">Telefono</label>
-                        {errors.telefono?.message && (
-                          <div className="invalid-feedback">{errors.telefono?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className="col">
-                      <div className="form-floating ">
-                        <input
-                          type="email"
-                          className={getInputClassName('correo')}
-                          id="correo"
-                          placeholder="correo"
-                          {...register('correo')}
-                        />
-                        <label htmlFor="correo">Correo</label>
-                        {errors.correo?.message && (
-                          <div className="invalid-feedback">{errors.correo?.message}</div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="row mt-4">
-                    <div className="col">
-                      <Controller
-                        name="departamento"
-                        control={control}
-                        defaultValue=""
-                        render={({ field }) => (
-                          <div>
-                            <Select
-                              {...field}
-                              options={departamentoOptions}
-                              placeholder="Buscar Departamento"
-                              isClearable
-                              onChange={(selectedOption) => {
-                                field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
-                                setValue(
-                                  'departamentoId',
-                                  selectedOption ? selectedOption.value : null
-                                ) // Registrar el valor
-                              }}
-                            />
-                            {errors.departamento && (
-                              <div className="invalid-feedback d-block">
-                                {errors.departamento.message}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      />
-                    </div>
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  form="form-create-user"
-                  id="liveToastBtnCrear"
-                >
-                  Guardar Usuario
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Modales */}
+      <ModalCrearUsuario
+                      show={showModal}
+                      handleClose={handleCloseModal}
+                      fetchUsers={fetchUsers}
+                      handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+                    />
 
         {/* Card */}
         <div className="card border-white">
@@ -340,7 +79,7 @@ function Usuarios() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => openModalCrearUser()}
+                  onClick={handleShowModal}
                 >
                   Crear Usuario
                 </button>
@@ -352,31 +91,31 @@ function Usuarios() {
 
         {/* Toast */}
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
-          <div
-            id="liveToastCrear"
-            className="toast"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div className="toast-header">
-              <strong className="me-auto">Notificación</strong>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
+            <div
+              id="liveToast"
+              className="toast"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+            >
+              <div className="toast-header">
+                <strong className="me-auto">Notificación</strong>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="toast-body">{toastMessage}</div>
             </div>
-            <div className="toast-body">{toastMessage}</div>
           </div>
-        </div>
       </UsuariosContext.Provider>
     </Dash>
   )
 }
 
-function TableUsers() {
+export function TableUsers() {
   // Usuarios
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
@@ -1034,4 +773,4 @@ function TableUsers() {
   )
 }
 
-export default Usuarios
+export  {UsuariosContext}
