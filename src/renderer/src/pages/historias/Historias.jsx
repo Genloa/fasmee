@@ -93,7 +93,7 @@ export default function Historias() {
 
   const [searchDepartamentoName, setSearchDepartamentoName] = useState('')
   const [searchMedicoName, setSearchMedicoName] = useState('')
-  const [searchPacienteName, setSearchPacienteName] = useState('')
+  const [searchPacienteName /*, setSearchPacienteName*/] = useState('')
   const [searchCedula, setSearchCedula] = useState('')
 
   const handleDateChange = (event) => {
@@ -112,10 +112,10 @@ export default function Historias() {
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
   }
 
-  const handlePacienteNameChange = (event) => {
+  /*  const handlePacienteNameChange = (event) => {
     setSearchPacienteName(event.target.value)
     setCurrentPage(0) // Reinicia la página actual al cambiar el término de búsqueda
-  }
+  }*/
 
   const handleCedulaChange = (event) => {
     setSearchCedula(event.target.value)
@@ -180,7 +180,8 @@ export default function Historias() {
         telefono: paciente.telefono,
         correo: paciente.correo,
         departamentoName: getDepartamentoNameById(historia.departamentoId),
-        medicoName: getMedicoNameById(historia.perfilId)
+        medicoName: getMedicoNameById(historia.perfilId),
+        foto: paciente.profilePhotoPath
       }))
   )
 
