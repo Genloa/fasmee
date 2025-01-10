@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { userSchema } from '../validations/userSchema'
 
-function FormUsuario({ onSubmit, defaultValues, mode, handleClose }) {
+function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
   const [showPassword, setShowPassword] = useState(false)
 
   const {
@@ -123,6 +123,7 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose }) {
             placeholder="Nombre de Usuario"
             aria-label="Username"
             {...register('username')}
+            disabled={isEdit} // Añadir esta línea
           />
           {errors.username?.message && (
             <div className="invalid-feedback">{errors.username?.message}</div>
@@ -248,6 +249,7 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose }) {
                     setValue('departamentoId', selectedOption ? selectedOption.value : null)
                     trigger('departamentoId') // Validar en tiempo real
                   }}
+                  isDisabled={isEdit} // Añadir esta línea
                 />
                 {errors.departamentoId && (
                   <div className="invalid-feedback d-block">{errors.departamentoId.message}</div>
@@ -280,7 +282,8 @@ FormUsuario.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   defaultValues: PropTypes.object.isRequired,
   mode: PropTypes.oneOf(['create', 'edit']).isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  isEdit: PropTypes.bool // Añadir esta línea
 }
 
 export default FormUsuario

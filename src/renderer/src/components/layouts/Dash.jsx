@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import {
@@ -21,12 +21,17 @@ import '../../assets/css/dash.css'
 // imagenes
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 import { useAuth } from '../../hooks/useAuth'
+import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
+import { Toast } from 'bootstrap'
 
 function Dash({ children }) {
+
   const { session } = useAuth()
 
   return (
     <>
+
+
       <Navbar user={session.user} />
       <Sidebar>{children}</Sidebar>
     </>
@@ -38,6 +43,33 @@ Dash.propTypes = {
 }
 
 function Navbar({ user }) {
+  const [showModal, setShowModal] = useState(false)
+  const handleShowModal = () => setShowModal(true)
+  const handleCloseModal = () => setShowModal(false)
+  console.log(user)
+   const [toastMessage, setToastMessage] = useState('')
+    const [showToast, setShowToast] = useState(false)
+     useEffect(() => {
+        if (showToast) {
+          const toastEl = document.getElementById('liveToast')
+          if (toastEl) {
+            const toast = new Toast(toastEl)
+            toast.show()
+            // Restablecer el estado showToast a false después de que el toast se haya mostrado
+            const timeout = setTimeout(() => {
+              setShowToast(false)
+            }, 3000) // Ajusta el tiempo según sea necesario
+
+            return () => clearTimeout(timeout)
+          }
+        }
+      }, [showToast])
+
+    const handleShowToast = (message) => {
+      setToastMessage(message)
+      setShowToast(true)
+    }
+
   const { logout } = useAuth()
 
   const handleLogout = () => {
@@ -45,6 +77,14 @@ function Navbar({ user }) {
   }
 
   return (
+    <>
+      {user && (
+    <ModalEditarUsuario
+    show={showModal}
+    usuarioSelected={user}
+    handleClose={handleCloseModal}
+    handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+  />)}
     <nav className="navbar navbar-expand-lg navbar-light bg-white m-2">
       <div className="container-fluid">
         <a className="navbar-brand" href="#">
@@ -66,16 +106,16 @@ function Navbar({ user }) {
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              {user.perfil.nombres} {user.perfil.apellidos}
+              {user.perfil?.nombres} {user.perfil?.apellidos}
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
               <li>
-                <a className="dropdown-item" href="#">
+                <a className="dropdown-item" onClick={handleShowModal}>
                   Configuración
                 </a>
               </li>
               <li>
-                <a href="#" onClick={() => handleLogout()} className="dropdown-item">
+                <a  onClick={() => handleLogout()} className="dropdown-item">
                   Cerrar sesión
                 </a>
               </li>
@@ -84,6 +124,27 @@ function Navbar({ user }) {
         </div>
       </div>
     </nav>
+    <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
+    </>
   )
 }
 

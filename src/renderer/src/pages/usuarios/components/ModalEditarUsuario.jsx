@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { UsuariosContext } from '../Usuarios'
 import FormUsuario from '../../../forms/FormUsuario'
 
-function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, handleShowToast }) {
+function ModalEditarUsuario({ show, handleClose, usuarioSelected, handleShowToast }) {
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
 
   // FORM VALIDATION
@@ -13,14 +13,14 @@ function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, ha
     tipoCedula: usuarioSelected.perfil?.tipo_cedula || 'V',
     cedula: usuarioSelected.perfil?.cedula || '',
     username: usuarioSelected?.username || '',
-    password: usuarioSelected?.password || '',
-    confirmtPassword: usuarioSelected?.password || '',
+    password: '',
+    confirmtPassword: '',
     fechaNacimiento: usuarioSelected.perfil?.fecha_nacimiento
       ? new Date(usuarioSelected.perfil.fecha_nacimiento).toISOString().split('T')[0]
       : '',
     telefono: usuarioSelected.perfil?.telefono || '',
     correo: usuarioSelected.perfil?.correo || '',
-    departamentoId: usuarioSelected.perfil?.departamento.id || 0
+    departamentoId: usuarioSelected.perfil?.departamentoId || 0
   }
 
   const onSubmit = async (data, resetForm) => {
@@ -29,7 +29,6 @@ function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, ha
       if (usuario) {
         handleClose(true)
         handleShowToast('Usuario editado correctamente')
-        fetchUsers()
         resetForm() // Resetear el formulario después de crear la cita
         setUsuarios([...usuarios, usuario])
       } else {
@@ -54,7 +53,7 @@ function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, ha
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h1 className="modal-title fs-5" id="modal-create-usuario-label">
-                Editar Usuario {usuarioSelected?.perfil.nombres} {usuarioSelected?.perfil.apellidos}
+               Usuario {usuarioSelected.perfil?.nombres} {usuarioSelected.perfil?.apellidos}
               </h1>
               <button
                 type="button"
@@ -70,6 +69,7 @@ function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, ha
                 defaultValues={defaultValues}
                 mode="edit"
                 handleClose={handleClose}
+                isEdit={true} // Añadir esta línea
               />
             </div>
           </div>
@@ -83,9 +83,9 @@ function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, ha
 ModalEditarUsuario.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
-  fetchUsers: PropTypes.func.isRequired,
   usuarioSelected: PropTypes.object.isRequired,
-  handleShowToast: PropTypes.func.isRequired
+  handleShowToast: PropTypes.func.isRequired,
+  isEdit: PropTypes.bool // Añadir esta línea
 }
 
 export default ModalEditarUsuario

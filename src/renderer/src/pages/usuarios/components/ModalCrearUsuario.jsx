@@ -68,6 +68,7 @@ function ModalCrearUsuario({ show, handleClose, fetchUsers, handleShowToast }) {
                 defaultValues={defaultValues}
                 mode="create"
                 handleClose={handleClose}
+                isEdit={false} // Añadir esta línea
               />
             </div>
           </div>
