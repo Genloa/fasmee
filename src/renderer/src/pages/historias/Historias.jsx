@@ -181,7 +181,8 @@ export default function Historias() {
         correo: paciente.correo,
         departamentoName: getDepartamentoNameById(historia.departamentoId),
         medicoName: getMedicoNameById(historia.perfilId),
-        foto: paciente.profilePhotoPath
+        foto: paciente.profilePhotoPath,
+        fecha_nacimiento: paciente.fecha_nacimiento
       }))
   )
 

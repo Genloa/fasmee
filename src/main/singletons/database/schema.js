@@ -442,7 +442,7 @@ if (sequelize instanceof Sequelize) {
         allowNull: true
       },
       diagnostico: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.TEXT,
         allowNull: true
       },
       tratamiento: {
@@ -773,93 +773,248 @@ if (sequelize instanceof Sequelize) {
 
   // Relaciones del modelo usuario
 
-  Usuario.hasOne(Perfil, { foreignKey: 'usuarioId', as: 'perfil' })
+  Usuario.hasOne(Perfil, {
+    foreignKey: 'usuarioId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo ente
 
-  Ente.hasMany(Perfil, { foreignKey: 'enteId', as: 'perfiles' })
+  Ente.hasMany(Perfil, {
+    foreignKey: 'enteId',
+    as: 'perfiles',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo perfil
 
-  Perfil.belongsTo(Ente, { foreignKey: 'enteId', as: 'ente' })
-  Perfil.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' })
-  Perfil.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
-  Perfil.hasOne(PerfilMedico, { foreignKey: 'perfilId', as: 'perfilMedico' })
-  Perfil.hasMany(ColaPacientes, { foreignKey: 'perfilId', as: 'colasPacientes' })
-  Perfil.hasMany(ColaPacientes, { foreignKey: 'pacienteId', as: 'colasMedicos' })
-  Perfil.hasMany(Cita, { foreignKey: 'perfilId', as: 'citasPendientes' })
-  Perfil.hasMany(Cita, { foreignKey: 'pacienteId', as: 'citasSolicitadas' })
-  Perfil.hasMany(Historia, { foreignKey: 'perfilId', as: 'pacientesAtendidos' })
-  Perfil.hasMany(Historia, { foreignKey: 'pacienteId', as: 'historialMedico' })
-  Perfil.hasMany(Horarios, { foreignKey: 'perfilId', as: 'horarios' })
+  Perfil.belongsTo(Ente, {
+    foreignKey: 'enteId',
+    as: 'ente',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.belongsTo(Usuario, {
+    foreignKey: 'usuarioId',
+    as: 'usuario',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.belongsTo(Departamento, {
+    foreignKey: 'departamentoId',
+    as: 'departamento',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasOne(PerfilMedico, {
+    foreignKey: 'perfilId',
+    as: 'perfilMedico',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(ColaPacientes, {
+    foreignKey: 'perfilId',
+    as: 'colasPacientes',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(ColaPacientes, {
+    foreignKey: 'pacienteId',
+    as: 'colasMedicos',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(Cita, {
+    foreignKey: 'perfilId',
+    as: 'citasPendientes',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(Cita, {
+    foreignKey: 'pacienteId',
+    as: 'citasSolicitadas',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(Historia, {
+    foreignKey: 'perfilId',
+    as: 'pacientesAtendidos',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(Historia, {
+    foreignKey: 'pacienteId',
+    as: 'historialMedico',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Perfil.hasMany(Horarios, {
+    foreignKey: 'perfilId',
+    as: 'horarios',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
   Perfil.belongsToMany(Articulo, {
     through: PerfilOnArticulo,
     as: 'articulos',
     foreignKey: 'perfilId',
-    otherKey: 'articuloId'
+    otherKey: 'articuloId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   Perfil.belongsToMany(Perfil, {
     through: PerfilOnBeneficiario,
     as: 'beneficiarios',
     foreignKey: 'perfilId',
-    otherKey: 'beneficiarioId'
+    otherKey: 'beneficiarioId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   Perfil.belongsToMany(Perfil, {
     through: PerfilOnBeneficiario,
     as: 'trabajadores',
     foreignKey: 'beneficiarioId',
-    otherKey: 'perfilId'
+    otherKey: 'perfilId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   Perfil.belongsToMany(Rol, {
     through: RolOnPerfil,
     as: 'roles',
     foreignKey: 'perfilId',
-    otherKey: 'rolId'
+    otherKey: 'rolId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
 
   // Relaciones del modelo perfil_medico
 
-  PerfilMedico.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfilmedico' })
+  PerfilMedico.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfilmedico',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo departamento
 
-  Departamento.hasMany(ColaPacientes, { foreignKey: 'departamentoId', as: 'colasPacientes' })
-  Departamento.hasMany(Cita, { foreignKey: 'departamentoId', as: 'citas' })
-  Departamento.hasMany(Historia, { foreignKey: 'departamentoId', as: 'historias' })
-  Departamento.hasMany(Perfil, { foreignKey: 'departamentoId', as: 'perfiles' })
+  Departamento.hasMany(ColaPacientes, {
+    foreignKey: 'departamentoId',
+    as: 'colasPacientes',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Departamento.hasMany(Cita, {
+    foreignKey: 'departamentoId',
+    as: 'citas',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Departamento.hasMany(Historia, {
+    foreignKey: 'departamentoId',
+    as: 'historias',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Departamento.hasMany(Perfil, {
+    foreignKey: 'departamentoId',
+    as: 'perfiles',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo cita
 
-  Cita.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-  Cita.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
+  Cita.belongsTo(Perfil, {
+    foreignKey: 'pacienteId',
+    as: 'paciente',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Cita.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'doctor',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo almacen
-  Almacen.hasMany(Articulo, { foreignKey: 'almacenId', as: 'articulos' })
+  Almacen.hasMany(Articulo, {
+    foreignKey: 'almacenId',
+    as: 'articulos',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo articulo
-  Articulo.belongsTo(Almacen, { foreignKey: 'almacenId', as: 'almacen' })
-  Articulo.hasMany(ArticuloIngresado, { foreignKey: 'articuloId', as: 'ingresos' })
+  Articulo.belongsTo(Almacen, {
+    foreignKey: 'almacenId',
+    as: 'almacen',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Articulo.hasMany(ArticuloIngresado, {
+    foreignKey: 'articuloId',
+    as: 'ingresos',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
   Articulo.belongsToMany(Perfil, {
     through: PerfilOnArticulo,
     as: 'perfiles',
     foreignKey: 'articuloId',
-    otherKey: 'perfilId'
+    otherKey: 'perfilId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
 
   // Relaciones del modelo articulo_ingresado
 
-  ArticuloIngresado.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
+  ArticuloIngresado.belongsTo(Articulo, {
+    foreignKey: 'articuloId',
+    as: 'articulo',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo historia
 
-  Historia.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-  Historia.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'doctor' })
-  Historia.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
-  Historia.hasMany(Archivos, { foreignKey: 'historiaId', as: 'archivos' })
+  Historia.belongsTo(Perfil, {
+    foreignKey: 'pacienteId',
+    as: 'paciente',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Historia.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'doctor',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Historia.belongsTo(Departamento, {
+    foreignKey: 'departamentoId',
+    as: 'departamento',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  Historia.hasMany(Archivos, {
+    foreignKey: 'historiaId',
+    as: 'archivos',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo archivos
 
-  Archivos.belongsTo(Historia, { foreignKey: 'historiaId', as: 'historia' })
+  Archivos.belongsTo(Historia, {
+    foreignKey: 'historiaId',
+    as: 'historia',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo rol
 
@@ -867,13 +1022,17 @@ if (sequelize instanceof Sequelize) {
     through: RolOnPerfil,
     as: 'perfiles',
     foreignKey: 'rolId',
-    otherKey: 'perfilId'
+    otherKey: 'perfilId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
   Rol.belongsToMany(Permiso, {
     through: RolOnPermiso,
     as: 'permisos',
     foreignKey: 'rolId',
-    otherKey: 'permisoId'
+    otherKey: 'permisoId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
 
   // Relaciones del modelo permiso
@@ -882,38 +1041,100 @@ if (sequelize instanceof Sequelize) {
     through: RolOnPermiso,
     as: 'roles',
     foreignKey: 'permisoId',
-    otherKey: 'rolId'
+    otherKey: 'rolId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
   })
 
   // Relaciones del modelo perfil_on_articulo
 
-  PerfilOnArticulo.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
-  PerfilOnArticulo.belongsTo(Articulo, { foreignKey: 'articuloId', as: 'articulo' })
+  PerfilOnArticulo.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  PerfilOnArticulo.belongsTo(Articulo, {
+    foreignKey: 'articuloId',
+    as: 'articulo',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo cola_pacientes
 
-  ColaPacientes.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
-  ColaPacientes.belongsTo(Perfil, { foreignKey: 'pacienteId', as: 'paciente' })
-  ColaPacientes.belongsTo(Departamento, { foreignKey: 'departamentoId', as: 'departamento' })
+  ColaPacientes.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  ColaPacientes.belongsTo(Perfil, {
+    foreignKey: 'pacienteId',
+    as: 'paciente',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  ColaPacientes.belongsTo(Departamento, {
+    foreignKey: 'departamentoId',
+    as: 'departamento',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo perfil_on_beneficiario
 
-  PerfilOnBeneficiario.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
-  PerfilOnBeneficiario.belongsTo(Perfil, { foreignKey: 'beneficiarioId', as: 'beneficiario' })
+  PerfilOnBeneficiario.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  PerfilOnBeneficiario.belongsTo(Perfil, {
+    foreignKey: 'beneficiarioId',
+    as: 'beneficiario',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo rol_on_perfil
 
-  RolOnPerfil.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
-  RolOnPerfil.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  RolOnPerfil.belongsTo(Rol, {
+    foreignKey: 'rolId',
+    as: 'rol',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  RolOnPerfil.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo rol_on_permiso
 
-  RolOnPermiso.belongsTo(Rol, { foreignKey: 'rolId', as: 'rol' })
-  RolOnPermiso.belongsTo(Permiso, { foreignKey: 'permisoId', as: 'permiso' })
+  RolOnPermiso.belongsTo(Rol, {
+    foreignKey: 'rolId',
+    as: 'rol',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
+  RolOnPermiso.belongsTo(Permiso, {
+    foreignKey: 'permisoId',
+    as: 'permiso',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 
   // Relaciones del modelo horarios
 
-  Horarios.belongsTo(Perfil, { foreignKey: 'perfilId', as: 'perfil' })
+  Horarios.belongsTo(Perfil, {
+    foreignKey: 'perfilId',
+    as: 'perfil',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
 }
 
 export {

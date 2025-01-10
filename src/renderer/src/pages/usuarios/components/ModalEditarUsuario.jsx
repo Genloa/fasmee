@@ -3,13 +3,7 @@ import PropTypes from 'prop-types'
 import { UsuariosContext } from '../Usuarios'
 import FormUsuario from '../../../forms/FormUsuario'
 
-function ModalEditarUsuario({
-  show,
-  handleClose,
-  fetchUsers,
-  usuarioSelected,
-  handleShowToast
-}) {
+function ModalEditarUsuario({ show, handleClose, fetchUsers, usuarioSelected, handleShowToast }) {
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
 
   // FORM VALIDATION

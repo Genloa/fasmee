@@ -109,7 +109,7 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
                             <p className="card-text">
                               Edad: {calcularEdad(paciente?.fecha_nacimiento)}
                             </p>
-                            <p className="card-text">Género: Femenino {paciente?.genero}</p>
+                            <p className="card-text">Género: {paciente?.genero}</p>
                             <p className="card-text">Telefono: {paciente?.telefono}</p>
                             <p className="card-text">Altura: {paciente.perfilMedico?.altura}</p>
                             <p className="card-text">Peso: {paciente.perfilMedico?.peso}</p>

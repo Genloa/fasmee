@@ -3,12 +3,7 @@ import PropTypes from 'prop-types'
 import { UsuariosContext } from '../Usuarios'
 import FormUsuario from '../../../forms/FormUsuario'
 
-function ModalCrearUsuario({
-  show,
-  handleClose,
-  fetchUsers,
-  handleShowToast
-}) {
+function ModalCrearUsuario({ show, handleClose, fetchUsers, handleShowToast }) {
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
 
   // FORM VALIDATION
@@ -32,8 +27,8 @@ function ModalCrearUsuario({
       if (usuario) {
         handleClose(true)
         handleShowToast('Usuario creado correctamente')
-        fetchUsers()
-        resetForm() // Resetear el formulario después de crear la cita
+        fetchUsers() // Llamar a fetchUsers después de crear el usuario
+        resetForm() // Resetear el formulario después de crear el usuario
         setUsuarios([...usuarios, usuario])
       } else {
         handleShowToast('No se pudo crear el usuario')
@@ -75,7 +70,6 @@ function ModalCrearUsuario({
                 handleClose={handleClose}
               />
             </div>
-
           </div>
         </div>
       </div>

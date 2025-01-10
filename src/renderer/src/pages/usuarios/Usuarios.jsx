@@ -9,6 +9,7 @@ import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
 import { userSchema } from '../../validations/userSchema'
 import ModalCrearUsuario from './components/ModalCrearUsuario'
+import PropTypes from 'prop-types'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
@@ -16,20 +17,27 @@ export default function Usuarios() {
   // Data
   const [usuarios, setUsuarios] = useState([])
 
-
-   //modal crear
-   const [showModal, setShowModal] = useState(false)
-   const handleShowModal = () => setShowModal(true)
-   const handleCloseModal = () => setShowModal(false)
+  //modal crear
+  const [showModal, setShowModal] = useState(false)
+  const handleShowModal = () => setShowModal(true)
+  const handleCloseModal = () => setShowModal(false)
 
   const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
 
   useEffect(() => {
     if (showToast) {
-      const toastEl = document.getElementById('liveToastCrear')
-      const toast = new Toast(toastEl)
-      toast.show()
+      const toastEl = document.getElementById('liveToast')
+      if (toastEl) {
+        const toast = new Toast(toastEl)
+        toast.show()
+        // Restablecer el estado showToast a false después de que el toast se haya mostrado
+        const timeout = setTimeout(() => {
+          setShowToast(false)
+        }, 3000) // Ajusta el tiempo según sea necesario
+
+        return () => clearTimeout(timeout)
+      }
     }
   }, [showToast])
 
@@ -43,31 +51,16 @@ export default function Usuarios() {
     setShowToast(true)
   }
 
-  useEffect(() => {
-    if (showToast) {
-      const toastEl = document.getElementById('liveToast')
-      const toast = new Toast(toastEl)
-      toast.show()
-      // Restablecer el estado showToast a false después de que el toast se haya mostrado
-      const timeout = setTimeout(() => {
-        setShowToast(false)
-      }, 3000) // Ajusta el tiempo según sea necesario
-
-      return () => clearTimeout(timeout)
-    }
-  }, [showToast])
-
-
   return (
     <Dash>
       <UsuariosContext.Provider value={{ usuarios, setUsuarios }}>
         {/* Modales */}
-      <ModalCrearUsuario
-                      show={showModal}
-                      handleClose={handleCloseModal}
-                      fetchUsers={fetchUsers}
-                      handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
-                    />
+        <ModalCrearUsuario
+          show={showModal}
+          handleClose={handleCloseModal}
+          fetchUsers={fetchUsers}
+          handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+        />
 
         {/* Card */}
         <div className="card border-white">
@@ -76,46 +69,42 @@ export default function Usuarios() {
 
             <div className="mt-5">
               <div className="text-end mb-3">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleShowModal}
-                >
+                <button type="button" className="btn btn-primary" onClick={handleShowModal}>
                   Crear Usuario
                 </button>
               </div>
-              <TableUsers />
+              <TableUsers handleShowToast={handleShowToast} />
             </div>
           </div>
         </div>
 
         {/* Toast */}
         <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div
-              id="liveToast"
-              className="toast"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div className="toast-header">
-                <strong className="me-auto">Notificación</strong>
-                <button
-                  type="button"
-                  className="btn-close"
-                  data-bs-dismiss="toast"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div className="toast-body">{toastMessage}</div>
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
             </div>
+            <div className="toast-body">{toastMessage}</div>
           </div>
+        </div>
       </UsuariosContext.Provider>
     </Dash>
   )
 }
 
-export function TableUsers() {
+export function TableUsers({ handleShowToast }) {
   // Usuarios
   const { usuarios, setUsuarios } = useContext(UsuariosContext)
   const [usuarioSelected, setUsuarioSelected] = useState(null)
@@ -124,7 +113,6 @@ export function TableUsers() {
   const [departamentos, setDepartamentos] = useState([])
 
   const [showPassword, setShowPassword] = useState(false)
-  const [toastMessage, setToastMessage] = useState('')
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(0)
@@ -168,11 +156,7 @@ export function TableUsers() {
     setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
     fetchUsers()
     closeModalEditUser()
-    setToastMessage('Usuario actualizado correctamente')
-
-    const toastElement = document.getElementById('liveToast')
-    const toast = new Toast(toastElement)
-    toast.show()
+    handleShowToast('Usuario actualizado correctamente')
   }
 
   const onSubmitRol = async () => {
@@ -189,13 +173,10 @@ export function TableUsers() {
       setUsuarios((prevUsuarios) => prevUsuarios.map((u) => (u.id === usuario.id ? usuario : u)))
       fetchUsers()
 
-      setToastMessage('Rol asignado correctamente')
+      handleShowToast('Rol asignado correctamente')
 
       const modal = Modal.getInstance(modalRolUserRef)
       modal.hide()
-      const toastElement = document.getElementById('liveToast')
-      const toast = new Toast(toastElement)
-      toast.show()
     } catch (error) {
       console.error('Error asignando el rol al usuario:', error)
     }
@@ -279,16 +260,11 @@ export function TableUsers() {
       // Actualizar el estado de usuarios
       setUsuarios(usuarios.filter((user) => user.id !== usuarioSelected.id))
 
-      setToastMessage('Usuario eliminado correctamente')
+      handleShowToast('Usuario eliminado correctamente')
 
       // Cerrar el modal
       const modal = Modal.getInstance(modalDeleteUserRef)
       modal.hide()
-
-      // Mostrar el toast
-      const toastElement = document.getElementById('liveToast')
-      const toast = new Toast(toastElement)
-      toast.show()
     } catch (error) {
       console.error('Error al eliminar el usuario:', error)
       // Aquí podrías mostrar un toast de error si lo deseas
@@ -755,22 +731,12 @@ export function TableUsers() {
       </div>
 
       {/* Toast */}
-      <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div className="toast-header">
-            <strong className="me-auto">Notificación</strong>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="toast"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="toast-body">{toastMessage}</div>
-        </div>
-      </div>
     </div>
   )
 }
 
-export  {UsuariosContext}
+TableUsers.propTypes = {
+  handleShowToast: PropTypes.func.isRequired
+}
+
+export { UsuariosContext }

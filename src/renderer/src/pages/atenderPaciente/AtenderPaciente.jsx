@@ -14,7 +14,7 @@ export default function AtenderPaciente() {
   const usuario = {
     nombre: 'heidy',
     apellidos: 'Sanchez',
-    id: 2,
+    id: 4,
     departamentoId: 4
   }
   useEffect(() => {
