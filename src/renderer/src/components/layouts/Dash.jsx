@@ -19,19 +19,16 @@ import {
 import '../../assets/css/dash.css'
 
 // imagenes
+import { Toast } from 'bootstrap'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 import { useAuth } from '../../hooks/useAuth'
 import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
-import { Toast } from 'bootstrap'
 
 function Dash({ children }) {
-
   const { session } = useAuth()
 
   return (
     <>
-
-
       <Navbar user={session.user} />
       <Sidebar>{children}</Sidebar>
     </>
@@ -46,29 +43,28 @@ function Navbar({ user }) {
   const [showModal, setShowModal] = useState(false)
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
-  console.log(user)
-   const [toastMessage, setToastMessage] = useState('')
-    const [showToast, setShowToast] = useState(false)
-     useEffect(() => {
-        if (showToast) {
-          const toastEl = document.getElementById('liveToast')
-          if (toastEl) {
-            const toast = new Toast(toastEl)
-            toast.show()
-            // Restablecer el estado showToast a false después de que el toast se haya mostrado
-            const timeout = setTimeout(() => {
-              setShowToast(false)
-            }, 3000) // Ajusta el tiempo según sea necesario
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      if (toastEl) {
+        const toast = new Toast(toastEl)
+        toast.show()
+        // Restablecer el estado showToast a false después de que el toast se haya mostrado
+        const timeout = setTimeout(() => {
+          setShowToast(false)
+        }, 3000) // Ajusta el tiempo según sea necesario
 
-            return () => clearTimeout(timeout)
-          }
-        }
-      }, [showToast])
-
-    const handleShowToast = (message) => {
-      setToastMessage(message)
-      setShowToast(true)
+        return () => clearTimeout(timeout)
+      }
     }
+  }, [showToast])
+
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
 
   const { logout } = useAuth()
 
@@ -79,71 +75,66 @@ function Navbar({ user }) {
   return (
     <>
       {user && (
-    <ModalEditarUsuario
-    show={showModal}
-    usuarioSelected={user}
-    handleClose={handleCloseModal}
-    handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
-  />)}
-    <nav className="navbar navbar-expand-lg navbar-light bg-white m-2">
-      <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          <img
-            src={fasmeeIcon}
-            alt="Logo"
-            height="90"
-            width="auto"
-            className="d-inline-block align-text-top "
-          />
-        </a>
-        <div className="d-flex flex-grow-1 justify-content-between align-items-center">
-          <form className="d-flex flex-grow-1 mx-4" role="search"></form>
-          <div className="dropdown ">
-            <button
-              className="btn btn-outline-body dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              {user.perfil?.nombres} {user.perfil?.apellidos}
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-              <li>
-                <a className="dropdown-item" onClick={handleShowModal}>
-                  Configuración
-                </a>
-              </li>
-              <li>
-                <a  onClick={() => handleLogout()} className="dropdown-item">
-                  Cerrar sesión
-                </a>
-              </li>
-            </ul>
+        <ModalEditarUsuario
+          show={showModal}
+          usuarioSelected={user}
+          handleClose={handleCloseModal}
+          handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+        />
+      )}
+      <nav className="navbar navbar-expand-lg navbar-light bg-white m-2">
+        <div className="container-fluid">
+          <a className="navbar-brand" href="#">
+            <img
+              src={fasmeeIcon}
+              alt="Logo"
+              height="90"
+              width="auto"
+              className="d-inline-block align-text-top "
+            />
+          </a>
+          <div className="d-flex flex-grow-1 justify-content-between align-items-center">
+            <form className="d-flex flex-grow-1 mx-4" role="search"></form>
+            <div className="dropdown ">
+              <button
+                className="btn btn-outline-body dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                {user.perfil?.nombres} {user.perfil?.apellidos}
+              </button>
+              <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                <li>
+                  <a className="dropdown-item" onClick={handleShowModal}>
+                    Configuración
+                  </a>
+                </li>
+                <li>
+                  <a onClick={() => handleLogout()} className="dropdown-item">
+                    Cerrar sesión
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
+        </div>
+      </nav>
+      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+          <div className="toast-header">
+            <strong className="me-auto">Notificación</strong>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div className="toast-body">{toastMessage}</div>
         </div>
       </div>
-    </nav>
-    <div className="toast-container position-fixed bottom-0 end-0 p-3">
-          <div
-            id="liveToast"
-            className="toast"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div className="toast-header">
-              <strong className="me-auto">Notificación</strong>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="toast-body">{toastMessage}</div>
-          </div>
-        </div>
     </>
   )
 }
