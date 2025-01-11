@@ -1,3 +1,3 @@
 import { ipcMain } from 'electron'
 
-ipcMain.on('login', async () => {})
+ipcMain.on('logout', async () => {})

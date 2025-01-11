@@ -16,8 +16,8 @@ function createWindow() {
   })
 
   mainWindow.on('ready-to-show', () => {
+    mainWindow.maximize()
     mainWindow.show()
-    // mainWindow.maximize()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -29,6 +29,7 @@ function createWindow() {
   // Cargar la URL remota para desarrollo o el archivo html local para producción.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.webContents.openDevTools({ mode: 'right' })
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
@@ -83,8 +84,8 @@ import './modules/colaPacientes/colaPacientes'
 import './modules/cronograma/cronograma'
 import './modules/departamentos/departamentos'
 import './modules/entes/entes'
+import './modules/historias/historias'
 import './modules/inventario/inventario'
 import './modules/pacientes/pacientes'
 import './modules/roles/roles'
 import './modules/usuarios/usuarios'
-import './modules/historias/historias'
