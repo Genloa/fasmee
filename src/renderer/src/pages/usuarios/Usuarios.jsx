@@ -117,7 +117,7 @@ export function TableUsers({ handleShowToast }) {
   // Paginación
   const [currentPage, setCurrentPage] = useState(0)
   const [searchTerm, setSearchTerm] = useState('')
-  const usersPerPage = 3
+  const usersPerPage = 4
 
   const {
     register,
@@ -227,8 +227,8 @@ export function TableUsers({ handleShowToast }) {
       tipoCedula: user.perfil?.tipo_cedula || 'V',
       cedula: user.perfil?.cedula || '',
       username: user?.username || '',
-      password: user?.password || '',
-      confirmtPassword: user?.password || '',
+      password: '',
+      confirmtPassword: '',
       fechaNacimiento: user.perfil?.fecha_nacimiento
         ? new Date(user.perfil.fecha_nacimiento).toISOString().split('T')[0]
         : '',
@@ -292,9 +292,7 @@ export function TableUsers({ handleShowToast }) {
   }
 
   const filteredUsuarios = usuarios.filter((user) =>
-    `${user.perfil.nombres} ${user.perfil.apellidos}`
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   // Paginación
@@ -345,7 +343,7 @@ export function TableUsers({ handleShowToast }) {
   return (
     <div
       className="scrollspy-example bg-light-tertiary rounded-2"
-      style={{ maxHeight: '300px', overflowY: 'auto' }}
+      style={{ maxHeight: 'auto', overflowY: 'auto' }}
     >
       {/* Modals */}
       <div
