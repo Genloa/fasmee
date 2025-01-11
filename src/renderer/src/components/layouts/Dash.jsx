@@ -19,10 +19,10 @@ import {
 import '../../assets/css/dash.css'
 
 // imagenes
+import { Toast } from 'bootstrap'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 import { useAuth } from '../../hooks/useAuth'
 import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
-import { Toast } from 'bootstrap'
 
 function Dash({ children }) {
   const { session } = useAuth()
@@ -43,7 +43,6 @@ function Navbar({ user }) {
   const [showModal, setShowModal] = useState(false)
   const handleShowModal = () => setShowModal(true)
   const handleCloseModal = () => setShowModal(false)
-  console.log(user)
   const [toastMessage, setToastMessage] = useState('')
   const [showToast, setShowToast] = useState(false)
   useEffect(() => {

@@ -1,44 +1,108 @@
+import { Modal } from 'bootstrap'
+import moment from 'moment-timezone'
 import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
-
-const meses = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre'
-]
+import ModalGestionHorario from './components/ModalGestionHorario'
+import { meses } from './utils/constants'
 
 function Cronograma() {
   const [medicos, setMedicos] = useState([])
+  const [medicoSelected, setMedicoSelected] = useState(null)
+
+  const [departamentos, setDepartamentos] = useState([])
+  const [departamentoSelected, setDepartamentoSelected] = useState(null)
+
   const [mesSelected, setMesSelected] = useState(0)
+  const [semanaSelected, setSemanaSelected] = useState(0)
+  const [fechaSelected, setFechaSelected] = useState(null)
+  const [diaSelected, setDiaSelected] = useState(null)
 
   const fetchMedicos = async () => {
     let medicosAux = await window.api.getMedicos()
     setMedicos(medicosAux)
   }
 
+  const fetchDepartamentos = async () => {
+    let departamentos = await window.api.getDepartamentos()
+    setDepartamentos(departamentos)
+  }
+
   useEffect(() => {
     fetchMedicos()
+    fetchDepartamentos()
+
     setMesSelected(new Date().getMonth())
+    setSemanaSelected(optenerSemanaActual())
   }, [])
 
-  const changeTurno = async (horarioId) => {
-    if (await window.api.changeTurno(horarioId)) {
-      fetchMedicos()
+  function onSetMesSelected(mes) {
+    setMesSelected(mes)
+    setSemanaSelected(0)
+  }
+
+  function onSetSemanaSelected(semana) {
+    setSemanaSelected(semana)
+  }
+
+  // const changeTurno = async (horarioId) => {
+  //   if (await window.api.changeTurno(horarioId)) {
+  //     fetchMedicos()
+  //   }
+  // }
+
+  function obtenerNumeroDeSemanas(año, mes) {
+    const inicioDelMes = moment([año, mes])
+    const finDelMes = inicioDelMes.clone().endOf('month')
+
+    const primerDiaSemana = inicioDelMes.startOf('week')
+    const ultimoDiaSemana = finDelMes.endOf('week')
+
+    return ultimoDiaSemana.diff(primerDiaSemana, 'weeks') + 1
+  }
+
+  function optenerSemanaActual() {
+    const hoy = moment()
+    const inicioDelMes = hoy.clone().startOf('month')
+
+    return hoy.diff(inicioDelMes, 'weeks')
+  }
+
+  function obtenerRangoDeSemana(año, mes, semana) {
+    const inicioDelMes = moment([año, mes])
+    const inicioDeSemana = inicioDelMes.clone().startOf('week').add(semana, 'weeks')
+    const finDeSemana = inicioDeSemana.clone().endOf('week')
+
+    const fechas = []
+    let diaActual = inicioDeSemana.clone()
+    while (diaActual.isSameOrBefore(finDeSemana)) {
+      fechas.push(diaActual.format('YYYY-MM-DD'))
+      diaActual.add(1, 'day')
     }
+
+    return fechas
+  }
+
+  const openModalCreatePaciente = (medico, fecha, dia) => {
+    setMedicoSelected(medico)
+    setFechaSelected(fecha)
+    setDiaSelected(dia)
+    new Modal(document.getElementById('modal-gestionar-horario')).show()
+  }
+
+  const closeModalCreatePaciente = (message) => {
+    console.log(message)
   }
 
   return (
     <Dash>
       <h1>Cronograma</h1>
+
+      <ModalGestionHorario
+        medico={medicoSelected}
+        fecha={fechaSelected}
+        dia={diaSelected}
+        handleCloseModalGestionHorario={closeModalCreatePaciente}
+      />
 
       <div>
         <input
@@ -54,7 +118,7 @@ function Cronograma() {
       <div className="input-group input-group-sm mb-3">
         <select
           className="form-select form-select-lg"
-          onChange={(e) => setMesSelected(e.target.value)}
+          onChange={(e) => onSetMesSelected(e.target.value)}
         >
           {meses.map((mes, index) => (
             <option key={index} value={index} selected={index === mesSelected}>
@@ -63,28 +127,39 @@ function Cronograma() {
           ))}
         </select>
 
-        <select className="form-select form-select-lg" name="" id="">
-          <option selected>Seleccione una semana</option>
-          <option value="">Semana 1</option>
-          <option value="">Semana 2</option>
-          <option value="">Semana 3</option>
-          <option value="">Semana 4</option>
+        <select
+          className="form-select form-select-lg"
+          onChange={(e) => onSetSemanaSelected(e.target.value)}
+        >
+          {Array.from(
+            { length: obtenerNumeroDeSemanas(new Date().getFullYear(), mesSelected) },
+            (_, i) => (
+              <option key={i} value={i} selected={i === semanaSelected}>
+                Semana {i + 1}
+              </option>
+            )
+          )}
         </select>
 
-        <select className="form-select" name="" id="">
+        <select className="form-select" onChange={(e) => setDepartamentoSelected(e.target.value)}>
           <option selected>Seleciona un departamento</option>
-          <option value="">New Delhi</option>
-          <option value="">Istanbul</option>
-          <option value="">Jakarta</option>
+          {departamentos.map((departamento) => (
+            <option key={departamento.id} value={departamento.id}>
+              {departamento.nombre}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className="table-responsive">
-        <table className="table table-sm align-middle">
+        <table className="table table-bordered table-sm align-middle">
           <thead>
             <tr>
               <th className="text-center" scope="col">
                 Doctor
+              </th>
+              <th className="text-center" scope="col">
+                Domingo
               </th>
               <th className="text-center" scope="col">
                 Lunes
@@ -101,49 +176,53 @@ function Cronograma() {
               <th className="text-center" scope="col">
                 Viernes
               </th>
+              <th className="text-center" scope="col">
+                Sábado
+              </th>
             </tr>
           </thead>
           <tbody>
             {medicos.map((medico) => (
               <tr key={medico.id}>
-                {console.log(medico)}
                 <td scope="row">
                   {medico.nombres} {medico.apellidos}
                 </td>
-                {[...Array(5)].map((_, i) => {
-                  const day = i
-                  const horario = medico.horarios.find((horario) => horario.dia === day)
 
-                  let color = 'bg-light'
-                  let turno = '-'
-                  if (horario) {
-                    switch (horario.turno) {
-                      case 'M':
-                        turno = 'Mañana'
-                        color = 'bg-primary'
-                        break
-                      case 'T':
-                        turno = 'Tarde'
-                        color = 'bg-success'
-                        break
-                      case 'C':
-                        turno = 'Completo'
-                        color = 'bg-danger'
-                        break
+                {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
+                  (fecha, i) => {
+                    const day = i
+                    const horario = medico.horarios.find((horario) => horario.dia === day)
+
+                    let color = 'bg-light'
+                    let turno = '-'
+                    if (horario) {
+                      switch (horario.turno) {
+                        case 'M':
+                          turno = 'Mañana'
+                          color = 'bg-primary'
+                          break
+                        case 'T':
+                          turno = 'Tarde'
+                          color = 'bg-success'
+                          break
+                        case 'C':
+                          turno = 'Completo'
+                          color = 'bg-danger'
+                          break
+                      }
                     }
+                    return (
+                      <td
+                        key={i}
+                        onClick={() => openModalCreatePaciente(medico, fecha, i)}
+                        className={color}
+                        style={{ width: '90px' }}
+                      >
+                        <div className="text-center mx-2">{fecha}</div>
+                      </td>
+                    )
                   }
-
-                  return (
-                    <td
-                      key={i}
-                      onClick={() => changeTurno(horario?.id)}
-                      className={`${color}`}
-                      style={{ width: '90px' }}
-                    >
-                      <div className="text-center text-white mx-2">{turno}</div>
-                    </td>
-                  )
-                })}
+                )}
               </tr>
             ))}
           </tbody>
