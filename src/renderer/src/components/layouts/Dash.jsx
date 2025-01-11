@@ -108,7 +108,7 @@ function Navbar({ user }) {
               <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                 <li>
                   <a className="dropdown-item" onClick={handleShowModal}>
-                    Configuración
+                    Perfil
                   </a>
                 </li>
                 <li>
