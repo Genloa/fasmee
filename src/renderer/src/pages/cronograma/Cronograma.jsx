@@ -15,7 +15,7 @@ function Cronograma() {
   const [mesSelected, setMesSelected] = useState(0)
   const [semanaSelected, setSemanaSelected] = useState(0)
   const [fechaSelected, setFechaSelected] = useState(null)
-  const [diaSelected, setDiaSelected] = useState(null)
+  const [diaSelected, setDiaSelected] = useState(0)
 
   const fetchMedicos = async () => {
     let medicosAux = await window.api.getMedicos()
@@ -190,8 +190,10 @@ function Cronograma() {
 
                 {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
                   (fecha, i) => {
-                    const day = i
-                    const horario = medico.horarios.find((horario) => horario.dia === day)
+                    const horario = medico.horarios.find((horario) => {
+                      horario.fecha = moment(horario.fecha).format('YYYY-MM-DD')
+                      return horario.fecha == fecha
+                    })
 
                     let color = 'bg-light'
                     let turno = '-'
@@ -218,7 +220,7 @@ function Cronograma() {
                         className={color}
                         style={{ width: '90px' }}
                       >
-                        <div className="text-center mx-2">{fecha}</div>
+                        <div className="text-center mx-2">{turno}</div>
                       </td>
                     )
                   }

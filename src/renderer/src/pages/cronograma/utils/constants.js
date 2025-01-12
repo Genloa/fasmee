@@ -13,4 +13,6 @@ const meses = [
   'Diciembre'
 ]
 
-export { meses }
+const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']
+
+export { dias, meses }

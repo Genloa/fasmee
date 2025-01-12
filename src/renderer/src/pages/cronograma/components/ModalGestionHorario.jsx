@@ -1,18 +1,24 @@
 import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
+import { dias } from '../utils/constants'
 
 function ModalGestionHorario({ medico, fecha, dia, handleCloseModalGestionHorario }) {
-  const { register, handleSubmit } = useForm({})
+  const { register, handleSubmit } = useForm()
 
   const onSubmit = async (data) => {
     try {
-      if (data.daySelection === 'allDays') {
-        console.log(data, fecha, dia)
-      } else {
-        console.log('Solo este día')
-      }
+      // Crear horario
+      let resultado = window.api.createHorario({
+        perfilId: medico.id,
+        dia: dia,
+        turno: data.turno,
+        fecha: fecha,
+        mode: data.daySelection
+      })
 
-      handleCloseModalGestionHorario('Horario actualizado correctamente')
+      if (resultado) {
+        handleCloseModalGestionHorario('Horario actualizado correctamente')
+      }
     } catch (error) {
       console.error('Error updating horario:', error)
     }
@@ -56,7 +62,7 @@ function ModalGestionHorario({ medico, fecha, dia, handleCloseModalGestionHorari
                       {...register('daySelection')}
                     />
                     <label className="form-check-label" htmlFor="allDays">
-                      Todos los X día has el fin de este año
+                      Todos los {dias[dia]} hasta el fin de este año
                     </label>
                   </div>
                 </div>
@@ -82,9 +88,9 @@ function ModalGestionHorario({ medico, fecha, dia, handleCloseModalGestionHorari
                   Turno
                 </label>
                 <select className="form-select form-select-lg" {...register('turno')}>
-                  <option value="">Completo</option>
-                  <option value="">Mañana</option>
-                  <option value="">Tarde</option>
+                  <option value="C">Completo</option>
+                  <option value="M">Mañana</option>
+                  <option value="T">Tarde</option>
                 </select>
               </div>
             </form>
@@ -104,8 +110,8 @@ function ModalGestionHorario({ medico, fecha, dia, handleCloseModalGestionHorari
 }
 
 ModalGestionHorario.propTypes = {
-  medico: PropTypes.object.isRequired,
-  fecha: PropTypes.string.isRequired,
+  medico: PropTypes.object,
+  fecha: PropTypes.string,
   dia: PropTypes.number.isRequired,
   handleCloseModalGestionHorario: PropTypes.func.isRequired
 }

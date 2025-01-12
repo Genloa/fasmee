@@ -59,8 +59,9 @@ const api = {
 
   // Casos de uso para cronograma
   changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId),
+  createHorario: (data) => ipcRenderer.invoke('createHorario', data),
 
-  //casos de uso para inventario
+  // Casos de uso para inventario
   getArticulosAlmacen: () => ipcRenderer.invoke('getArticulosAlmacen'),
   getAlmacenes: () => ipcRenderer.invoke('getAlmacenes'),
   getArticulos: () => ipcRenderer.invoke('getArticulos'),
@@ -71,6 +72,7 @@ const api = {
   deleteArticulo: (id) => ipcRenderer.invoke('deleteArticulo', id),
   getIngresosArticulo: (id) => ipcRenderer.invoke('getIngresosArticulo', id),
   getRetirosArticulo: (id) => ipcRenderer.invoke('getRetirosArticulo', id),
+
   //Casos de Uso para historias
   getHistoriasPacientes: () => ipcRenderer.invoke('getHistoriasPacientes'),
   createHistoria: (data, id, usuario) => ipcRenderer.invoke('createHistoria', { data, id, usuario })
