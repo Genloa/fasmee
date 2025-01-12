@@ -110,8 +110,8 @@ function ModalGestionHorario({ medico, fecha, dia, handleCloseModalGestionHorari
 }
 
 ModalGestionHorario.propTypes = {
-  medico: PropTypes.object.isRequired,
-  fecha: PropTypes.string.isRequired,
+  medico: PropTypes.object,
+  fecha: PropTypes.string,
   dia: PropTypes.number.isRequired,
   handleCloseModalGestionHorario: PropTypes.func.isRequired
 }

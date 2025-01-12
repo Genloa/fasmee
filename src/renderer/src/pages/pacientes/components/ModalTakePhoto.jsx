@@ -66,7 +66,7 @@ function ModalTakePhoto({ paciente, handleCloseModalTakePhoto }) {
 }
 
 ModalTakePhoto.propTypes = {
-  paciente: propTypes.object.isRequired,
+  paciente: propTypes.object,
   handleCloseModalTakePhoto: propTypes.func.isRequired
 }
 
