@@ -21,6 +21,8 @@ import '../../assets/css/dash.css'
 // imagenes
 import { Toast } from 'bootstrap'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
+import expandImg from '../../assets/img/menu-alt-left-regular.png'
+import collapseImg from '../../assets/img/menu-regular.png'
 import { useAuth } from '../../hooks/useAuth'
 import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
 
@@ -159,11 +161,7 @@ function Sidebar({ children }) {
             <div className="d-flex justify-content-between align-items-center">
               <button onClick={toggleSidebar} className="btn btn-light btn-sm mt-5">
                 <img
-                  src={
-                    isCollapsed
-                      ? '../../src/assets/img/menu-regular.png'
-                      : '../../src/assets/img/menu-alt-left-regular.png'
-                  }
+                  src={isCollapsed ? collapseImg : expandImg}
                   alt={isCollapsed ? 'Expand' : 'Collapse'}
                   width="20"
                   height="20"
