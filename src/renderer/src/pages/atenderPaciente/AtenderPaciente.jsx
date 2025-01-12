@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate } from '@fortawesome/free-solid-svg-icons'
 import ModalConsulta from './components/ModalConsulta'
+import ModalEmergencia from './components/ModalEmergencia'
 import { Toast } from 'bootstrap'
 
 export default function AtenderPaciente() {
   const [colaPacientes, setColaPacientes] = useState([])
   const [citaPacientes, setCitaPaciente] = useState([])
   const [showConsulta, setShowConsulta] = useState(false)
+  const [showEmergencia, setShowEmergencia] = useState(false)
   const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const usuario = {
@@ -59,8 +61,17 @@ export default function AtenderPaciente() {
     setShowConsulta(true)
   }
 
+  const handleEmergenciaClick = () => {
+    setShowEmergencia(true)
+  }
+
   const handleCloseConsulta = () => {
     setShowConsulta(false)
+    setSelectedPaciente(null)
+  }
+
+  const handleCloseEmergencia = () => {
+    setShowEmergencia(false)
     setSelectedPaciente(null)
   }
 
@@ -89,7 +100,7 @@ export default function AtenderPaciente() {
   return (
     <>
       <Dash>
-        {/* Modal Consultan */}
+        {/* Modal Consulta */}
         {showConsulta && selectedPaciente && (
           <ModalConsulta
             show={showConsulta}
@@ -99,11 +110,20 @@ export default function AtenderPaciente() {
             handleShowToast={handleShowToast}
           />
         )}
+        {/* Modal Emergencia */}
+        {showEmergencia && (
+          <ModalEmergencia
+            show={showEmergencia}
+            handleClose={handleCloseEmergencia}
+            usuario={usuario}
+            handleShowToast={handleShowToast}
+          />
+        )}
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title fs-3">Atender Pacientes</h5>
             <div className="text-end">
-              <button type="button" className="btn btn-danger">
+              <button type="button" className="btn btn-danger" onClick={handleEmergenciaClick}>
                 Emergencia
               </button>
             </div>
