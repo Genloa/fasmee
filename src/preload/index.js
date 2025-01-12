@@ -55,6 +55,7 @@ const api = {
   createColaPaciente: (data) => ipcRenderer.invoke('createColaPacientes', data),
   getColaPacientesMedico: (medicoId, departamentoId) =>
     ipcRenderer.invoke('getColaPacientesMedico', { medicoId, departamentoId }),
+  deleteColaPaciente: (id) => ipcRenderer.invoke('deleteColaPaciente', id),
 
   // Casos de uso para cronograma
   changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId),

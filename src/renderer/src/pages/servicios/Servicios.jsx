@@ -1,11 +1,7 @@
 import Dash from '../../components/layouts/Dash'
 import { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faArrowsRotate,
-  faFileMedical,
-  faTruckMedical
-} from '@fortawesome/free-solid-svg-icons'
+import { faArrowsRotate, faFileMedical, faTruckMedical } from '@fortawesome/free-solid-svg-icons'
 import ModalRayosX from './components/ModalRayosX'
 import ModalLaboratorios from './components/ModalLaboratorio'
 import ModalAmbulancia from './components/ModalAmbulancia'
@@ -17,13 +13,13 @@ export default function Servicios() {
   const [showModalRayosX, setShowModalRayosX] = useState(false)
   const [showModalAmbulancia, setShowModalAmbulancia] = useState(false)
   const [showModalLaboratorios, setShowModalLaboratorios] = useState(false)
-//  const [selectedPaciente, setSelectedPaciente] = useState(null)
+  //  const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const usuario = {
     nombre: 'heidy',
     apellidos: 'Sanchez',
     medicoId: 2,
-    departamentoId: 9
+    departamentoId: 10
   }
 
   useEffect(() => {
@@ -66,17 +62,14 @@ export default function Servicios() {
   }
 
   const handleAmbulanciaClick = () => {
-
-      setShowModalAmbulancia(true)
-
+    setShowModalAmbulancia(true)
   }
-
 
   const handleCloseModal = () => {
     setShowModalRayosX(false)
     setShowModalLaboratorios(false)
     setShowModalAmbulancia(false)
-   // setSelectedPaciente(null)
+    // setSelectedPaciente(null)
   }
 
   return (
@@ -86,7 +79,11 @@ export default function Servicios() {
           <div className="card-body">
             <h5 className="card-title fs-3">Servicios</h5>
             <div className="text-end">
-              <button type="button" className="btn btn-success ms-2" onClick={() => handleAmbulanciaClick()}>
+              <button
+                type="button"
+                className="btn btn-success ms-2"
+                onClick={() => handleAmbulanciaClick()}
+              >
                 <FontAwesomeIcon icon={faTruckMedical} className="fs-5" /> Ambulancia
               </button>
               <button
@@ -161,11 +158,7 @@ export default function Servicios() {
             departamentoNombre={nombreDepartamento}
             departamentoId={usuario.departamentoId}
           />
-          <ModalAmbulancia
-            show={showModalAmbulancia}
-            handleClose={handleCloseModal}
-
-          />
+          <ModalAmbulancia show={showModalAmbulancia} handleClose={handleCloseModal} />
         </>
       </Dash>
     </>

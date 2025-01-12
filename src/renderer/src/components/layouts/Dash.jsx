@@ -47,7 +47,7 @@ function Navbar({ user }) {
   const [showToast, setShowToast] = useState(false)
   useEffect(() => {
     if (showToast) {
-      const toastEl = document.getElementById('liveToast')
+      const toastEl = document.getElementById('liveToaste')
       if (toastEl) {
         const toast = new Toast(toastEl)
         toast.show()
@@ -122,7 +122,13 @@ function Navbar({ user }) {
         </div>
       </nav>
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div
+          id="liveToaste"
+          className="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
           <div className="toast-header">
             <strong className="me-auto">Notificación</strong>
             <button

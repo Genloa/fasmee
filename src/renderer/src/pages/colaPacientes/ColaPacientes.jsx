@@ -1,8 +1,10 @@
 import Dash from '../../components/layouts/Dash'
 import { useState, useEffect, createContext } from 'react'
-import { Toast } from 'bootstrap'
+import { Toast, Modal } from 'bootstrap'
 import ModalCrearCola from './components/ModalCrearCola'
 import ReactPaginate from 'react-paginate'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
 
 const ColaPacientesContext = createContext({ ColaPacientes: [], setColaPacientes: () => {} })
 
@@ -109,6 +111,39 @@ export default function ColaPacientes() {
 
   const handleChangePage = ({ selected }) => setCurrentPage(selected)
 
+  const modalDeletePacienteRef = document.getElementById('modal-delete-paciente')
+  const [pacienteSelected, setPacienteSelected] = useState(null)
+
+  const openModalDeletePaciente = (id) => {
+    let paciente = ColaPacientes.find((p) => p.id === id)
+    setPacienteSelected(paciente)
+    console.log('Paciente seleccionado:', paciente)
+    let modal = new Modal(modalDeletePacienteRef)
+    modal.show()
+  }
+
+  const closeModalDeletePaciente = async () => {
+    console.log(pacienteSelected.id)
+    try {
+      // Eliminar el paciente de la cola
+      const paciente = await window.api.deleteColaPaciente(pacienteSelected.id)
+      if (paciente) {
+        fetchColaPacientes()
+        setToastMessage('Paciente eliminado correctamente')
+        setShowToast(true)
+
+        // Cerrar el modal
+        const modal = Modal.getInstance(modalDeletePacienteRef)
+        modal.hide()
+      } else {
+        setToastMessage('no se pudo eliminar el Paciente')
+      }
+    } catch (error) {
+      console.error('Error al eliminar el paciente:', error)
+      // Aquí podrías mostrar un toast de error si lo deseas
+    }
+  }
+
   const displayPacientes = groupedPacientes
     .slice(pagesVisited, pagesVisited + usersPerPage)
     .map(({ departamento, medicos }) => (
@@ -135,8 +170,18 @@ export default function ColaPacientes() {
                         new Date(b.colasMedicos[0].createdAt)
                     )
                     .map((paciente, index) => (
-                      <li key={paciente.id} className="list-group-item">
+                      <li
+                        key={paciente.id}
+                        className="list-group-item d-flex justify-content-between align-items-center"
+                      >
                         {index + 1}. {paciente.nombres} {paciente.apellidos}
+                        <button
+                          type="button"
+                          className="btn btn--light btn-sm"
+                          onClick={() => openModalDeletePaciente(paciente.id)}
+                        >
+                          <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+                        </button>
                       </li>
                     ))}
                 </ul>
@@ -152,10 +197,12 @@ export default function ColaPacientes() {
   useEffect(() => {
     if (showToast) {
       const toastEl = document.getElementById('liveToast')
+      toastEl.classList.add('show')
       const toast = new Toast(toastEl)
       toast.show()
       const timeout = setTimeout(() => {
         setShowToast(false)
+        toastEl.classList.remove('show')
       }, 3000)
       return () => clearTimeout(timeout)
     }
@@ -232,6 +279,57 @@ export default function ColaPacientes() {
               ></button>
             </div>
             <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
+        <div
+          className="modal fade"
+          id="modal-delete-paciente"
+          tabIndex="-1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="modalTitleId"
+          aria-hidden="true"
+        >
+          <div
+            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+            role="document"
+          >
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title" id="modalTitleId">
+                  Eliminar Paciente de Cola
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body">
+                {pacienteSelected && (
+                  <>
+                    <p>
+                      Paciente: {pacienteSelected.nombres} {pacienteSelected.apellidos}
+                    </p>
+                  </>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => closeModalDeletePaciente()}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </ColaPacientesContext.Provider>
