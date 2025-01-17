@@ -75,7 +75,7 @@ export default function ModalEliminar({
 }
 
 ModalEliminar.propTypes = {
-  show: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   articuloId: PropTypes.number.isRequired,
   articulo: PropTypes.object.isRequired,

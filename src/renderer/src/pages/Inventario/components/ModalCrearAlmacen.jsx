@@ -29,7 +29,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast 
       const nuevoAlmacen = await window.api.createAlmacen(data)
       console.log('Cita creada:', nuevoAlmacen)
       if (nuevoAlmacen) {
-        fetchAlmacenes()
+        fetchAlmacenes() // Actualizar la lista de almacenes
         handleShowToast('Almacen creado correctamente')
         handleClose(true)
         resetForm() // Resetear el formulario después de crear la cita

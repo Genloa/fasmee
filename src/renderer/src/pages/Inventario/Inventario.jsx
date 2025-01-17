@@ -38,37 +38,52 @@ export default function Inventario() {
   // Modal Crear Almacen
   const [showModalAlmacen, setShowModalAlmacen] = useState(false)
   const handleShowModalAlmacen = () => setShowModalAlmacen(true)
-  const handleCloseModalAlmacen = () => setShowModalAlmacen(false)
+  const handleCloseModalAlmacen = () => {
+    setShowModalAlmacen(false)
+    fetchAlmacenes() // Actualizar almacenes después de cerrar el modal
+  }
 
   const [showModalHistorial, setShowModalHistorial] = useState(false)
   const handleShowModalHistorial = (articulo) => {
     setSelectedArticulo(articulo)
     setShowModalHistorial(true)
   }
-  const handleCloseModalHistorial = () => setShowModalHistorial(false)
+  const handleCloseModalHistorial = () => {
+    setShowModalHistorial(false)
+    setSelectedArticulo(null)
+  }
 
   const [showModalCargar, setShowModalCargar] = useState(false)
   const handleShowModalCargar = (data) => {
     setSelectedArticulo(data)
     setShowModalCargar(true)
   }
-  const handleCloseModalCargar = () => setShowModalCargar(false)
+  const handleCloseModalCargar = () => {
+    setShowModalCargar(false)
+    setSelectedArticulo(null)
+  }
 
   const [showModalRetirar, setShowModalRetirar] = useState(false)
   const handleShowModalRetirar = (articulo) => {
     setSelectedArticulo(articulo)
     setShowModalRetirar(true)
   }
-  const handleCloseModalRetirar = () => setShowModalRetirar(false)
+  const handleCloseModalRetirar = () => {
+    setShowModalRetirar(false)
+    setSelectedArticulo(null)
+  }
 
   const [showModalEliminar, setShowModalEliminar] = useState(false)
   const handleShowModalEliminar = (articulo) => {
     setSelectedArticulo(articulo)
     setShowModalEliminar(true)
   }
-  const handleCloseModalEliminar = () => setShowModalEliminar(false)
+  const handleCloseModalEliminar = () => {
+    setShowModalEliminar(false)
+    setSelectedArticulo(null)
+  }
 
-  const [selectedArticulo, setSelectedArticulo] = useState([])
+  const [selectedArticulo, setSelectedArticulo] = useState(null)
 
   useEffect(() => {
     fetchInventario()
@@ -241,36 +256,39 @@ export default function Inventario() {
           <ModalCrearAlmacen
             show={showModalAlmacen}
             handleClose={handleCloseModalAlmacen}
-            fetchAlmacenes={fetchAlmacenes}
+            fetchAlmacenes={fetchAlmacenes} // Pasar fetchAlmacenes como prop
             handleShowToast={handleShowToast}
           />
-          <ModalHistorial
-            show={showModalHistorial}
-            handleClose={handleCloseModalHistorial}
-            articulo={selectedArticulo}
-          />
-          <ModalCargar
-            show={showModalCargar}
-            handleClose={handleCloseModalCargar}
-            articulo={selectedArticulo}
-            fetchInventario={fetchInventario}
-            handleShowToast={handleShowToast}
-          />
-          <ModalRetirar
-            show={showModalRetirar}
-            handleClose={handleCloseModalRetirar}
-            articulo={selectedArticulo}
-            fetchInventario={fetchInventario}
-            handleShowToast={handleShowToast}
-          />
-          <ModalEliminar
-            show={showModalEliminar}
-            handleClose={handleCloseModalEliminar}
-            articulo={selectedArticulo}
-            fetchInventario={fetchInventario}
-            handleShowToast={handleShowToast}
-          />
-
+          {selectedArticulo && (
+            <>
+              <ModalHistorial
+                show={showModalHistorial}
+                handleClose={handleCloseModalHistorial}
+                articulo={selectedArticulo}
+              />
+              <ModalCargar
+                show={showModalCargar}
+                handleClose={handleCloseModalCargar}
+                articulo={selectedArticulo}
+                fetchInventario={fetchInventario}
+                handleShowToast={handleShowToast}
+              />
+              <ModalRetirar
+                show={showModalRetirar}
+                handleClose={handleCloseModalRetirar}
+                articulo={selectedArticulo}
+                fetchInventario={fetchInventario}
+                handleShowToast={handleShowToast}
+              />
+              <ModalEliminar
+                show={showModalEliminar}
+                handleClose={handleCloseModalEliminar}
+                articulo={selectedArticulo}
+                fetchInventario={fetchInventario}
+                handleShowToast={handleShowToast}
+              />
+            </>
+          )}
           <div className="card border-white">
             <div className="card-body">
               <h5 className="card-title fs-3">Inventario</h5>

@@ -25,7 +25,7 @@ export default function ModalCargar({
       console.error('Error creando la cita:', error)
     }
   }
-  console.log('Articulo:', articulo)
+
   const defaultValues = {
     nombre: articulo?.nombre,
     cantidad: 0,

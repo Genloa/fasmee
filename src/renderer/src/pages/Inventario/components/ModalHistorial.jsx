@@ -33,6 +33,7 @@ export default function ModalHistorial({ show, handleClose, articulo }) {
 
   const fetchIngresos = async () => {
     try {
+      console.log(articulo)
       const fetchedIngresos = await window.api.getIngresosArticulo(articulo.id)
       setIngresosArticulo(fetchedIngresos)
       console.log('ingresos:', fetchedIngresos)
@@ -50,7 +51,7 @@ export default function ModalHistorial({ show, handleClose, articulo }) {
       console.error('Error fetching ingresos:', error)
     }
   }
-
+  console.log(ingresosArticulo)
   const filteredIngresos = ingresosArticulo.filter((ingreso) => {
     const ingresoDate = new Date(ingreso.fecha_ingreso).toISOString().split('T')[0]
     return (
@@ -306,7 +307,7 @@ export default function ModalHistorial({ show, handleClose, articulo }) {
 }
 
 ModalHistorial.propTypes = {
-  show: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   articulo: PropTypes.object.isRequired
 }

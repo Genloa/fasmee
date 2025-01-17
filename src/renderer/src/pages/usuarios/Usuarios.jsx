@@ -7,7 +7,7 @@ import { Controller, useForm } from 'react-hook-form'
 import ReactPaginate from 'react-paginate'
 import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
-import { userSchema } from '../../validations/userSchema'
+import { resolveSchema } from '../../validations/userSchema'
 import ModalCrearUsuario from './components/ModalCrearUsuario'
 import PropTypes from 'prop-types'
 
@@ -128,7 +128,7 @@ export function TableUsers({ handleShowToast }) {
     formState: { errors, dirtyFields }
   } = useForm({
     mode: 'onChange',
-    resolver: zodResolver(userSchema),
+    resolver: zodResolver(resolveSchema('edit')),
     defaultValues: {
       nombres: '',
       apellidos: '',

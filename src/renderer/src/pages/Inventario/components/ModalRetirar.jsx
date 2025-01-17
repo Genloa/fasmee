@@ -67,7 +67,7 @@ export default function ModalRetirar({
 }
 
 ModalRetirar.propTypes = {
-  show: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   articulo: PropTypes.object.isRequired,
   fetchInventario: PropTypes.func.isRequired,

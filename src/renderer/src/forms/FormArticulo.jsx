@@ -5,7 +5,7 @@ import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-function FormArticulo({ onSubmit, defaultValues, mode, handleClose, hideNombre }) {
+function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre }) {
   const [almacenes, setAlmacenes] = useState([])
 
   const {
@@ -40,6 +40,7 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose, hideNombre }
     value: almacen.id,
     label: `Cubiculo ${almacen.cubiculo} ${almacen.descripcion}`
   }))
+  console.log(almacenes)
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -140,7 +141,7 @@ function FormArticulo({ onSubmit, defaultValues, mode, handleClose, hideNombre }
           Cancelar{' '}
         </button>
         <button type="submit" className="btn btn-primary">
-          {mode === 'edit' ? 'Actualizar' : 'Guardar'}
+          Guardar
         </button>
       </div>
     </form>
@@ -153,7 +154,6 @@ FormArticulo.propTypes = {
     nombre: PropTypes.string,
     cantidad: PropTypes.number.isRequired
   }).isRequired,
-  mode: PropTypes.oneOf(['create', 'edit']).isRequired,
   handleClose: PropTypes.func.isRequired,
   hideNombre: PropTypes.bool
 }

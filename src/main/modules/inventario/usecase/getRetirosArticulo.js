@@ -3,21 +3,17 @@ import { Perfil, PerfilOnArticulo } from '../../../singletons/database/schema' /
 
 ipcMain.handle('getRetirosArticulo', async (event, id) => {
   try {
-    const retiros = await PerfilOnArticulo.findAll(
-      {
-        include: [
-          {
-            model: Perfil,
-            as: 'perfil'
-          }
-        ]
+    const retiros = await PerfilOnArticulo.findAll({
+      where: {
+        articuloId: id
       },
-      {
-        where: {
-          articuloId: id
+      include: [
+        {
+          model: Perfil,
+          as: 'perfil'
         }
-      }
-    )
+      ]
+    })
 
     const articuloSerializables = retiros.map((retiro) => retiro.toJSON())
     return articuloSerializables

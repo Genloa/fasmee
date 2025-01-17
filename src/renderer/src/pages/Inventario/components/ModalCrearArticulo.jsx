@@ -72,7 +72,6 @@ function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToas
               <FormArticulo
                 onSubmit={onSubmitArticulo}
                 defaultValues={defaultValues}
-                mode="create"
                 handleClose={handleClose}
                 hideNombre={false}
               />

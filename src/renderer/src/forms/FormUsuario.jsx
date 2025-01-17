@@ -4,7 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import { userSchema } from '../validations/userSchema'
+import { resolveSchema } from '../validations/userSchema'
 
 function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
   const [showPassword, setShowPassword] = useState(false)
@@ -20,7 +20,7 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
   } = useForm({
     mode: 'onChange',
     defaultValues,
-    resolver: zodResolver(userSchema)
+    resolver: zodResolver(resolveSchema(mode))
   })
 
   const getInputClassName = (fieldName) => {

@@ -3,14 +3,12 @@ import { ArticuloIngresado } from '../../../singletons/database/schema' // AsegÃ
 
 ipcMain.handle('getIngresosArticulo', async (event, id) => {
   try {
-    const ingresos = await ArticuloIngresado.findAll(
-      {},
-      {
-        where: {
-          articuloId: id
-        }
+    console.log(id)
+    const ingresos = await ArticuloIngresado.findAll({
+      where: {
+        articuloId: id
       }
-    )
+    })
 
     console.log('Articulo historial----------------', ingresos)
 

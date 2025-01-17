@@ -7,11 +7,15 @@ ipcMain.handle('updateUsuario', async (event, { id, data }) => {
   const t = await db.getConnection().transaction()
 
   try {
-    data.password = await hashPassword(data.password)
-
     const usuario = await Usuario.findByPk(id)
     if (!usuario) {
       throw new Error('Usuario no encontrado.')
+    }
+
+    if (data.password) {
+      data.password = await hashPassword(data.password)
+    } else {
+      data.password = usuario.password // Mantener la contraseña actual si el campo está vacío
     }
 
     await usuario.update(
