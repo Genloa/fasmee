@@ -536,7 +536,8 @@ if (sequelize instanceof Sequelize) {
       },
       nombre: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       }
     },
     {
@@ -765,7 +766,7 @@ if (sequelize instanceof Sequelize) {
       indexes: [
         {
           unique: true,
-          fields: ['perfilId', 'dia', 'turno']
+          fields: ['perfilId', 'dia', 'turno', 'fecha']
         }
       ]
     }

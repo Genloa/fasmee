@@ -1,4 +1,5 @@
 import { ipcMain } from 'electron'
+import moment from 'moment-timezone'
 import { Horarios } from '../../../singletons/database/schema'
 import momentDate from '../../../utils/momentDate'
 
@@ -15,13 +16,21 @@ ipcMain.handle('createHorario', async (event, data) => {
       })
     }
     if (data.mode === 'allDays') {
-      for (let i = 0; i < 7; i++) {
-        horario[i] = await Horarios.create({
-          perfilId: data.perfilId,
-          dia: i,
-          turno: data.turno,
-          fecha: data.fecha
-        })
+      let dayNumber = moment(data.fecha).day()
+
+      let fecha = moment(data.fecha)
+      let finDeAño = moment(data.fecha).endOf('year')
+
+      while (fecha.isSameOrBefore(finDeAño)) {
+        if (fecha.day() === dayNumber) {
+          horario = await Horarios.create({
+            perfilId: data.perfilId,
+            dia: dayNumber,
+            turno: data.turno,
+            fecha: momentDate(fecha)
+          })
+        }
+        fecha.add(1, 'day')
       }
     }
 

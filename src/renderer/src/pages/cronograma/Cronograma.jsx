@@ -1,21 +1,29 @@
-import { Modal } from 'bootstrap'
+import { faNotesMedical } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Modal, Toast } from 'bootstrap'
 import moment from 'moment-timezone'
 import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
 import ModalGestionHorario from './components/ModalGestionHorario'
-import { meses } from './utils/constants'
+import { dias, meses } from './utils/constants'
 
 function Cronograma() {
   const [medicos, setMedicos] = useState([])
-  const [medicoSelected, setMedicoSelected] = useState(null)
-
   const [departamentos, setDepartamentos] = useState([])
-  const [departamentoSelected, setDepartamentoSelected] = useState(null)
 
+  // Selecteds
+  const [medicoSelected, setMedicoSelected] = useState(null)
+  const [departamentoSelected, setDepartamentoSelected] = useState(null)
   const [mesSelected, setMesSelected] = useState(0)
   const [semanaSelected, setSemanaSelected] = useState(0)
   const [fechaSelected, setFechaSelected] = useState(null)
   const [diaSelected, setDiaSelected] = useState(0)
+  const [search, setSearch] = useState('')
+
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  // Fetchs
 
   const fetchMedicos = async () => {
     let medicosAux = await window.api.getMedicos()
@@ -27,6 +35,8 @@ function Cronograma() {
     setDepartamentos(departamentos)
   }
 
+  // useEffects
+
   useEffect(() => {
     fetchMedicos()
     fetchDepartamentos()
@@ -34,6 +44,16 @@ function Cronograma() {
     setMesSelected(new Date().getMonth())
     setSemanaSelected(optenerSemanaActual())
   }, [])
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToast')
+      const toast = new Toast(toastEl)
+      toast.show()
+    }
+  }, [showToast])
+
+  // Functions
 
   function onSetMesSelected(mes) {
     setMesSelected(mes)
@@ -43,12 +63,6 @@ function Cronograma() {
   function onSetSemanaSelected(semana) {
     setSemanaSelected(semana)
   }
-
-  // const changeTurno = async (horarioId) => {
-  //   if (await window.api.changeTurno(horarioId)) {
-  //     fetchMedicos()
-  //   }
-  // }
 
   function obtenerNumeroDeSemanas(año, mes) {
     const inicioDelMes = moment([año, mes])
@@ -82,6 +96,14 @@ function Cronograma() {
     return fechas
   }
 
+  // Consts
+
+  const changeTurno = async (horarioId) => {
+    if (await window.api.changeTurno(horarioId)) {
+      fetchMedicos()
+    }
+  }
+
   const openModalCreatePaciente = (medico, fecha, dia) => {
     setMedicoSelected(medico)
     setFechaSelected(fecha)
@@ -90,7 +112,12 @@ function Cronograma() {
   }
 
   const closeModalCreatePaciente = (message) => {
-    console.log(message)
+    if (message) {
+      setToastMessage(message)
+      setShowToast(true)
+      fetchMedicos()
+    }
+    Modal.getInstance(document.getElementById('modal-gestionar-horario')).hide()
   }
 
   return (
@@ -108,10 +135,9 @@ function Cronograma() {
         <input
           type="search"
           className="form-control mb-3"
-          name=""
-          id=""
           aria-describedby="helpId"
           placeholder="Buscar medico"
+          onChange={(e) => setSearch(e.target.value)}
         />
       </div>
 
@@ -158,77 +184,108 @@ function Cronograma() {
               <th className="text-center" scope="col">
                 Doctor
               </th>
-              <th className="text-center" scope="col">
-                Domingo
-              </th>
-              <th className="text-center" scope="col">
-                Lunes
-              </th>
-              <th className="text-center" scope="col">
-                Martes
-              </th>
-              <th className="text-center" scope="col">
-                Miércoles
-              </th>
-              <th className="text-center" scope="col">
-                Jueves
-              </th>
-              <th className="text-center" scope="col">
-                Viernes
-              </th>
-              <th className="text-center" scope="col">
-                Sábado
-              </th>
+              {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
+                (fecha, i) => {
+                  return (
+                    <th key={i}>
+                      {dias[i]} {moment(fecha).format('DD/MM')}
+                    </th>
+                  )
+                }
+              )}
             </tr>
           </thead>
           <tbody>
-            {medicos.map((medico) => (
-              <tr key={medico.id}>
-                <td scope="row">
-                  {medico.nombres} {medico.apellidos}
-                </td>
+            {medicos
+              .filter((medico) => {
+                return (
+                  medico.nombres.toLowerCase() +
+                  ' ' +
+                  medico.apellidos.toLowerCase()
+                ).includes(search.toLowerCase())
+              })
+              .filter((medico) => {
+                return medico.departamentoId == departamentoSelected || !departamentoSelected
+              })
+              .map((medico) => (
+                <tr key={medico.id}>
+                  <td scope="row">
+                    {medico.nombres} {medico.apellidos}
+                  </td>
 
-                {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
-                  (fecha, i) => {
-                    const horario = medico.horarios.find((horario) => {
-                      horario.fecha = moment(horario.fecha).format('YYYY-MM-DD')
-                      return horario.fecha == fecha
-                    })
+                  {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
+                    (fecha, i) => {
+                      const horario = medico.horarios.find((horario) => {
+                        horario.fecha = moment(horario.fecha).format('YYYY-MM-DD')
+                        return horario.fecha == fecha
+                      })
 
-                    let color = 'bg-light'
-                    let turno = '-'
-                    if (horario) {
-                      switch (horario.turno) {
-                        case 'M':
-                          turno = 'Mañana'
-                          color = 'bg-primary'
-                          break
-                        case 'T':
-                          turno = 'Tarde'
-                          color = 'bg-success'
-                          break
-                        case 'C':
-                          turno = 'Completo'
-                          color = 'bg-danger'
-                          break
+                      let color = 'bg-light'
+                      let turno = '-'
+                      if (horario) {
+                        switch (horario.turno) {
+                          case 'M':
+                            turno = 'Mañana'
+                            color = 'bg-primary'
+                            break
+                          case 'T':
+                            turno = 'Tarde'
+                            color = 'bg-success'
+                            break
+                          case 'C':
+                            turno = 'Completo'
+                            color = 'bg-danger'
+                            break
+                        }
                       }
+                      return (
+                        <td key={i} className={color} style={{ width: '90px' }}>
+                          {i !== 0 && i !== 6 ? (
+                            <div className="d-flex justify-content-between text-white">
+                              <span
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => changeTurno(horario.id)}
+                              >
+                                {turno}
+                              </span>
+                              <span
+                                className="text-dark"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => openModalCreatePaciente(medico, fecha, i)}
+                              >
+                                <FontAwesomeIcon icon={faNotesMedical} />
+                              </span>
+                            </div>
+                          ) : null}
+                        </td>
+                      )
                     }
-                    return (
-                      <td
-                        key={i}
-                        onClick={() => openModalCreatePaciente(medico, fecha, i)}
-                        className={color}
-                        style={{ width: '90px' }}
-                      >
-                        <div className="text-center mx-2">{turno}</div>
-                      </td>
-                    )
-                  }
-                )}
-              </tr>
-            ))}
+                  )}
+                </tr>
+              ))}
           </tbody>
         </table>
+
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
       </div>
     </Dash>
   )
