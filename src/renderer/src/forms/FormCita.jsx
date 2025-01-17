@@ -70,10 +70,12 @@ function FormCita({
     label: medico.nombres
   }))
 
-  const departamentoOptions = departamentos.map((departamento) => ({
-    value: departamento.id,
-    label: departamento.nombre
-  }))
+  const departamentoOptions = departamentos
+    .filter((departamento) => ![1, 9, 10, 12, 13, 14].includes(departamento.id))
+    .map((departamento) => ({
+      value: departamento.id,
+      label: departamento.nombre
+    }))
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
