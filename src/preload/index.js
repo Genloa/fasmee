@@ -78,7 +78,8 @@ const api = {
   getHistoriasPacientes: () => ipcRenderer.invoke('getHistoriasPacientes'),
   createHistoria: (data, id, usuario) =>
     ipcRenderer.invoke('createHistoria', { data, id, usuario }),
-  createHistorialAmbulancia: (data) => ipcRenderer.invoke('createHistorialAmbulancia', data)
+  createHistorialAmbulancia: (data) => ipcRenderer.invoke('createHistorialAmbulancia', data),
+  createHistoriaServicio: (data) => ipcRenderer.invoke('createHistoriaServicio', data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
