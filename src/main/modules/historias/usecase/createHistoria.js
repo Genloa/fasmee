@@ -4,7 +4,6 @@ import { ColaPacientes, Historia, PerfilMedico } from '../../../singletons/datab
 ipcMain.handle('createHistoria', async (event, { data, id, usuario }) => {
   try {
     console.clear()
-    console.log('datos-----------------', data)
 
     let f = {
       perfilId: usuario.id,
@@ -29,8 +28,6 @@ ipcMain.handle('createHistoria', async (event, { data, id, usuario }) => {
     delete data.cadera
 
     f.formulario = data
-
-    console.log('f-------', f)
 
     const HistoriaPaciente = await Historia.create(f)
     if (f.peso_paciente) {
