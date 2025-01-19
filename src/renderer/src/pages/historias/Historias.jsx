@@ -1,10 +1,11 @@
-import Dash from '../../components/layouts/Dash'
-import { useState, useEffect, createContext } from 'react'
-import ReactPaginate from 'react-paginate'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { createContext, useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import Dash from '../../components/layouts/Dash'
 
 import momentDate from '../../../../main/utils/momentDate'
+import Can from '../../helpers/can'
 import ModalVerHistoria from './components/ModalVerHistoria'
 
 const HistoriasPacientesContext = createContext({
@@ -42,7 +43,6 @@ export default function Historias() {
     try {
       const fetchedHistoriasPacientes = await window.api.getHistoriasPacientes()
       setHistoriasPacientes(fetchedHistoriasPacientes)
-      console.log('Historias pacientes:', fetchedHistoriasPacientes)
     } catch (error) {
       console.error('Error fetching historias pacientes:', error)
     }
@@ -56,7 +56,6 @@ export default function Historias() {
       const departamentosFil = fetchedDepartamentos.filter((d) => !excludedIds.includes(d.id))
 
       setDepartamentos(departamentosFil)
-      console.log('Departamentos:', departamentosFil)
     } catch (error) {
       console.error('Error fetching departamentos:', error)
     }
@@ -66,7 +65,6 @@ export default function Historias() {
     try {
       const fetchedMedicos = await window.api.getMedicos()
       setMedicos(fetchedMedicos)
-      console.log('Medicos:', fetchedMedicos)
     } catch (error) {
       console.error('Error fetching Medicos:', error)
     }
@@ -76,7 +74,6 @@ export default function Historias() {
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching Pacientes:', error)
     }
@@ -199,15 +196,17 @@ export default function Historias() {
         <td>{historiaPaciente.medicoName}</td>
         <td>{historiaPaciente.pacienteName}</td>
         <td className="text-end">
-          <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => handleShowViewModal(historiaPaciente)}
-            >
-              <FontAwesomeIcon icon={faEye} className="fs-5" />
-            </button>
-          </div>
+          <Can permission="historias.show">
+            <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => handleShowViewModal(historiaPaciente)}
+              >
+                <FontAwesomeIcon icon={faEye} className="fs-5" />
+              </button>
+            </div>
+          </Can>
         </td>
       </tr>
     ))
@@ -219,51 +218,50 @@ export default function Historias() {
   }
 
   return (
-    <>
-      <Dash>
-        <HistoriasPacientesContext.Provider value={{ historiasPacientes, setHistoriasPacientes }}>
-          {showViewModal && selectedHistoria && (
-            <ModalVerHistoria
-              show={showViewModal}
-              handleClose={handleCloseViewModal}
-              historiaPaciente={selectedHistoria}
-            />
-          )}
+    <Dash>
+      <HistoriasPacientesContext.Provider value={{ historiasPacientes, setHistoriasPacientes }}>
+        {showViewModal && selectedHistoria && (
+          <ModalVerHistoria
+            show={showViewModal}
+            handleClose={handleCloseViewModal}
+            historiaPaciente={selectedHistoria}
+          />
+        )}
 
-          <div className="card border-white">
-            <div className="card-body">
-              <h5 className="card-title fs-3">Historias</h5>
-              <div className="d-flex flex-wrap justify-content-around mb-4">
-                <div className="col form-floating mb-3 mt-3 me-3">
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="floatingInput"
-                    placeholder="Buscar"
-                    aria-label="Buscar"
-                    value={searchDate}
-                    onChange={handleDateChange}
-                  />
-                  <label htmlFor="floatingInput">Fecha Historias</label>
-                </div>
+        <div className="card border-white">
+          <div className="card-body">
+            <h5 className="card-title fs-3">Historias</h5>
+            <div className="d-flex flex-wrap justify-content-around mb-4">
+              <div className="col form-floating mb-3 mt-3 me-3">
+                <input
+                  type="date"
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="Buscar"
+                  aria-label="Buscar"
+                  value={searchDate}
+                  onChange={handleDateChange}
+                />
+                <label htmlFor="floatingInput">Fecha Historias</label>
+              </div>
 
-                <div className="col form-floating mb-3 mt-3 me-3">
-                  <select
-                    className="form-control"
-                    id="floatingDepartamentoName"
-                    aria-label="Buscar por Nombre de Departamento"
-                    value={searchDepartamentoName}
-                    onChange={handleDepartamentoNameChange}
-                  >
-                    <option value="">Seleccione un Departamento</option>
-                    {departamentos.map((departamento) => (
-                      <option key={departamento.id} value={departamento.nombre}>
-                        {departamento.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
-                </div>
+              <div className="col form-floating mb-3 mt-3 me-3">
+                <select
+                  className="form-control"
+                  id="floatingDepartamentoName"
+                  aria-label="Buscar por Nombre de Departamento"
+                  value={searchDepartamentoName}
+                  onChange={handleDepartamentoNameChange}
+                >
+                  <option value="">Seleccione un Departamento</option>
+                  {departamentos.map((departamento) => (
+                    <option key={departamento.id} value={departamento.nombre}>
+                      {departamento.nombre}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
+              </div>
 
                 <div className="col form-floating mb-3 mt-3">
                   <select
@@ -310,27 +308,27 @@ export default function Historias() {
                     <tbody>{displayUsers}</tbody>
                   </table>
 
-                  <ReactPaginate
-                    previousLabel={'Anterior'}
-                    nextLabel={'Siguiente'}
-                    pageCount={pageCount}
-                    onPageChange={changePage}
-                    containerClassName={'pagination'}
-                    previousLinkClassName={'page-link'}
-                    nextLinkClassName={'page-link'}
-                    disabledClassName={'disabled'}
-                    activeClassName={'active'}
-                    pageClassName={'page-item'}
-                    pageLinkClassName={'page-link'}
-                  />
-                </div>
+                <ReactPaginate
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  pageCount={pageCount}
+                  onPageChange={changePage}
+                  containerClassName={'pagination'}
+                  previousLinkClassName={'page-link'}
+                  nextLinkClassName={'page-link'}
+                  disabledClassName={'disabled'}
+                  activeClassName={'active'}
+                  pageClassName={'page-item'}
+                  pageLinkClassName={'page-link'}
+                />
               </div>
             </div>
           </div>
-        </HistoriasPacientesContext.Provider>
-      </Dash>
-    </>
+        </div>
+      </HistoriasPacientesContext.Provider>
+    </Dash>
   )
 }
 
 export { HistoriasPacientesContext }
+

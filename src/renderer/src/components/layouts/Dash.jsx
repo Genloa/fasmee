@@ -23,6 +23,7 @@ import { Toast } from 'bootstrap'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 import expandImg from '../../assets/img/menu-alt-left-regular.png'
 import collapseImg from '../../assets/img/menu-regular.png'
+import Can from '../../helpers/can'
 import { useAuth } from '../../hooks/useAuth'
 import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
 
@@ -186,111 +187,137 @@ function Sidebar({ children }) {
                   {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Home</span>}
                 </NavLink>
               </li>
-              <li className="nav-item">
-                <NavLink
-                  to="/dash/users"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faUser} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink
-                  to="/dash/pacientes"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faHospitalUser} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Pacientes</span>}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/citas"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger ' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Citas</span>}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/cronograma"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faUserShield} className="fs-5" />
-                  {!isCollapsed && (
-                    <span className="fs-5 d-none ms-3 d-sm-inline">Cronograma de Guardias</span>
-                  )}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/ColaPacientes"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faClipboardUser} className="fs-5" />
-                  {!isCollapsed && (
-                    <span className="fs-5 d-none ms-3 d-sm-inline">Cola Pacientes</span>
-                  )}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/atenderPaciente"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faUserDoctor} className="fs-5" />
-                  {!isCollapsed && (
-                    <span className="fs-5 d-none ms-3 d-sm-inline">Atender Paciente</span>
-                  )}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/servicios"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faHandHoldingMedical} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Servicios</span>}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/historias"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faBookMedical} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Historias</span>}
-                </NavLink>
-              </li>
-              <li className="nav-item disabled">
-                <NavLink
-                  to="/dash/inventario"
-                  className={({ isActive }) =>
-                    `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
-                  }
-                >
-                  <FontAwesomeIcon icon={faBoxesStacked} className="fs-5" />
-                  {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Inventario</span>}
-                </NavLink>
-              </li>
+              <Can permission="usuarios.index">
+                <li className="nav-item">
+                  <NavLink
+                    to="/dash/users"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faUser} className="fs-5" />
+                    {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Usuarios</span>}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="pacientes.index">
+                <li className="nav-item">
+                  <NavLink
+                    to="/dash/pacientes"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active  bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faHospitalUser} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Pacientes</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="citas.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/citas"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger ' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faCalendarCheck} className="fs-5" />
+                    {!isCollapsed && <span className="fs-5 d-none ms-3 d-sm-inline">Citas</span>}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="cronogramas.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/cronograma"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faUserShield} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Cronograma de Guardias</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="colas.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/ColaPacientes"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faClipboardUser} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Cola Pacientes</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="atender.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/atenderPaciente"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faUserDoctor} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Atender Paciente</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="servicios.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/servicios"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faHandHoldingMedical} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Servicios</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="historias.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/historias"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faBookMedical} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Historias</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
+              <Can permission="inventarios.index">
+                <li className="nav-item disabled">
+                  <NavLink
+                    to="/dash/inventario"
+                    className={({ isActive }) =>
+                      `nav-link text-white text-decoration-none ${isActive ? 'active bg-danger' : ''}`
+                    }
+                  >
+                    <FontAwesomeIcon icon={faBoxesStacked} className="fs-5" />
+                    {!isCollapsed && (
+                      <span className="fs-5 d-none ms-3 d-sm-inline">Inventario</span>
+                    )}
+                  </NavLink>
+                </li>
+              </Can>
             </ul>
           </div>
         </div>

@@ -2,14 +2,15 @@ import { faTrashCan, faUserPen, faUsersGear } from '@fortawesome/free-solid-svg-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Modal, Toast } from 'bootstrap'
+import PropTypes from 'prop-types'
 import { createContext, useContext, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import ReactPaginate from 'react-paginate'
 import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
 import { resolveSchema } from '../../validations/userSchema'
 import ModalCrearUsuario from './components/ModalCrearUsuario'
-import PropTypes from 'prop-types'
 
 const UsuariosContext = createContext({ usuarios: [], setUsuarios: () => {} })
 
@@ -69,9 +70,11 @@ export default function Usuarios() {
 
             <div className="mt-5">
               <div className="text-end mb-3">
-                <button type="button" className="btn btn-primary" onClick={handleShowModal}>
-                  Crear Usuario
-                </button>
+                <Can permission="usuarios.create">
+                  <button type="button" className="btn btn-primary" onClick={handleShowModal}>
+                    Crear Usuario
+                  </button>
+                </Can>
               </div>
               <TableUsers handleShowToast={handleShowToast} />
             </div>
@@ -308,28 +311,34 @@ export function TableUsers({ handleShowToast }) {
         <td>{user.username}</td>
         <td>{user.perfil.roles.map((rol) => rol.nombre).join(', ')}</td>
         <td className="text-end">
-          <button
-            type="button"
-            className="btn btn-sm btn-primary me-2"
-            onClick={() => openModalRolUser(user.id)}
-          >
-            <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
-          </button>
+          <Can permission="usuarios.changeRole">
+            <button
+              type="button"
+              className="btn btn-sm btn-primary me-2"
+              onClick={() => openModalRolUser(user.id)}
+            >
+              <FontAwesomeIcon icon={faUsersGear} className="fs-5" />
+            </button>
+          </Can>
           <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => openModalEditUser(user.id)}
-            >
-              <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => openModalDeleteUser(user.id)}
-            >
-              <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-            </button>
+            <Can permission="usuarios.edit">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => openModalEditUser(user.id)}
+              >
+                <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+              </button>
+            </Can>
+            <Can permission="usuarios.delete">
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => openModalDeleteUser(user.id)}
+              >
+                <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+              </button>
+            </Can>
           </div>
         </td>
       </tr>

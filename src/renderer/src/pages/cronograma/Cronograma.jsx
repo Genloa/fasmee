@@ -4,6 +4,7 @@ import { Modal, Toast } from 'bootstrap'
 import moment from 'moment-timezone'
 import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
 import ModalGestionHorario from './components/ModalGestionHorario'
 import { dias, meses } from './utils/constants'
 
@@ -248,13 +249,15 @@ function Cronograma() {
                               >
                                 {turno}
                               </span>
-                              <span
-                                className="text-dark"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => openModalCreatePaciente(medico, fecha, i)}
-                              >
-                                <FontAwesomeIcon icon={faNotesMedical} />
-                              </span>
+                              <Can permission="cronogramas.create">
+                                <span
+                                  className="text-dark"
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() => openModalCreatePaciente(medico, fecha, i)}
+                                >
+                                  <FontAwesomeIcon icon={faNotesMedical} />
+                                </span>
+                              </Can>
                             </div>
                           ) : null}
                         </td>

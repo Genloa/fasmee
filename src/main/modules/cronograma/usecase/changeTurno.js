@@ -7,7 +7,6 @@ ipcMain.handle('changeTurno', async (event, horarioId) => {
   try {
     let horario = await Horarios.findByPk(horarioId)
     if (!horario) throw new Error('Horario no encontrado')
-    console.log(horario)
 
     // Cambiar al siguiente turno que tenga el horario, si es el ultimo turno, cambiar al primero
     let index = turnos.indexOf(horario.turno)

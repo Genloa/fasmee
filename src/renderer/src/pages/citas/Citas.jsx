@@ -1,13 +1,14 @@
-import Dash from '../../components/layouts/Dash'
-import { useState } from 'react'
-import ReactPaginate from 'react-paginate'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan, faUserPen } from '@fortawesome/free-solid-svg-icons'
-import { createContext, useEffect } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Modal, Toast } from 'bootstrap'
+import { createContext, useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import momentDate from '../../../../main/utils/momentDate'
+import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
 import ModalCrearCita from './components/ModalCrearCita'
 import ModalEditCita from './components/ModalEditCita'
-import { Modal, Toast } from 'bootstrap'
-import momentDate from '../../../../main/utils/momentDate'
+
 const CitasPacientesContext = createContext({ citasPacientes: [], setCitasPacientes: () => {} })
 
 export default function Citas() {
@@ -29,7 +30,6 @@ export default function Citas() {
       .flatMap((paciente) => paciente.citasSolicitadas.map((c) => ({ ...c, paciente })))
       .find((cita) => cita.id === id)
     setCitaSelected(cita)
-    console.log('Cita seleccionada:', cita)
     let modal = new Modal(modalDeleteCitaRef)
     modal.show()
   }
@@ -66,7 +66,6 @@ export default function Citas() {
     try {
       const fetchedCitasPacientes = await window.api.getCitasPacientes()
       setCitasPaciente(fetchedCitasPacientes)
-      console.log('Citas pacientes:', fetchedCitasPacientes)
     } catch (error) {
       console.error('Error fetching citas pacientes:', error)
     }
@@ -79,14 +78,12 @@ export default function Citas() {
     const departamentosFil = fetchedDepartamentos.filter((d) => !excludedIds.includes(d.id))
 
     setDepartamentos(departamentosFil)
-    console.log('Departamentos:', departamentosFil)
   }
 
   const fetchMedicos = async () => {
     try {
       const fetchedMedicos = await window.api.getMedicos()
       setMedicos(fetchedMedicos)
-      console.log('Medicos:', fetchedMedicos)
     } catch (error) {
       console.error('Error fetching Medicos:', error)
     }
@@ -175,7 +172,6 @@ export default function Citas() {
 
   const handleShowEditModal = (cita) => {
     setSelectedCita(cita)
-    console.log('Cita seleccionada:', cita)
     setShowEditModal(true)
   }
 
@@ -198,20 +194,24 @@ export default function Citas() {
 
         <td className="text-end">
           <div className="btn-group btn-group-sm" role="group" aria-label="Button group name">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => handleShowEditModal(citaPaciente)}
-            >
-              <FontAwesomeIcon icon={faUserPen} className="fs-5" />
-            </button>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={() => openModalDeleteCita(citaPaciente.id)}
-            >
-              <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-            </button>
+            <Can permission="citas.edit">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => handleShowEditModal(citaPaciente)}
+              >
+                <FontAwesomeIcon icon={faUserPen} className="fs-5" />
+              </button>
+            </Can>
+            <Can permission="citas.delete">
+              <button
+                type="button"
+                className="btn btn-danger"
+                onClick={() => openModalDeleteCita(citaPaciente.id)}
+              >
+                <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+              </button>
+            </Can>
           </div>
         </td>
       </tr>
@@ -246,199 +246,199 @@ export default function Citas() {
   }, [showToast])
 
   return (
-    <>
-      <Dash>
-        <CitasPacientesContext.Provider value={{ citasPacientes, setCitasPaciente }}>
-          {departamentos && medicos && (
-            <>
-              <ModalCrearCita
-                show={showModal}
-                handleClose={handleCloseModal}
+    <Dash>
+      <CitasPacientesContext.Provider value={{ citasPacientes, setCitasPaciente }}>
+        {departamentos && medicos && (
+          <>
+            <ModalCrearCita
+              show={showModal}
+              handleClose={handleCloseModal}
+              fetchCitasPacientes={fetchCitasPacientes}
+              departamentos={departamentos}
+              medicos={medicos}
+              handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
+            />
+            {selectedCita && (
+              <ModalEditCita
+                show={showEditModal}
+                handleClose={handleCloseEditModal}
                 fetchCitasPacientes={fetchCitasPacientes}
                 departamentos={departamentos}
                 medicos={medicos}
+                citaSelected={selectedCita}
                 handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
               />
-              {selectedCita && (
-                <ModalEditCita
-                  show={showEditModal}
-                  handleClose={handleCloseEditModal}
-                  fetchCitasPacientes={fetchCitasPacientes}
-                  departamentos={departamentos}
-                  medicos={medicos}
-                  citaSelected={selectedCita}
-                  handleShowToast={handleShowToast} // Asegúrate de pasar esta prop
-                />
-              )}
-            </>
-          )}
+            )}
+          </>
+        )}
 
-          <div className="card border-white">
-            <div className="card-body">
-              <h5 className="card-title fs-3">Citas</h5>
+        <div className="card border-white">
+          <div className="card-body">
+            <h5 className="card-title fs-3">Citas</h5>
+            <Can permission="citas.create">
               <div className="text-end">
                 <button type="button" className="btn btn-primary" onClick={handleShowModal}>
                   Nueva Cita
                 </button>
               </div>
-              <div className="d-flex flex-wrap justify-content-around mb-4">
-                <div className="col form-floating mb-3 mt-3 me-3">
-                  <input
-                    type="date"
-                    className="form-control"
-                    id="floatingInput"
-                    placeholder="Buscar"
-                    aria-label="Buscar"
-                    value={searchDate}
-                    onChange={handleDateChange}
-                  />
-                  <label htmlFor="floatingInput">Fecha Citas</label>
-                </div>
-
-                <div className="col form-floating mb-3 mt-3 me-3">
-                  <select
-                    className="form-control"
-                    id="floatingDepartamentoName"
-                    aria-label="Buscar por Nombre de Departamento"
-                    value={searchDepartamentoName}
-                    onChange={handleDepartamentoNameChange}
-                  >
-                    <option value="">Seleccione un Departamento</option>
-                    {departamentos.map((departamento) => (
-                      <option key={departamento.id} value={departamento.nombre}>
-                        {departamento.nombre}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
-                </div>
-
-                <div className="col form-floating mb-3 mt-3">
-                  <select
-                    className="form-control"
-                    id="floatingMedicoName"
-                    aria-label="Buscar por Nombre de Doctor"
-                    value={searchMedicoName}
-                    onChange={handleMedicoNameChange}
-                  >
-                    <option value="">Seleccione un Doctor</option>
-                    {filteredMedicos.map((medico) => (
-                      <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
-                        {medico.nombres} {medico.apellidos}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
-                </div>
+            </Can>
+            <div className="d-flex flex-wrap justify-content-around mb-4">
+              <div className="col form-floating mb-3 mt-3 me-3">
+                <input
+                  type="date"
+                  className="form-control"
+                  id="floatingInput"
+                  placeholder="Buscar"
+                  aria-label="Buscar"
+                  value={searchDate}
+                  onChange={handleDateChange}
+                />
+                <label htmlFor="floatingInput">Fecha Citas</label>
               </div>
-              <div className="mt-5">
-                <div className="container">
-                  <table className="table table-sm table-hover align-middle">
-                    <thead>
-                      <tr>
-                        <th scope="col">Paciente</th>
-                        <th scope="col">Cedula</th>
-                        <th scope="col">Fecha de Cita</th>
-                        <th scope="col">Departamento</th>
-                        <th scope="col">Medico</th>
-                      </tr>
-                    </thead>
-                    <tbody>{displayUsers}</tbody>
-                  </table>
 
-                  <ReactPaginate
-                    previousLabel={'Anterior'}
-                    nextLabel={'Siguiente'}
-                    pageCount={pageCount}
-                    onPageChange={changePage}
-                    containerClassName={'pagination'}
-                    previousLinkClassName={'page-link'}
-                    nextLinkClassName={'page-link'}
-                    disabledClassName={'disabled'}
-                    activeClassName={'active'}
-                    pageClassName={'page-item'}
-                    pageLinkClassName={'page-link'}
-                  />
-                </div>
+              <div className="col form-floating mb-3 mt-3 me-3">
+                <select
+                  className="form-control"
+                  id="floatingDepartamentoName"
+                  aria-label="Buscar por Nombre de Departamento"
+                  value={searchDepartamentoName}
+                  onChange={handleDepartamentoNameChange}
+                >
+                  <option value="">Seleccione un Departamento</option>
+                  {departamentos.map((departamento) => (
+                    <option key={departamento.id} value={departamento.nombre}>
+                      {departamento.nombre}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
+              </div>
+
+              <div className="col form-floating mb-3 mt-3">
+                <select
+                  className="form-control"
+                  id="floatingMedicoName"
+                  aria-label="Buscar por Nombre de Doctor"
+                  value={searchMedicoName}
+                  onChange={handleMedicoNameChange}
+                >
+                  <option value="">Seleccione un Doctor</option>
+                  {filteredMedicos.map((medico) => (
+                    <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
+                      {medico.nombres} {medico.apellidos}
+                    </option>
+                  ))}
+                </select>
+                <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
+              </div>
+            </div>
+            <div className="mt-5">
+              <div className="container">
+                <table className="table table-sm table-hover align-middle">
+                  <thead>
+                    <tr>
+                      <th scope="col">Paciente</th>
+                      <th scope="col">Cedula</th>
+                      <th scope="col">Fecha de Cita</th>
+                      <th scope="col">Departamento</th>
+                      <th scope="col">Medico</th>
+                    </tr>
+                  </thead>
+                  <tbody>{displayUsers}</tbody>
+                </table>
+
+                <ReactPaginate
+                  previousLabel={'Anterior'}
+                  nextLabel={'Siguiente'}
+                  pageCount={pageCount}
+                  onPageChange={changePage}
+                  containerClassName={'pagination'}
+                  previousLinkClassName={'page-link'}
+                  nextLinkClassName={'page-link'}
+                  disabledClassName={'disabled'}
+                  activeClassName={'active'}
+                  pageClassName={'page-item'}
+                  pageLinkClassName={'page-link'}
+                />
               </div>
             </div>
           </div>
+        </div>
+        <div
+          className="modal fade"
+          id="modal-delete-cita"
+          tabIndex="-1"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          role="dialog"
+          aria-labelledby="modalTitleId"
+          aria-hidden="true"
+        >
           <div
-            className="modal fade"
-            id="modal-delete-cita"
-            tabIndex="-1"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            role="dialog"
-            aria-labelledby="modalTitleId"
-            aria-hidden="true"
+            className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
+            role="document"
           >
-            <div
-              className="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-sm"
-              role="document"
-            >
-              <div className="modal-content">
-                <div className="modal-header bg-danger text-white">
-                  <h5 className="modal-title" id="modalTitleId">
-                    Eliminar Cita
-                  </h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
-                </div>
-                <div className="modal-body">
-                  {citaSelected && (
-                    <>
-                      <p>
-                        Paciente: {citaSelected.paciente.nombres} {citaSelected.paciente.apellidos}
-                      </p>
-                      <p>Fecha de Cita: {new Date(citaSelected.fecha_cita).toLocaleString()}</p>
-                    </>
-                  )}
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancelar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    data-bs-dismiss="modal"
-                    onClick={() => closeModalDeleteCita()}
-                    id="liveToastBtn"
-                  >
-                    Confirmar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="toast-container position-fixed bottom-0 end-0 p-3">
-            <div
-              id="liveToast"
-              className="toast"
-              role="alert"
-              aria-live="assertive"
-              aria-atomic="true"
-            >
-              <div className="toast-header">
-                <strong className="me-auto">Notificación</strong>
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title" id="modalTitleId">
+                  Eliminar Cita
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
-                  data-bs-dismiss="toast"
+                  data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div className="toast-body">{toastMessage}</div>
+              <div className="modal-body">
+                {citaSelected && (
+                  <>
+                    <p>
+                      Paciente: {citaSelected.paciente.nombres} {citaSelected.paciente.apellidos}
+                    </p>
+                    <p>Fecha de Cita: {new Date(citaSelected.fecha_cita).toLocaleString()}</p>
+                  </>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  data-bs-dismiss="modal"
+                  onClick={() => closeModalDeleteCita()}
+                  id="liveToastBtn"
+                >
+                  Confirmar
+                </button>
+              </div>
             </div>
           </div>
-        </CitasPacientesContext.Provider>
-      </Dash>
-    </>
+        </div>
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToast"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
+      </CitasPacientesContext.Provider>
+    </Dash>
   )
 }
 

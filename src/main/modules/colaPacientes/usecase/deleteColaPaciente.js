@@ -3,7 +3,6 @@ import { ColaPacientes } from '../../../singletons/database/schema' // Asegúrat
 
 ipcMain.handle('deleteColaPaciente', async (event, id) => {
   try {
-    console.log('id-----------', id)
     await ColaPacientes.destroy({
       where: {
         pacienteId: id
