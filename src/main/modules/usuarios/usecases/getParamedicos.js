@@ -1,15 +1,15 @@
 import { ipcMain } from 'electron'
 import { Departamento, Horarios, Perfil, Rol } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
-ipcMain.handle('getMedicos', async () => {
+ipcMain.handle('getParamedicos', async () => {
   try {
-    const medicos = await Perfil.findAll({
+    const paramedicos = await Perfil.findAll({
       include: [
         {
           model: Rol, // Incluye el modelo Rol
           as: 'roles', // Alias de la asociación
           where: {
-            id: [2, 3, 5] // Incluye varios roles
+            id: 5
           }
         },
         {
@@ -23,8 +23,8 @@ ipcMain.handle('getMedicos', async () => {
       ]
     })
 
-    const medicosSerializables = medicos.map((medico) => medico.toJSON())
-    return medicosSerializables
+    const paramedicosSerializables = paramedicos.map((paramedico) => paramedico.toJSON())
+    return paramedicosSerializables
   } catch (error) {
     console.error('Error fetching users:', error)
     throw error

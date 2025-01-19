@@ -16,7 +16,8 @@ async function departamentoSeeder() {
       { nombre: 'Psiquiatría', cubiculo: '011' },
       { nombre: 'Enfermeria', cubiculo: '012' },
       { nombre: 'Administración', cubiculo: '013' },
-      { nombre: 'Administrador', cubiculo: '014' }
+      { nombre: 'Administrador', cubiculo: '014' },
+      { nombre: 'Ambulancias', cubiculo: '015' }
     ])
   } catch (error) {
     console.error(error)

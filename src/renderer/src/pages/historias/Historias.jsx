@@ -263,51 +263,50 @@ export default function Historias() {
                 <label htmlFor="floatingDepartamentoName">Nombre del Departamento</label>
               </div>
 
-              <div className="col form-floating mb-3 mt-3">
-                <select
-                  className="form-control"
-                  id="floatingMedicoName"
-                  aria-label="Buscar por Nombre de Doctor"
-                  value={searchMedicoName}
-                  onChange={handleMedicoNameChange}
-                >
-                  <option value="">Seleccione un Doctor</option>
-                  {filteredMedicos.map((medico) => (
-                    <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
-                      {medico.nombres} {medico.apellidos}
-                    </option>
-                  ))}
-                </select>
-                <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
+                <div className="col form-floating mb-3 mt-3">
+                  <select
+                    className="form-control"
+                    id="floatingMedicoName"
+                    aria-label="Buscar por Nombre de Doctor"
+                    value={searchMedicoName}
+                    onChange={handleMedicoNameChange}
+                  >
+                    <option value="">Seleccione Personal Médico</option>
+                    {filteredMedicos.map((medico) => (
+                      <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
+                        {medico.nombres} {medico.apellidos}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="floatingMedicoName">Nombre del Personal</label>
+                </div>
+                <div className="col form-floating mb-3 mt-3 ms-3">
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="floatingCedula"
+                    placeholder="Buscar por Cédula"
+                    aria-label="Buscar por Cédula"
+                    value={searchCedula}
+                    onChange={handleCedulaChange}
+                  />
+                  <label htmlFor="floatingCedula">Cédula del Paciente</label>
+                </div>
               </div>
-              <div className="col form-floating mb-3 mt-3 ms-3">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="floatingCedula"
-                  placeholder="Buscar por Cédula"
-                  aria-label="Buscar por Cédula"
-                  value={searchCedula}
-                  onChange={handleCedulaChange}
-                />
-                <label htmlFor="floatingCedula">Cédula del Paciente</label>
-              </div>
-            </div>
-            <div className="mt-5">
-              <div className="container">
-                <table className="table table-sm table-hover align-middle">
-                  <thead>
-                    <tr>
-                      <th scope="col">Paciente</th>
-                      <th scope="col">Cedula</th>
-                      <th scope="col">Fecha de Historia</th>
-                      <th scope="col">Departamento</th>
-                      <th scope="col">Medico</th>
-                      <th scope="col">Acciones</th>
-                    </tr>
-                  </thead>
-                  <tbody>{displayUsers}</tbody>
-                </table>
+              <div className="mt-5">
+                <div className="container">
+                  <table className="table table-sm table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Paciente</th>
+                        <th scope="col">Cedula</th>
+                        <th scope="col">Fecha de Historia</th>
+                        <th scope="col">Departamento</th>
+                        <th scope="col">Personal Médico</th>
+                      </tr>
+                    </thead>
+                    <tbody>{displayUsers}</tbody>
+                  </table>
 
                 <ReactPaginate
                   previousLabel={'Anterior'}
@@ -332,3 +331,4 @@ export default function Historias() {
 }
 
 export { HistoriasPacientesContext }
+

@@ -23,6 +23,7 @@ const api = {
   getMedicos: () => ipcRenderer.invoke('getMedicos'),
   createPhoto: (perfilId, photoBase64) =>
     ipcRenderer.invoke('createPhoto', { perfilId, photoBase64 }),
+  getParamedicos: () => ipcRenderer.invoke('getParamedicos'),
 
   // Casos de uso para pacientes
   getPacientes: () => ipcRenderer.invoke('getPacientes'),
@@ -75,7 +76,9 @@ const api = {
 
   //Casos de Uso para historias
   getHistoriasPacientes: () => ipcRenderer.invoke('getHistoriasPacientes'),
-  createHistoria: (data, id, usuario) => ipcRenderer.invoke('createHistoria', { data, id, usuario })
+  createHistoria: (data, id, usuario) =>
+    ipcRenderer.invoke('createHistoria', { data, id, usuario }),
+  createHistorialAmbulancia: (data) => ipcRenderer.invoke('createHistorialAmbulancia', data)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

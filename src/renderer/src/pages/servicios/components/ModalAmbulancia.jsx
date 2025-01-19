@@ -3,33 +3,40 @@ import { useEffect, useState } from 'react'
 import { Toast } from 'bootstrap'
 import FormAmbulancia from '../../../forms/FormAmbulancia'
 
+export default function ModalAmbulancia({ show, handleClose, handleShowToast }) {
+  const [toastMessage] = useState('')
+  const [showToast] = useState(false)
 
-export default function ModalAmbulancia({
-  show,
-  handleClose
-}) {
- const [toastMessage] = useState('')
-   const [showToast] = useState(false)
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToastCrear')
+      const toast = new Toast(toastEl)
+      toast.show()
+    }
+  }, [showToast])
 
-    useEffect(() => {
-       if (showToast) {
-         const toastEl = document.getElementById('liveToastCrear')
-         const toast = new Toast(toastEl)
-         toast.show()
-       }
-     }, [showToast])
+  const defaultValues = {
+    pacienteId: 0,
+    paramedicoId: 0,
+    fechaUso: '',
+    detalles: ''
+  }
 
-
-   const defaultValues= {
-   pacienteId: 0,
-   fechaUso: '',
-   detalles: ''
- }
-
-
- const onSubmit= async (data/*, resetForm*/) => {
-   console.log(data)
- }
+  const onSubmit = async (data, resetForm) => {
+    try {
+      console.log(data)
+      const consulta = await window.api.createHistorialAmbulancia(data)
+      if (consulta) {
+        handleShowToast('Registro de ambulancia guardado correctamente')
+        handleClose(true)
+        resetForm()
+      } else {
+        handleShowToast('No se pudo guardar registo')
+      }
+    } catch (error) {
+      console.error('Error creando registro:', error)
+    }
+  }
   return (
     <>
       <div
@@ -53,7 +60,7 @@ export default function ModalAmbulancia({
               ></button>
             </div>
             <div className="modal-body m-2">
-             <FormAmbulancia
+              <FormAmbulancia
                 onSubmit={onSubmit}
                 defaultValues={defaultValues}
                 handleClose={handleClose}
@@ -64,7 +71,6 @@ export default function ModalAmbulancia({
       </div>
       {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-
         <div
           id="liveToastCrear"
           className="toast"
@@ -72,7 +78,6 @@ export default function ModalAmbulancia({
           aria-live="assertive"
           aria-atomic="true"
         >
-
           <div className="toast-header">
             <strong className="me-auto">Notificación</strong>
             <button
@@ -91,5 +96,6 @@ export default function ModalAmbulancia({
 
 ModalAmbulancia.propTypes = {
   show: PropTypes.bool.isRequired,
-  handleClose: PropTypes.func.isRequired
+  handleClose: PropTypes.func.isRequired,
+  handleShowToast: PropTypes.func.isRequired
 }

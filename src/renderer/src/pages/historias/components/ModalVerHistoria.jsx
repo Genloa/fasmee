@@ -30,7 +30,7 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="modal-consulta-nutricion-label">
-                Consulta {historiaPaciente.departamentoName}
+                {historiaPaciente.departamentoName}
               </h1>
               <button
                 type="button"
@@ -100,7 +100,7 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                     Diagnósticos
                   </div>
                   {historiaPaciente.departamentoId === 4 && (
-                    <div className="row">
+                    <div className="row border-bottom">
                       <div className="col">
                         {' '}
                         <p>Peso: {historiaPaciente.peso_paciente} </p>
@@ -111,25 +111,22 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                       <div className="col">
                         <p>Cintura: {historiaPaciente.medida_cintura}</p>
                       </div>
-                      <div className="col">
-                        <p>Brazos: {historiaPaciente.formulario.brazos}</p>
-                      </div>
-                      <div className="col">
-                        <p>Piernas: {historiaPaciente.formulario.piernas}</p>
-                      </div>
                     </div>
                   )}
-
-                  {historiaPaciente.departamentoId !== 4 &&
-                    Object.entries(historiaPaciente.formulario).map(([key, value]) => (
-                      <div key={key}>
-                        <p>
-                          <b>{capitalizeFirstLetter(key)}:</b> {value}
-                        </p>
-                      </div>
-                    ))}
-
-                  <div className="border-top">
+                  <div className="row border-bottom">
+                    {historiaPaciente.departamentoId !== 4 &&
+                      historiaPaciente.departamentoId !== 9 &&
+                      historiaPaciente.departamentoId !== 10 &&
+                      historiaPaciente.departamentoId !== 15 &&
+                      Object.entries(historiaPaciente.formulario).map(([key, value]) => (
+                        <div className="col" key={key}>
+                          <p>
+                            <b>{capitalizeFirstLetter(key)}:</b> {value}
+                          </p>
+                        </div>
+                      ))}
+                  </div>
+                  <div>
                     <h5 className="mt-4">Detalles:</h5>
                     <p>{historiaPaciente.diagnostico}</p>
                   </div>

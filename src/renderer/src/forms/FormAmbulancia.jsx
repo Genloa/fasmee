@@ -6,10 +6,12 @@ import { useEffect, useState } from 'react'
 import { ambulanciaSchema } from '../validations/ambulanciaSchema'
 
 function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
-   const [pacientes, setPacientes] = useState([])
+  const [pacientes, setPacientes] = useState([])
+  const [paramedicos, setParamedicos] = useState([])
   const {
     register,
-    handleSubmit, control,
+    handleSubmit,
+    control,
     setValue,
     trigger,
 
@@ -24,6 +26,7 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
   useEffect(() => {
     reset(defaultValues)
     fetchPacientes()
+    fetchParamedico()
   }, [defaultValues, reset])
 
   const fetchPacientes = async () => {
@@ -35,7 +38,15 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
       console.error('Error fetching pacientes:', error)
     }
   }
-
+  const fetchParamedico = async () => {
+    try {
+      const fetchedParamedico = await window.api.getParamedicos()
+      setParamedicos(fetchedParamedico)
+      console.log('Paramedico:', fetchedParamedico)
+    } catch (error) {
+      console.error('Error fetching Paramedico:', error)
+    }
+  }
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -44,9 +55,14 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
- const pacienteOptions = pacientes.map((paciente) => ({
+  const pacienteOptions = pacientes.map((paciente) => ({
     value: paciente.id,
     label: paciente.cedula
+  }))
+
+  const paramedicoOptions = paramedicos.map((paramedico) => ({
+    value: paramedico.id,
+    label: paramedico.nombres
   }))
 
   const onSubmitForm = (data) => {
@@ -56,9 +72,8 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
 
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
-
       <div className="row mt-4">
-      <div className="col">
+        <div className="col">
           <Controller
             name="pacienteId"
             control={control}
@@ -86,7 +101,35 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
       <div className="row mt-4">
-      <div className="col">
+        <div className="col">
+          <Controller
+            name="paramedicoId"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <div>
+                <Select
+                  {...field}
+                  options={paramedicoOptions}
+                  placeholder="Buscar Paramedico"
+                  isClearable
+                  value={paramedicoOptions.find((option) => option.value === field.value) || null}
+                  onChange={(selectedOption) => {
+                    field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
+                    setValue('paramedicoId', selectedOption ? selectedOption.value : null) // Registrar el valor
+                    trigger('paramedicoId') // Validar en tiempo real
+                  }}
+                />
+                {errors.paramedicoId && (
+                  <div className="invalid-feedback d-block">{errors.paramedicoId.message}</div>
+                )}
+              </div>
+            )}
+          />
+        </div>
+      </div>
+      <div className="row mt-4">
+        <div className="col">
           <div className="form-floating ">
             <input
               type="date"
@@ -125,8 +168,6 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
 
-
-
       <div className="modal-footer">
         <button
           type="button"
@@ -137,7 +178,7 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
           Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
-         Guardar
+          Guardar
         </button>
       </div>
     </form>
