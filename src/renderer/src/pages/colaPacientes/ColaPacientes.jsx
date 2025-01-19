@@ -1,10 +1,11 @@
-import Dash from '../../components/layouts/Dash'
-import { useState, useEffect, createContext } from 'react'
-import { Toast, Modal } from 'bootstrap'
-import ModalCrearCola from './components/ModalCrearCola'
-import ReactPaginate from 'react-paginate'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Modal, Toast } from 'bootstrap'
+import { createContext, useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
+import ModalCrearCola from './components/ModalCrearCola'
 
 const ColaPacientesContext = createContext({ ColaPacientes: [], setColaPacientes: () => {} })
 
@@ -35,8 +36,6 @@ export default function ColaPacientes() {
   const fetchColaPacientes = async () => {
     try {
       const fetchedPacientes = await window.api.getColaPacientes()
-      console.log('colaPacientes:', fetchedPacientes)
-
       setColaPacientes(fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
@@ -117,13 +116,11 @@ export default function ColaPacientes() {
   const openModalDeletePaciente = (id) => {
     let paciente = ColaPacientes.find((p) => p.id === id)
     setPacienteSelected(paciente)
-    console.log('Paciente seleccionado:', paciente)
     let modal = new Modal(modalDeletePacienteRef)
     modal.show()
   }
 
   const closeModalDeletePaciente = async () => {
-    console.log(pacienteSelected.id)
     try {
       // Eliminar el paciente de la cola
       const paciente = await window.api.deleteColaPaciente(pacienteSelected.id)
@@ -175,13 +172,15 @@ export default function ColaPacientes() {
                         className="list-group-item d-flex justify-content-between align-items-center"
                       >
                         {index + 1}. {paciente.nombres} {paciente.apellidos}
-                        <button
-                          type="button"
-                          className="btn btn--light btn-sm"
-                          onClick={() => openModalDeletePaciente(paciente.id)}
-                        >
-                          <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
-                        </button>
+                        <Can permission="colas.remove">
+                          <button
+                            type="button"
+                            className="btn btn-light btn-sm"
+                            onClick={() => openModalDeletePaciente(paciente.id)}
+                          >
+                            <FontAwesomeIcon icon={faTrashCan} className="fs-5" />
+                          </button>
+                        </Can>
                       </li>
                     ))}
                 </ul>
@@ -226,11 +225,13 @@ export default function ColaPacientes() {
         <div className="card border-white">
           <div className="card-body">
             <h5 className="card-title fs-3 ">Cola de Atención Pacientes</h5>
-            <div className="text-end">
-              <button type="button" className="btn btn-primary" onClick={handleShowModal}>
-                Asignar Paciente a Cola
-              </button>
-            </div>
+            <Can permission="colas.add">
+              <div className="text-end">
+                <button type="button" className="btn btn-primary" onClick={handleShowModal}>
+                  Asignar Paciente a Cola
+                </button>
+              </div>
+            </Can>
             <div className="container">
               <div className="form-floating mb-3 mt-3">
                 <input

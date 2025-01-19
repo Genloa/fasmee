@@ -2,6 +2,7 @@ import { Modal, Toast } from 'bootstrap'
 import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
 import CardPaciente from './components/CardPaciente'
 import ModalCreatePaciente from './components/ModalCreatePaciente'
 import ModalDeletePaciente from './components/ModalDeletePaciente'
@@ -141,34 +142,36 @@ export default function Pacientes() {
       <PacientesContext.Provider value={{ pacientes, setPacientes }}>
         <div className="d-flex justify-content-between align-items-center">
           <h5 className="card-title fs-3">Pacientes</h5>
-          <button
-            type="button"
-            className="btn btn-primary dropdown-toggle"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            Nuevo Paciente
-          </button>
-          <ul className="dropdown-menu">
-            <li>
-              <button
-                className="dropdown-item btn"
-                onClick={() => openModalCreatePaciente('T')}
-                type="button"
-              >
-                Trabajador
-              </button>
-            </li>
-            <li>
-              <button
-                className="dropdown-item btn"
-                onClick={() => openModalCreatePaciente('B')}
-                type="button"
-              >
-                Beneficiario
-              </button>
-            </li>
-          </ul>
+          <Can permission="pacientes.create">
+            <button
+              type="button"
+              className="btn btn-primary dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Nuevo Paciente
+            </button>
+            <ul className="dropdown-menu">
+              <li>
+                <button
+                  className="dropdown-item btn"
+                  onClick={() => openModalCreatePaciente('T')}
+                  type="button"
+                >
+                  Trabajador
+                </button>
+              </li>
+              <li>
+                <button
+                  className="dropdown-item btn"
+                  onClick={() => openModalCreatePaciente('B')}
+                  type="button"
+                >
+                  Beneficiario
+                </button>
+              </li>
+            </ul>
+          </Can>
         </div>
 
         {/* Modals */}

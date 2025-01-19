@@ -1,22 +1,24 @@
-import { createContext, useEffect, useState } from 'react'
-import Dash from '../../components/layouts/Dash'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faClipboard,
   faPersonChalkboard,
   faTrashCan,
   faTruckRampBox
 } from '@fortawesome/free-solid-svg-icons'
-import ReactPaginate from 'react-paginate'
-import ModalCrearArticulo from './components/ModalCrearArticulo'
-import ModalCrearAlmacen from './components/ModalCrearAlmacen'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Toast } from 'bootstrap'
-import ModalHistorial from './components/ModalHistorial'
+import { createContext, useEffect, useState } from 'react'
+import ReactPaginate from 'react-paginate'
+import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
 import ModalCargar from './components/ModalCargar'
-import ModalRetirar from './components/ModalRetirar'
+import ModalCrearAlmacen from './components/ModalCrearAlmacen'
+import ModalCrearArticulo from './components/ModalCrearArticulo'
 import ModalEliminar from './components/ModalEliminar'
+import ModalHistorial from './components/ModalHistorial'
+import ModalRetirar from './components/ModalRetirar'
 
 const InventarioContext = createContext({ inventario: [], setInventario: () => {} })
+
 export default function Inventario() {
   const [inventario, setInventario] = useState([])
   const [articulos, setArticulos] = useState([])
@@ -95,8 +97,6 @@ export default function Inventario() {
     try {
       const fetchedInventario = await window.api.getArticulosAlmacen()
       setInventario(fetchedInventario)
-      console.log('Inventario:', inventario)
-      console.log('Inventario:', fetchedInventario)
     } catch (error) {
       console.error('Error fetching Inventario:', error)
     }
@@ -106,7 +106,6 @@ export default function Inventario() {
     try {
       const fetchedArticulos = await window.api.getArticulos()
       setArticulos(fetchedArticulos)
-      console.log('Articulos:', fetchedArticulos)
     } catch (error) {
       console.error('Error fetching Articulos:', error)
     }
@@ -116,7 +115,6 @@ export default function Inventario() {
     try {
       const fetchedAlmacenes = await window.api.getAlmacenes()
       setAlmacenes(fetchedAlmacenes)
-      console.log('Almacenes:', fetchedAlmacenes)
     } catch (error) {
       console.error('Error fetching Almacenes:', error)
     }
@@ -169,47 +167,55 @@ export default function Inventario() {
               aria-expanded="false"
             ></button>
             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => handleShowModalHistorial(item)}
-                >
-                  <FontAwesomeIcon icon={faClipboard} className="fs-5" />
-                  <span className="fs-6 d-none ms-3 d-sm-inline">Historial</span>
-                </button>
-              </li>
+              <Can permission="inventarios.moveHistory">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => handleShowModalHistorial(item)}
+                  >
+                    <FontAwesomeIcon icon={faClipboard} className="fs-5" />
+                    <span className="fs-6 d-none ms-3 d-sm-inline">Historial</span>
+                  </button>
+                </li>
+              </Can>
               <li className="dropdown-divider"></li>
-              <li>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => handleShowModalCargar(item)}
-                >
-                  <FontAwesomeIcon icon={faTruckRampBox} className="fs-5" />
-                  <span className="fs-6 d-none ms-3 d-sm-inline">Cargar</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => handleShowModalRetirar(item)}
-                >
-                  <FontAwesomeIcon icon={faPersonChalkboard} className="fs-5" />
-                  <span className="fs-6 d-none ms-3 d-sm-inline">Retirar</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => handleShowModalEliminar(item)}
-                >
-                  <FontAwesomeIcon icon={faTrashCan} className="fs-5 me-2" />
-                  <span className="fs-6 d-none ms-3 d-sm-inline">Eliminar</span>
-                </button>
-              </li>
+              <Can permission="inventarios.cargarInventario">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => handleShowModalCargar(item)}
+                  >
+                    <FontAwesomeIcon icon={faTruckRampBox} className="fs-5" />
+                    <span className="fs-6 d-none ms-3 d-sm-inline">Cargar</span>
+                  </button>
+                </li>
+              </Can>
+              <Can permission="inventarios.descargarInventario">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => handleShowModalRetirar(item)}
+                  >
+                    <FontAwesomeIcon icon={faPersonChalkboard} className="fs-5" />
+                    <span className="fs-6 d-none ms-3 d-sm-inline">Retirar</span>
+                  </button>
+                </li>
+              </Can>
+              <Can permission="inventarios.deleteProduct">
+                <li>
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => handleShowModalEliminar(item)}
+                  >
+                    <FontAwesomeIcon icon={faTrashCan} className="fs-5 me-2" />
+                    <span className="fs-6 d-none ms-3 d-sm-inline">Eliminar</span>
+                  </button>
+                </li>
+              </Can>
             </ul>
           </div>
         </td>
@@ -293,16 +299,24 @@ export default function Inventario() {
             <div className="card-body">
               <h5 className="card-title fs-3">Inventario</h5>
               <div className="text-end">
-                <button
-                  type="button"
-                  className="btn btn-primary me-2"
-                  onClick={handleShowModalAlmacen}
-                >
-                  Nuevo Almacén
-                </button>
-                <button type="button" className="btn btn-primary" onClick={handleShowModalArticulo}>
-                  Nuevo Artículo
-                </button>
+                <Can permission="inventarios.create">
+                  <button
+                    type="button"
+                    className="btn btn-primary me-2"
+                    onClick={handleShowModalAlmacen}
+                  >
+                    Nuevo Almacén
+                  </button>
+                </Can>
+                <Can permission="inventarios.createProduct">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={handleShowModalArticulo}
+                  >
+                    Nuevo Artículo
+                  </button>
+                </Can>
               </div>
               <div className="d-flex flex-wrap justify-content-around mb-4">
                 <div className="col form-floating mb-3 mt-3 me-3">
