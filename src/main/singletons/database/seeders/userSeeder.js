@@ -1,6 +1,6 @@
 import hashPassword from '../../../utils/hashPassword'
 import momentDate from '../../../utils/momentDate'
-import { Departamento, Ente, Perfil, PerfilMedico, Usuario } from '../schema'
+import { Departamento, Ente, Perfil, PerfilMedico, Rol, RolOnPerfil, Usuario } from '../schema'
 
 async function userSeeder() {
   try {
@@ -8,8 +8,9 @@ async function userSeeder() {
 
     const ente = await Ente.findOne({ where: { nombre: 'FASMEE' } })
     const departamento = await Departamento.findOne({ where: { nombre: 'Administrador' } })
+    const adminRole = await Rol.findOne({ where: { nombre: 'Administrador(a)' } })
 
-    await Usuario.create(
+    let usuario = await Usuario.create(
       {
         username: 'admin',
         password: password,
@@ -48,6 +49,8 @@ async function userSeeder() {
         ]
       }
     )
+
+    await RolOnPerfil.create({ rolId: adminRole.id, perfilId: usuario.perfil.id })
   } catch (error) {
     console.error(error)
   }
