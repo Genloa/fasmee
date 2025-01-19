@@ -41,7 +41,7 @@ function ModalTakePhoto({ paciente, handleCloseModalTakePhoto }) {
               aria-label="Close"
             ></button>
           </div>
-          <div className="modal-body">
+          <div className="modal-body d-flex flex-column justify-content-center align-items-center">
             <Webcam
               audio={false}
               // height={720}
@@ -51,7 +51,7 @@ function ModalTakePhoto({ paciente, handleCloseModalTakePhoto }) {
             >
               {({ getScreenshot }) => (
                 <button
-                  className="btn btn-sm btn-primary"
+                  className="btn btn-primary mt-2 w-50"
                   onClick={() => savePhoto(getScreenshot())}
                 >
                   Capturar foto
