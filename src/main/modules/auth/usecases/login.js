@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, Usuario } from '../../../singletons/database/schema'
+import { Perfil, Permiso, Rol, Usuario } from '../../../singletons/database/schema'
 import comparePassword from '../../../utils/comparePassword'
 
 ipcMain.handle('login', async (event, { username, password }) => {
@@ -13,7 +13,19 @@ ipcMain.handle('login', async (event, { username, password }) => {
     include: [
       {
         model: Perfil,
-        as: 'perfil'
+        as: 'perfil',
+        include: [
+          {
+            model: Rol,
+            as: 'roles',
+            include: [
+              {
+                model: Permiso,
+                as: 'permisos'
+              }
+            ]
+          }
+        ]
       }
     ],
     where: {
