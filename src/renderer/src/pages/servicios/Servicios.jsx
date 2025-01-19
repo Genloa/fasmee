@@ -19,8 +19,8 @@ export default function Servicios() {
   const usuario = {
     nombre: 'heidy',
     apellidos: 'Sanchez',
-    medicoId: 2,
-    departamentoId: 10
+    id: 2,
+    departamentoId: 9
   }
 
   useEffect(() => {
@@ -95,6 +95,25 @@ export default function Servicios() {
     }
   }, [showToast])
 
+  const onSubmit = async (pacienteId) => {
+    try {
+      const data = {
+        usuarioId: usuario.id,
+        pacienteId: pacienteId,
+        departamentoId: usuario.departamentoId
+      }
+      const consulta = await window.api.createHistoriaServicio(data)
+      if (consulta) {
+        fetchColaPacientes()
+        handleShowToast('Servicio guardado correctamente')
+      } else {
+        handleShowToast('No se pudo guardar servicio')
+      }
+    } catch (error) {
+      console.error('Error creando guardando la historia:', error)
+    }
+  }
+
   return (
     <>
       <Dash>
@@ -151,7 +170,11 @@ export default function Servicios() {
                                   {paciente.nombres} {paciente.apellidos}
                                 </td>
                                 <td>
-                                  <button type="button" className="btn btn-primary btn-sm">
+                                  <button
+                                    type="button"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={() => onSubmit(paciente.id)}
+                                  >
                                     Realizar servicio
                                   </button>
                                 </td>
@@ -173,13 +196,13 @@ export default function Servicios() {
             show={showModalRayosX}
             handleClose={handleCloseModal}
             departamentoNombre={nombreDepartamento}
-            departamentoId={usuario.departamentoId}
+            usuario={usuario}
           />
           <ModalLaboratorios
             show={showModalLaboratorios}
             handleClose={handleCloseModal}
             departamentoNombre={nombreDepartamento}
-            departamentoId={usuario.departamentoId}
+            usuario={usuario}
           />
           <ModalAmbulancia
             show={showModalAmbulancia}
