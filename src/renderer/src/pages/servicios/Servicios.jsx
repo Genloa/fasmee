@@ -5,6 +5,7 @@ import { faArrowsRotate, faFileMedical, faTruckMedical } from '@fortawesome/free
 import ModalRayosX from './components/ModalRayosX'
 import ModalLaboratorios from './components/ModalLaboratorio'
 import ModalAmbulancia from './components/ModalAmbulancia'
+import { Toast } from 'bootstrap'
 
 export default function Servicios() {
   const [colaPacientes, setColaPacientes] = useState([])
@@ -71,6 +72,28 @@ export default function Servicios() {
     setShowModalAmbulancia(false)
     // setSelectedPaciente(null)
   }
+
+  const [toastMessage, setToastMessage] = useState('')
+  const [showToast, setShowToast] = useState(false)
+
+  const handleShowToast = (message) => {
+    setToastMessage(message)
+    setShowToast(true)
+  }
+
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToastAmbu')
+      const toast = new Toast(toastEl)
+      toast.show()
+      // Restablecer el estado showToast a false después de que el toast se haya mostrado
+      const timeout = setTimeout(() => {
+        setShowToast(false)
+      }, 3000) // Ajusta el tiempo según sea necesario
+
+      return () => clearTimeout(timeout)
+    }
+  }, [showToast])
 
   return (
     <>
@@ -158,8 +181,32 @@ export default function Servicios() {
             departamentoNombre={nombreDepartamento}
             departamentoId={usuario.departamentoId}
           />
-          <ModalAmbulancia show={showModalAmbulancia} handleClose={handleCloseModal} />
+          <ModalAmbulancia
+            show={showModalAmbulancia}
+            handleClose={handleCloseModal}
+            handleShowToast={handleShowToast}
+          />
         </>
+        <div className="toast-container position-fixed bottom-0 end-0 p-3">
+          <div
+            id="liveToastAmbu"
+            className="toast"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
+            <div className="toast-header">
+              <strong className="me-auto">Notificación</strong>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="toast-body">{toastMessage}</div>
+          </div>
+        </div>
       </Dash>
     </>
   )

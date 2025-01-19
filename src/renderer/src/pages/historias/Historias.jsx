@@ -273,14 +273,14 @@ export default function Historias() {
                     value={searchMedicoName}
                     onChange={handleMedicoNameChange}
                   >
-                    <option value="">Seleccione un Doctor</option>
+                    <option value="">Seleccione Personal Médico</option>
                     {filteredMedicos.map((medico) => (
                       <option key={medico.id} value={`${medico.nombres} ${medico.apellidos}`}>
                         {medico.nombres} {medico.apellidos}
                       </option>
                     ))}
                   </select>
-                  <label htmlFor="floatingMedicoName">Nombre del Doctor</label>
+                  <label htmlFor="floatingMedicoName">Nombre del Personal</label>
                 </div>
                 <div className="col form-floating mb-3 mt-3 ms-3">
                   <input
@@ -304,8 +304,7 @@ export default function Historias() {
                         <th scope="col">Cedula</th>
                         <th scope="col">Fecha de Historia</th>
                         <th scope="col">Departamento</th>
-                        <th scope="col">Medico</th>
-                        <th scope="col">Acciones</th>
+                        <th scope="col">Personal Médico</th>
                       </tr>
                     </thead>
                     <tbody>{displayUsers}</tbody>

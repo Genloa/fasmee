@@ -6,7 +6,8 @@ async function rolSeeder() {
       { nombre: 'Administrador(a)' },
       { nombre: 'Doctor(a)' },
       { nombre: 'Enfermero(a)' },
-      { nombre: 'Administrativo(a)' }
+      { nombre: 'Administrativo(a)' },
+      { nombre: 'Paramédico' }
     ])
   } catch (error) {
     console.error(error)

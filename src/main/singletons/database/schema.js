@@ -455,7 +455,7 @@ if (sequelize instanceof Sequelize) {
       },
       tension_paciente: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       medida_cintura: {
         type: DataTypes.DECIMAL,
