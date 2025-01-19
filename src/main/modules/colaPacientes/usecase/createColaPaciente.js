@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Perfil, ColaPacientes } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { ColaPacientes, Perfil } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('createColaPacientes', async (event, data) => {
   try {
@@ -8,8 +8,6 @@ ipcMain.handle('createColaPacientes', async (event, data) => {
       departamentoId: data.departamentoId,
       pacienteId: data.pacienteId
     })
-
-    console.log('Cola creada:------------', cola)
 
     const colaPaciente = await Perfil.findOne({
       include: [
