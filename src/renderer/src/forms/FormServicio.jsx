@@ -6,10 +6,11 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
 function FormServicio({ onSubmit, defaultValues, handleClose }) {
-   const [pacientes, setPacientes] = useState([])
+  const [pacientes, setPacientes] = useState([])
   const {
     register,
-    handleSubmit, control,
+    handleSubmit,
+    control,
     setValue,
     trigger,
 
@@ -36,7 +37,6 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
     }
   }
 
-
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
       return 'form-control'
@@ -44,7 +44,7 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
     return `form-control ${errors[fieldName] ? 'is-invalid' : 'is-valid'}`
   }
 
- const pacienteOptions = pacientes.map((paciente) => ({
+  const pacienteOptions = pacientes.map((paciente) => ({
     value: paciente.id,
     label: paciente.cedula
   }))
@@ -64,9 +64,8 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
 
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
-
       <div className="row mt-4">
-      <div className="col">
+        <div className="col">
           <Controller
             name="pacienteId"
             control={control}
@@ -74,6 +73,7 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
             render={({ field }) => (
               <div>
                 <Select
+                  class="form-select"
                   {...field}
                   options={pacienteOptions}
                   placeholder="Buscar Paciente"
@@ -94,7 +94,7 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
       <div className="row mt-4">
-      <div className="col">
+        <div className="col">
           <div className="form-floating ">
             <input
               type="date"
@@ -108,7 +108,10 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
                 }
               })}
             />
-            <label htmlFor="floatingDate"> fecha de realización</label>
+            <label className="z-0" htmlFor="floatingDate">
+              {' '}
+              fecha de realización
+            </label>
             {errors.fechaMuestra?.message && (
               <div className="invalid-feedback">{errors.fechaMuestra?.message}</div>
             )}
@@ -151,8 +154,6 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
 
-
-
       <div className="modal-footer">
         <button
           type="button"
@@ -163,7 +164,7 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
           Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
-         Guardar
+          Guardar
         </button>
       </div>
     </form>

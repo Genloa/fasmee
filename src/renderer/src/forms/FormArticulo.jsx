@@ -5,7 +5,7 @@ import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 
-function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre }) {
+function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false }) {
   const [almacenes, setAlmacenes] = useState([])
 
   const {
@@ -155,11 +155,7 @@ FormArticulo.propTypes = {
     cantidad: PropTypes.number.isRequired
   }).isRequired,
   handleClose: PropTypes.func.isRequired,
-  hideNombre: PropTypes.bool
-}
-
-FormArticulo.defaultProps = {
-  hideNombre: false
+  hideNombre: PropTypes.bool.isRequired
 }
 
 export default FormArticulo
