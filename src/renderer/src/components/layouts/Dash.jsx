@@ -23,9 +23,9 @@ import { Toast } from 'bootstrap'
 import fasmeeIcon from '../../assets/img/fasmee-icon.png'
 import expandImg from '../../assets/img/menu-alt-left-regular.png'
 import collapseImg from '../../assets/img/menu-regular.png'
-import Can from '../../helpers/can'
 import { useAuth } from '../../hooks/useAuth'
 import ModalEditarUsuario from '../../pages/usuarios/components/ModalEditarUsuario'
+import Can from '../../helpers/Can'
 
 function Dash({ children }) {
   const { session } = useAuth()
