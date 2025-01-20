@@ -1,11 +1,13 @@
-import Dash from '../../components/layouts/Dash'
-import { useState, useEffect } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsRotate, faFileMedical, faTruckMedical } from '@fortawesome/free-solid-svg-icons'
-import ModalRayosX from './components/ModalRayosX'
-import ModalLaboratorios from './components/ModalLaboratorio'
-import ModalAmbulancia from './components/ModalAmbulancia'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Toast } from 'bootstrap'
+import { useEffect, useState } from 'react'
+import Dash from '../../components/layouts/Dash'
+import Can from '../../helpers/can'
+import { useAuth } from '../../hooks/useAuth'
+import ModalAmbulancia from './components/ModalAmbulancia'
+import ModalLaboratorios from './components/ModalLaboratorio'
+import ModalRayosX from './components/ModalRayosX'
 
 export default function Servicios() {
   const [colaPacientes, setColaPacientes] = useState([])
@@ -16,11 +18,13 @@ export default function Servicios() {
   const [showModalLaboratorios, setShowModalLaboratorios] = useState(false)
   //  const [selectedPaciente, setSelectedPaciente] = useState(null)
 
+  const { session } = useAuth()
+
   const usuario = {
-    nombre: 'heidy',
-    apellidos: 'Sanchez',
-    id: 2,
-    departamentoId: 9
+    nombre: session.user.perfil.nombres,
+    apellidos: session.user.perfil.apellidos,
+    id: session.user.id,
+    departamentoId: session.user.perfil.departamentoId
   }
 
   useEffect(() => {
@@ -42,7 +46,6 @@ export default function Servicios() {
     try {
       const fetchedPacientes = await window.api.getColaPacientesMedico(null, usuario.departamentoId)
 
-      console.log(fetchedPacientes)
       // Ordenar los pacientes por colasMedicos[0].createdAt
       const sortedPacientes = fetchedPacientes.sort(
         (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
@@ -115,12 +118,12 @@ export default function Servicios() {
   }
 
   return (
-    <>
-      <Dash>
-        <div className="card border-white">
-          <div className="card-body">
-            <h5 className="card-title fs-3">Servicios</h5>
-            <div className="text-end">
+    <Dash>
+      <div className="card border-white">
+        <div className="card-body">
+          <h5 className="card-title fs-3">Servicios</h5>
+          <div className="text-end">
+            <Can permission="servicios.activarUsoAmbulacia">
               <button
                 type="button"
                 className="btn btn-success ms-2"
@@ -128,6 +131,8 @@ export default function Servicios() {
               >
                 <FontAwesomeIcon icon={faTruckMedical} className="fs-5" /> Ambulancia
               </button>
+            </Can>
+            <Can permission="servicios.subirResultados">
               <button
                 type="button"
                 className="btn btn-primary ms-2"
@@ -135,54 +140,54 @@ export default function Servicios() {
               >
                 <FontAwesomeIcon icon={faFileMedical} className="fs-5" /> Subir Resultado
               </button>
-            </div>
-            <div className="container mt-5">
-              <div className="row">
-                <div className="col">
-                  <div className="card mb-3 border-primary">
-                    <div className="card-header">
-                      <div className="d-flex justify-content-between">
-                        <h5>Cola Pacientes {nombreDepartamento}</h5>
-                        <button
-                          type="button"
-                          className="btn btn-sm text-primary"
-                          onClick={fetchColaPacientes}
-                        >
-                          <FontAwesomeIcon icon={faArrowsRotate} className="fs-5" />
-                        </button>
-                      </div>
+            </Can>
+          </div>
+          <div className="container mt-5">
+            <div className="row">
+              <div className="col">
+                <div className="card mb-3 border-primary">
+                  <div className="card-header">
+                    <div className="d-flex justify-content-between">
+                      <h5>Cola Pacientes {nombreDepartamento}</h5>
+                      <button
+                        type="button"
+                        className="btn btn-sm text-primary"
+                        onClick={fetchColaPacientes}
+                      >
+                        <FontAwesomeIcon icon={faArrowsRotate} className="fs-5" />
+                      </button>
                     </div>
-                    <div className="card-body">
-                      <div className="mb-3">
-                        <table className="table table-striped">
-                          <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>Nombre</th>
-                              <th>Acción</th>
+                  </div>
+                  <div className="card-body">
+                    <div className="mb-3">
+                      <table className="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {colaPacientes.map((paciente, index) => (
+                            <tr key={paciente.id}>
+                              <td>{index + 1}</td>
+                              <td>
+                                {paciente.nombres} {paciente.apellidos}
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="btn btn-primary btn-sm"
+                                  onClick={() => onSubmit(paciente.id)}
+                                >
+                                  Realizar servicio
+                                </button>
+                              </td>
                             </tr>
-                          </thead>
-                          <tbody>
-                            {colaPacientes.map((paciente, index) => (
-                              <tr key={paciente.id}>
-                                <td>{index + 1}</td>
-                                <td>
-                                  {paciente.nombres} {paciente.apellidos}
-                                </td>
-                                <td>
-                                  <button
-                                    type="button"
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => onSubmit(paciente.id)}
-                                  >
-                                    Realizar servicio
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
                 </div>
@@ -190,47 +195,47 @@ export default function Servicios() {
             </div>
           </div>
         </div>
+      </div>
 
-        <>
-          <ModalRayosX
-            show={showModalRayosX}
-            handleClose={handleCloseModal}
-            departamentoNombre={nombreDepartamento}
-            usuario={usuario}
-          />
-          <ModalLaboratorios
-            show={showModalLaboratorios}
-            handleClose={handleCloseModal}
-            departamentoNombre={nombreDepartamento}
-            usuario={usuario}
-          />
-          <ModalAmbulancia
-            show={showModalAmbulancia}
-            handleClose={handleCloseModal}
-            handleShowToast={handleShowToast}
-          />
-        </>
-        <div className="toast-container position-fixed bottom-0 end-0 p-3">
-          <div
-            id="liveToastAmbu"
-            className="toast"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-          >
-            <div className="toast-header">
-              <strong className="me-auto">Notificación</strong>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="toast-body">{toastMessage}</div>
+      <>
+        <ModalRayosX
+          show={showModalRayosX}
+          handleClose={handleCloseModal}
+          departamentoNombre={nombreDepartamento}
+          usuario={usuario}
+        />
+        <ModalLaboratorios
+          show={showModalLaboratorios}
+          handleClose={handleCloseModal}
+          departamentoNombre={nombreDepartamento}
+          usuario={usuario}
+        />
+        <ModalAmbulancia
+          show={showModalAmbulancia}
+          handleClose={handleCloseModal}
+          handleShowToast={handleShowToast}
+        />
+      </>
+      <div className="toast-container position-fixed bottom-0 end-0 p-3">
+        <div
+          id="liveToastAmbu"
+          className="toast"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="toast-header">
+            <strong className="me-auto">Notificación</strong>
+            <button
+              type="button"
+              className="btn-close"
+              data-bs-dismiss="toast"
+              aria-label="Close"
+            ></button>
           </div>
+          <div className="toast-body">{toastMessage}</div>
         </div>
-      </Dash>
-    </>
+      </div>
+    </Dash>
   )
 }
