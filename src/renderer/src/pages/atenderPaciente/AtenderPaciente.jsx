@@ -16,7 +16,7 @@ export default function AtenderPaciente() {
   const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const { session } = useAuth()
-
+  console.log(session)
   const usuario = {
     nombre: session.user.perfil.nombres,
     apellidos: session.user.perfil.apellidos,

@@ -217,7 +217,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             aria-label="patologias"
             {...register('patologias')}
           />
-          <label htmlFor="patologias">Patologias</label>
+          <label className="z-0" htmlFor="patologias">
+            Patologias
+          </label>
           {errors.patologias?.message && (
             <div className="invalid-feedback">{errors.patologias?.message}</div>
           )}
@@ -233,7 +235,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             aria-label="alergias"
             {...register('alergias')}
           />
-          <label htmlFor="alergias">Alergias</label>
+          <label className="z-0" htmlFor="alergias">
+            Alergias
+          </label>
           {errors.alergias?.message && (
             <div className="invalid-feedback">{errors.alergias?.message}</div>
           )}
@@ -249,7 +253,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             aria-label="cirugias"
             {...register('cirugias')}
           />
-          <label htmlFor="cirugias">Cirugias</label>
+          <label className="z-0" htmlFor="cirugias">
+            Cirugias
+          </label>
           {errors.cirugias?.message && (
             <div className="invalid-feedback">{errors.cirugias?.message}</div>
           )}
@@ -265,7 +271,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             aria-label="medicamentos"
             {...register('medicamentos')}
           />
-          <label htmlFor="medicamentos">Medicamentos</label>
+          <label className="z-0" htmlFor="medicamentos">
+            Medicamentos
+          </label>
           {errors.medicamentos?.message && (
             <div className="invalid-feedback">{errors.medicamentos?.message}</div>
           )}
@@ -284,7 +292,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             max="500"
             {...register('peso', { valueAsNumber: true })}
           />
-          <label htmlFor="peso">Peso</label>
+          <label className="z-0" htmlFor="peso">
+            Peso
+          </label>
           {errors.peso?.message && <div className="invalid-feedback">{errors.peso?.message}</div>}
         </div>
       </div>
@@ -301,7 +311,9 @@ function FormPaciente({ register, control, setValue, dirtyFields, errors, tipoPa
             max="3"
             {...register('altura', { valueAsNumber: true })}
           />
-          <label htmlFor="altura">Altura</label>
+          <label className="z-0" htmlFor="altura">
+            Altura
+          </label>
           {errors.altura?.message && (
             <div className="invalid-feedback">{errors.altura?.message}</div>
           )}

@@ -3,35 +3,27 @@ import { useEffect, useState } from 'react'
 import { Toast } from 'bootstrap'
 import FormServicio from '../../../forms/FormServicio'
 
-export default function ModalLaboratorios({
-  show,
-  handleClose,
-  departamentoNombre,
-  departamentoId
-}) {
- const [toastMessage] = useState('')
-   const [showToast] = useState(false)
+export default function ModalLaboratorios({ show, handleClose, departamentoNombre, usuario }) {
+  const [toastMessage] = useState('')
+  const [showToast] = useState(false)
 
-    useEffect(() => {
-       if (showToast) {
-         const toastEl = document.getElementById('liveToastCrear')
-         const toast = new Toast(toastEl)
-         toast.show()
-       }
-     }, [showToast])
+  useEffect(() => {
+    if (showToast) {
+      const toastEl = document.getElementById('liveToastCrear')
+      const toast = new Toast(toastEl)
+      toast.show()
+    }
+  }, [showToast])
 
+  const defaultValues = {
+    pacienteId: 0,
+    fechaMuestra: '',
+    detalles: ''
+  }
 
-   const defaultValues= {
-   pacienteId: 0,
-   fechaMuestra: '',
-   detalles: ''
- }
-
-
- const onSubmit= async (data/*, resetForm*/) => {
-
-   console.log(data, departamentoId)
- }
+  const onSubmit = async (data /*, resetForm*/) => {
+    console.log(data, usuario)
+  }
   return (
     <>
       <div
@@ -55,18 +47,17 @@ export default function ModalLaboratorios({
               ></button>
             </div>
             <div className="modal-body m-2">
-               <FormServicio
+              <FormServicio
                 onSubmit={onSubmit}
                 defaultValues={defaultValues}
                 handleClose={handleClose}
-                />
+              />
             </div>
           </div>
         </div>
       </div>
       {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-
         <div
           id="liveToastCrear"
           className="toast"
@@ -74,7 +65,6 @@ export default function ModalLaboratorios({
           aria-live="assertive"
           aria-atomic="true"
         >
-
           <div className="toast-header">
             <strong className="me-auto">Notificación</strong>
             <button
@@ -95,5 +85,5 @@ ModalLaboratorios.propTypes = {
   show: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   departamentoNombre: PropTypes.string.isRequired,
-  departamentoId: PropTypes.number.isRequired
+  usuario: PropTypes.object.isRequired
 }

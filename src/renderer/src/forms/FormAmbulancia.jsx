@@ -143,7 +143,10 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
                 }
               })}
             />
-            <label htmlFor="floatingDate"> fecha de Uso</label>
+            <label className="z-0" htmlFor="floatingDate">
+              {' '}
+              fecha de Uso
+            </label>
             {errors.fechaUso?.message && (
               <div className="invalid-feedback">{errors.fechaUso?.message}</div>
             )}
@@ -160,7 +163,9 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
               aria-label="detalles"
               {...register('detalles')}
             />
-            <label htmlFor="detalles">Detalles de Uso</label>
+            <label className="z-0" htmlFor="detalles">
+              Detalles de Uso
+            </label>
             {errors.detalles?.message && (
               <div className="invalid-feedback">{errors.detalles?.message}</div>
             )}
