@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Departamento, Horarios, Perfil, Rol } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Departamento, Horarios, Perfil, Rol } from '../../../singletons/database/schema'
 
 ipcMain.handle('getMedicos', async () => {
   try {
@@ -9,7 +9,7 @@ ipcMain.handle('getMedicos', async () => {
           model: Rol, // Incluye el modelo Rol
           as: 'roles', // Alias de la asociación
           where: {
-            id: [2, 3, 5] // Incluye varios roles
+            nombre: ['Doctor(a)', 'Enfermero(a)'] // Incluye varios roles
           }
         },
         {

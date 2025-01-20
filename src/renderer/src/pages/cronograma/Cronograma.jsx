@@ -169,7 +169,9 @@ function Cronograma() {
         </select>
 
         <select className="form-select" onChange={(e) => setDepartamentoSelected(e.target.value)}>
-          <option selected>Seleciona un departamento</option>
+          <option value="" selected>
+            Todos los departamentos
+          </option>
           {departamentos.map((departamento) => (
             <option key={departamento.id} value={departamento.id}>
               {departamento.nombre}
@@ -211,7 +213,10 @@ function Cronograma() {
               .map((medico) => (
                 <tr key={medico.id}>
                   <td scope="row">
-                    {medico.nombres} {medico.apellidos}
+                    <h6>
+                      {medico.nombres} {medico.apellidos}
+                    </h6>
+                    <small>{medico.departamento.nombre}</small>
                   </td>
 
                   {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
