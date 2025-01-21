@@ -132,6 +132,30 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                   {mostrarTarjeta ? 'Ocultar' : 'Mostrar'} Información Paciente
                 </button>
               )}
+              <div className="col mb-4">
+                <Controller
+                  name="pacienteId"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <div>
+                      <Select
+                        {...field}
+                        options={pacienteOptions}
+                        placeholder="Tipo Consulta"
+                        isClearable
+                        value={
+                          pacienteOptions.find((option) => option.value === field.value) || null
+                        }
+                        onChange={(selectedOption) => {
+                          field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
+                          handlePacienteChange(selectedOption) // Actualizar el paciente seleccionado
+                        }}
+                      />
+                    </div>
+                  )}
+                />
+              </div>
               {mostrarTarjeta && selectedPaciente && (
                 <div className="card">
                   <div className="row g-0">

@@ -132,13 +132,7 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
                 </div>
               )}
               {usuario.departamentoId === 4 ? (
-                <FormNutricion
-                  pacienteId={pacienteId}
-                  usuario={usuario}
-                  handleClose={handleClose}
-                  handleShowToast={handleShowToast}
-                  onSubmit={onSubmit}
-                />
+                <FormNutricion handleClose={handleClose} onSubmit={onSubmit} />
               ) : (
                 'nada'
               )}
