@@ -119,7 +119,7 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                       historiaPaciente.departamentoId !== 10 &&
                       historiaPaciente.departamentoId !== 15 &&
                       Object.entries(historiaPaciente.formulario).map(([key, value]) => (
-                        <div className="col" key={key}>
+                        <div className="col-md-4" key={key}>
                           <p>
                             <b>{capitalizeFirstLetter(key)}:</b> {value}
                           </p>

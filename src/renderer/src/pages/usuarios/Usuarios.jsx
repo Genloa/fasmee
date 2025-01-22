@@ -715,8 +715,7 @@ export function TableUsers({ handleShowToast }) {
             <tr>
               <th scope="col">Nombre y Apellido</th>
               <th scope="col">Usuario</th>
-              <th scope="col">Roles</th>
-              <th scope="col"></th>
+              <th scope="col">Rol</th>
             </tr>
           </thead>
           <tbody>{displayUsers}</tbody>

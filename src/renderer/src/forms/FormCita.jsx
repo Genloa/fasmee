@@ -67,11 +67,11 @@ function FormCita({
 
   const medicoOptions = filteredMedicos.map((medico) => ({
     value: medico.id,
-    label: medico.nombres
+    label: `${medico.nombres} ${medico.apellidos}`
   }))
 
   const departamentoOptions = departamentos
-    .filter((departamento) => ![1, 9, 10, 12, 13, 14].includes(departamento.id))
+    .filter((departamento) => ![1, 9, 10, 12, 13, 14, 15].includes(departamento.id))
     .map((departamento) => ({
       value: departamento.id,
       label: departamento.nombre

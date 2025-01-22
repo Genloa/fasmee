@@ -159,10 +159,8 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
                   </div>
                 </div>
               )}
-              {usuario.departamentoId === 4 ? (
+              {usuario.departamentoId === 4 && (
                 <FormNutricion handleClose={handleClose} onSubmit={onSubmit} />
-              ) : (
-                'nada'
               )}
 
               {selectedConsulta === 'primera_vez' && (
@@ -174,10 +172,36 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
               {selectedConsulta === 'prenatal' && (
                 <FormGinecologiaPrenatal handleClose={handleClose} onSubmit={onSubmit} />
               )}
+
+              {usuario.departamentoId === 6 && (
+                <FormPediatria handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 11 && (
+                <FormPsiquiatria handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 1 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 2 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 7 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 8 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
               {/*
-              <FormPediatria handleClose={handleClose} onSubmit={onSubmit} />
-              <FormPsiquiatria handleClose={handleClose} onSubmit={onSubmit} />
-              <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />*/}
+
+
+
+
+             */}
             </div>
           </div>
         </div>

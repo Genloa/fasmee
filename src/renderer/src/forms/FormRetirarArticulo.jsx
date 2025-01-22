@@ -56,7 +56,7 @@ function FormRetirarArticulo({ onSubmit, defaultValues, handleClose }) {
 
   const medicoOptions = medicos.map((medico) => ({
     value: medico.id,
-    label: medico.nombres
+    label: `${medico.nombres} ${medico.apellidos}`
   }))
 
   return (

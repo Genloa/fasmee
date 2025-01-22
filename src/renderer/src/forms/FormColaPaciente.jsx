@@ -62,13 +62,15 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
 
   const medicoOptions = filteredMedicos.map((medico) => ({
     value: medico.id,
-    label: medico.nombres
+    label: `${medico.nombres} ${medico.apellidos}`
   }))
 
-  const departamentoOptions = departamentos.map((departamento) => ({
-    value: departamento.id,
-    label: departamento.nombre
-  }))
+  const departamentoOptions = departamentos
+    .filter((departamento) => ![12, 13, 14, 15].includes(departamento.id))
+    .map((departamento) => ({
+      value: departamento.id,
+      label: departamento.nombre
+    }))
 
   const getSelectClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {

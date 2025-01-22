@@ -62,7 +62,7 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
 
   const paramedicoOptions = paramedicos.map((paramedico) => ({
     value: paramedico.id,
-    label: paramedico.nombres
+    label: `${paramedico.nombres} ${paramedico.apellidos}`
   }))
 
   const onSubmitForm = (data) => {
