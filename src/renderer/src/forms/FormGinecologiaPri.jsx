@@ -38,7 +38,9 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="fechaPeriodo"
               {...register('fechaPeriodo')}
             />
-            <label htmlFor="periodo">Ultimo Periodo:</label>
+            <label className="z-0" htmlFor="periodo">
+              Ultimo Periodo:
+            </label>
             {errors.fechaPeriodo?.message && (
               <div className="invalid-feedback">{errors.fechaPeriodo?.message}</div>
             )}
@@ -56,7 +58,9 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               min="1"
               {...register('ciclo', { valueAsNumber: true })}
             />
-            <label htmlFor="ciclo">Ciclo Mestrual:</label>
+            <label className="z-0" htmlFor="ciclo">
+              Ciclo Mestrual:
+            </label>
             {errors.ciclo?.message && (
               <div className="invalid-feedback">{errors.ciclo?.message}</div>
             )}
@@ -74,7 +78,9 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="citologia"
               {...register('citologia')}
             />
-            <label htmlFor="citologia">Detalles Ultima Citología:</label>
+            <label className="z-0" htmlFor="citologia">
+              Detalles Ultima Citología:
+            </label>
             {errors.citologia?.message && (
               <div className="invalid-feedback">{errors.citologia?.message}</div>
             )}
@@ -90,7 +96,9 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="mamografia"
               {...register('mamografia')}
             />
-            <label htmlFor="mamografia">Detalles Ultima Mamografía:</label>
+            <label className="z-0" htmlFor="mamografia">
+              Detalles Ultima Mamografía:
+            </label>
             {errors.mamografia?.message && (
               <div className="invalid-feedback">{errors.mamografia?.message}</div>
             )}
@@ -108,7 +116,9 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="embarazos"
               {...register('embarazos')}
             />
-            <label htmlFor="embarazos">Antecedentes de Embarazos: </label>
+            <label className="z-0" htmlFor="embarazos">
+              Antecedentes de Embarazos:{' '}
+            </label>
             {errors.embarazos?.message && (
               <div className="invalid-feedback">{errors.embarazos?.message}</div>
             )}

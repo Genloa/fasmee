@@ -40,7 +40,9 @@ function FormPediatria({ handleClose, onSubmit }) {
               min="0.1"
               {...register('peso', { valueAsNumber: true })}
             />
-            <label htmlFor="peso">Peso (kg)</label>
+            <label className="z-0" htmlFor="peso">
+              Peso (kg)
+            </label>
             {errors.peso?.message && <div className="invalid-feedback">{errors.peso?.message}</div>}
           </div>
         </div>
@@ -56,7 +58,9 @@ function FormPediatria({ handleClose, onSubmit }) {
               min="0.1"
               {...register('altura', { valueAsNumber: true })}
             />
-            <label htmlFor="altura">Medidas altura (Cm)</label>
+            <label className="z-0" htmlFor="altura">
+              Medidas altura (Cm)
+            </label>
             {errors.altura?.message && (
               <div className="invalid-feedback">{errors.altura?.message}</div>
             )}
@@ -74,7 +78,9 @@ function FormPediatria({ handleClose, onSubmit }) {
               aria-label="motivo"
               {...register('motivo')}
             />
-            <label htmlFor="motivo">Motivo de Consulta:</label>
+            <label className="z-0" htmlFor="motivo">
+              Motivo de Consulta:
+            </label>
             {errors.motivo?.message && (
               <div className="invalid-feedback">{errors.motivo?.message}</div>
             )}
@@ -91,7 +97,9 @@ function FormPediatria({ handleClose, onSubmit }) {
               aria-label="diagnostico"
               {...register('diagnostico')}
             />
-            <label htmlFor="diagnostico">Detalles de la consulta</label>
+            <label className="z-0" htmlFor="diagnostico">
+              Detalles de la consulta
+            </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}
@@ -108,7 +116,9 @@ function FormPediatria({ handleClose, onSubmit }) {
               aria-label="tratamiento"
               {...register('tratamiento')}
             />
-            <label htmlFor="tratamiento">Tratamiento: </label>
+            <label className="z-0" htmlFor="tratamiento">
+              Tratamiento:{' '}
+            </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>
             )}

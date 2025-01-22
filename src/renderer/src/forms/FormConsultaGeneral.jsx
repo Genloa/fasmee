@@ -39,7 +39,9 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               aria-label="motivo"
               {...register('motivo')}
             />
-            <label htmlFor="motivo">Motivo de Consulta:</label>
+            <label className="z-0" htmlFor="motivo">
+              Motivo de Consulta:
+            </label>
             {errors.motivo?.message && (
               <div className="invalid-feedback">{errors.motivo?.message}</div>
             )}
@@ -55,7 +57,9 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               aria-label="tension"
               {...register('tension')}
             />
-            <label htmlFor="tension">Tension: </label>
+            <label className="z-0" htmlFor="tension">
+              Tension:{' '}
+            </label>
             {errors.tension?.message && (
               <div className="invalid-feedback">{errors.tension?.message}</div>
             )}
@@ -72,7 +76,9 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               aria-label="diagnostico"
               {...register('diagnostico')}
             />
-            <label htmlFor="diagnostico">Detalles de la consulta: </label>
+            <label className="z-0" htmlFor="diagnostico">
+              Detalles de la consulta:{' '}
+            </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}
@@ -89,7 +95,9 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               aria-label="tratamiento"
               {...register('tratamiento')}
             />
-            <label htmlFor="tratamiento">Tratamiento: </label>
+            <label className="z-0" htmlFor="tratamiento">
+              Tratamiento:{' '}
+            </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>
             )}

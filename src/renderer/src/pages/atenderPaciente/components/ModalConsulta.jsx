@@ -114,7 +114,9 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
                     <option value="control_regular">Control regular</option>
                     <option value="prenatal">Prenatal</option>
                   </select>
-                  <label htmlFor="floatingConsultaType">Tipo de Consulta</label>
+                  <label className="z-0" htmlFor="floatingConsultaType">
+                    Tipo de Consulta
+                  </label>
                 </div>
               )}
               {mostrarTarjeta && (
@@ -196,12 +198,6 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
               {usuario.departamentoId === 8 && (
                 <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
               )}
-              {/*
-
-
-
-
-             */}
             </div>
           </div>
         </div>

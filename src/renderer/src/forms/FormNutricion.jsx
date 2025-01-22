@@ -40,7 +40,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               min="0.1"
               {...register('peso', { valueAsNumber: true })}
             />
-            <label htmlFor="peso">Peso (kg)</label>
+            <label className="z-0" htmlFor="peso">
+              Peso (kg)
+            </label>
             {errors.peso?.message && <div className="invalid-feedback">{errors.peso?.message}</div>}
           </div>
         </div>
@@ -54,7 +56,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               aria-label="tension"
               {...register('tension')}
             />
-            <label htmlFor="tension">Tension </label>
+            <label className="z-0" htmlFor="tension">
+              Tension{' '}
+            </label>
             {errors.tension?.message && (
               <div className="invalid-feedback">{errors.tension?.message}</div>
             )}
@@ -73,7 +77,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               min="0.1"
               {...register('cadera', { valueAsNumber: true })}
             />
-            <label htmlFor="cadera">Medidas Cadera (Cm)</label>
+            <label className="z-0" htmlFor="cadera">
+              Medidas Cadera (Cm)
+            </label>
             {errors.cadera?.message && (
               <div className="invalid-feedback">{errors.cadera?.message}</div>
             )}
@@ -93,7 +99,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               min="0.1"
               {...register('cintura', { valueAsNumber: true })}
             />
-            <label htmlFor="cintura">Medidas Cintura (Cm)</label>
+            <label className="z-0" htmlFor="cintura">
+              Medidas Cintura (Cm)
+            </label>
             {errors.cintura?.message && (
               <div className="invalid-feedback">{errors.cintura?.message}</div>
             )}
@@ -111,7 +119,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               min="0.1"
               {...register('brazos', { valueAsNumber: true })}
             />
-            <label htmlFor="brazos">Medidas Brazos (Cm)</label>
+            <label className="z-0" htmlFor="brazos">
+              Medidas Brazos (Cm)
+            </label>
             {errors.brazos?.message && (
               <div className="invalid-feedback">{errors.brazos?.message}</div>
             )}
@@ -129,7 +139,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               min="0.1"
               {...register('piernas', { valueAsNumber: true })}
             />
-            <label htmlFor="piernas">Medidas Piernas (Cm)</label>
+            <label className="z-0" htmlFor="piernas">
+              Medidas Piernas (Cm)
+            </label>
             {errors.piernas?.message && (
               <div className="invalid-feedback">{errors.piernas?.message}</div>
             )}
@@ -146,7 +158,9 @@ function FormNutricion({ handleClose, onSubmit }) {
               aria-label="diagnostico"
               {...register('diagnostico')}
             />
-            <label htmlFor="diagnostico">Detalles de la consulta</label>
+            <label className="z-0" htmlFor="diagnostico">
+              Detalles de la consulta
+            </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}

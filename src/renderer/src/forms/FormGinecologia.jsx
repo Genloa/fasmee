@@ -37,7 +37,9 @@ function FormGinecologia({ handleClose, onSubmit }) {
               aria-label="eco"
               {...register('eco')}
             />
-            <label htmlFor="eco">Detalles de Eco: </label>
+            <label className="z-0" htmlFor="eco">
+              Detalles de Eco:{' '}
+            </label>
             {errors.eco?.message && <div className="invalid-feedback">{errors.eco?.message}</div>}
           </div>
         </div>
@@ -53,7 +55,9 @@ function FormGinecologia({ handleClose, onSubmit }) {
               aria-label="infeccion"
               {...register('infeccion')}
             />
-            <label htmlFor="infeccion">Presencia de Infección:</label>
+            <label className="z-0" htmlFor="infeccion">
+              Presencia de Infección:
+            </label>
             {errors.infeccion?.message && (
               <div className="invalid-feedback">{errors.infeccion?.message}</div>
             )}
@@ -69,7 +73,9 @@ function FormGinecologia({ handleClose, onSubmit }) {
               aria-label="tratamiento"
               {...register('tratamiento')}
             />
-            <label htmlFor="tratamiento">Tratamiento: </label>
+            <label className="z-0" htmlFor="tratamiento">
+              Tratamiento:{' '}
+            </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>
             )}
@@ -86,7 +92,9 @@ function FormGinecologia({ handleClose, onSubmit }) {
               aria-label="diagnostico"
               {...register('diagnostico')}
             />
-            <label htmlFor="diagnostico">Detalles de la consulta</label>
+            <label className="z-0" htmlFor="diagnostico">
+              Detalles de la consulta
+            </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}

@@ -38,7 +38,9 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               aria-label="gestacion"
               {...register('gestacion')}
             />
-            <label htmlFor="gestacion">Tiempo de Gestación:</label>
+            <label className="z-0" htmlFor="gestacion">
+              Tiempo de Gestación:
+            </label>
             {errors.gestacion?.message && (
               <div className="invalid-feedback">{errors.gestacion?.message}</div>
             )}
@@ -56,7 +58,9 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               min="0.1"
               {...register('pesoBebe', { valueAsNumber: true })}
             />
-            <label htmlFor="pesoBebe">Peso bebe:</label>
+            <label className="z-0" htmlFor="pesoBebe">
+              Peso bebe:
+            </label>
             {errors.pesoBebe?.message && (
               <div className="invalid-feedback">{errors.pesoBebe?.message}</div>
             )}
@@ -72,7 +76,9 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               aria-label="medidadasBebe"
               {...register('medidasBebe')}
             />
-            <label htmlFor="medidadasBebe">Medidadas Bebe:</label>
+            <label className="z-0" htmlFor="medidadasBebe">
+              Medidadas Bebe:
+            </label>
             {errors.medidadasBebe?.message && (
               <div className="invalid-feedback">{errors.medidadasBebe?.message}</div>
             )}
@@ -89,7 +95,9 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               aria-label="eco"
               {...register('eco')}
             />
-            <label htmlFor="eco">Detalles de Eco: </label>
+            <label className="z-0" htmlFor="eco">
+              Detalles de Eco:{' '}
+            </label>
             {errors.eco?.message && <div className="invalid-feedback">{errors.eco?.message}</div>}
           </div>
         </div>
@@ -122,7 +130,9 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               aria-label="tratamiento"
               {...register('tratamiento')}
             />
-            <label htmlFor="tratamiento">Tratamiento: </label>
+            <label className="z-0" htmlFor="tratamiento">
+              Tratamiento:{' '}
+            </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>
             )}

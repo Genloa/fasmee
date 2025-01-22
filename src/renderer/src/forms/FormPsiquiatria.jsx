@@ -38,7 +38,9 @@ function FormPsiquiatria({ handleClose, onSubmit }) {
               aria-label="motivo"
               {...register('motivo')}
             />
-            <label htmlFor="motivo">Motivo de Consulta:</label>
+            <label className="z-0" htmlFor="motivo">
+              Motivo de Consulta:
+            </label>
             {errors.motivo?.message && (
               <div className="invalid-feedback">{errors.motivo?.message}</div>
             )}
@@ -55,7 +57,9 @@ function FormPsiquiatria({ handleClose, onSubmit }) {
               aria-label="diagnostico"
               {...register('diagnostico')}
             />
-            <label htmlFor="diagnostico">Observaciones Generales: </label>
+            <label className="z-0" htmlFor="diagnostico">
+              Observaciones Generales:{' '}
+            </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
             )}
@@ -89,7 +93,9 @@ function FormPsiquiatria({ handleClose, onSubmit }) {
               aria-label="recomendaciones"
               {...register('recomendaciones')}
             />
-            <label htmlFor="recomendaciones">Recomendaciones: </label>
+            <label className="z-0" htmlFor="recomendaciones">
+              Recomendaciones:{' '}
+            </label>
             {errors.recomendaciones?.message && (
               <div className="invalid-feedback">{errors.recomendaciones?.message}</div>
             )}

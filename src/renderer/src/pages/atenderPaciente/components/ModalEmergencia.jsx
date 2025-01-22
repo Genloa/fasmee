@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import FormNutricion from '../../../forms/FormNutricion'
+import FormGinecologia from '../../../forms/FormGinecologia'
+import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
+import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
+import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
+import FormPediatria from '../../../forms/FormPediatria'
+import FormPsiquiatria from '../../../forms/FormPsiquiatria'
 import { useForm, Controller } from 'react-hook-form'
 import Select from 'react-select'
 
@@ -10,7 +16,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
   const [mostrarTarjeta, setMostrarTarjeta] = useState(true)
   const [departamentoNombre, setDepartamentoNombre] = useState('')
   const [selectedPaciente, setSelectedPaciente] = useState(null)
-
+  const [selectedConsulta, setSelectedConsulta] = useState('')
   useEffect(() => {
     fetchPacientes()
     fetchDepartamentos()
@@ -77,6 +83,10 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
     setSelectedPaciente(paciente || null)
   }
 
+  const handleConsultaChange = (event) => {
+    setSelectedConsulta(event.target.value)
+  }
+
   return (
     <>
       <div
@@ -132,30 +142,25 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                   {mostrarTarjeta ? 'Ocultar' : 'Mostrar'} Información Paciente
                 </button>
               )}
-              <div className="col mb-4">
-                <Controller
-                  name="pacienteId"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <div>
-                      <Select
-                        {...field}
-                        options={pacienteOptions}
-                        placeholder="Tipo Consulta"
-                        isClearable
-                        value={
-                          pacienteOptions.find((option) => option.value === field.value) || null
-                        }
-                        onChange={(selectedOption) => {
-                          field.onChange(selectedOption) // Guardar solo el ID o null si no hay selección
-                          handlePacienteChange(selectedOption) // Actualizar el paciente seleccionado
-                        }}
-                      />
-                    </div>
-                  )}
-                />
-              </div>
+              {usuario.departamentoId === 5 && (
+                <div className="col form-floating mb-3 mt-3">
+                  <select
+                    className="form-control"
+                    id="floatingConsultaType"
+                    aria-label="Seleccione Tipo de Consulta"
+                    value={selectedConsulta}
+                    onChange={handleConsultaChange}
+                  >
+                    <option value="">Seleccione Tipo de Consulta</option>
+                    <option value="primera_vez">Primera vez</option>
+                    <option value="control_regular">Control regular</option>
+                    <option value="prenatal">Prenatal</option>
+                  </select>
+                  <label className="z-0" htmlFor="floatingConsultaType">
+                    Tipo de Consulta
+                  </label>
+                </div>
+              )}
               {mostrarTarjeta && selectedPaciente && (
                 <div className="card">
                   <div className="row g-0">
@@ -205,16 +210,42 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                   </div>
                 </div>
               )}
-              {usuario.departamentoId === 4 ? (
-                <FormNutricion
-                  pacienteId={selectedPaciente?.id}
-                  usuario={usuario}
-                  handleClose={handleClose}
-                  handleShowToast={handleShowToast}
-                  onSubmit={onSubmit}
-                />
-              ) : (
-                'nada'
+              {usuario.departamentoId === 4 && (
+                <FormNutricion handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {selectedConsulta === 'primera_vez' && (
+                <FormGinecologiaPri handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+              {selectedConsulta === 'control_regular' && (
+                <FormGinecologia handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+              {selectedConsulta === 'prenatal' && (
+                <FormGinecologiaPrenatal handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 6 && (
+                <FormPediatria handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 11 && (
+                <FormPsiquiatria handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 1 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 2 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 7 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+
+              {usuario.departamentoId === 8 && (
+                <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />
               )}
             </div>
           </div>
