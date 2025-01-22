@@ -26,7 +26,7 @@ export const ginecologiaPriSchema = baseginecologiaSchema.extend({
 })
 
 export const ginecologiaPreSchema = baseginecologiaSchema.extend({
-  gestacion: z.string().min(10, {
+  gestacion: z.string().min(5, {
     message: 'Ingresar tiempo de Gestación'
   }),
   pesoBebe: z.number().positive().min(0.1, { message: 'ingresar peso del bebe' }),

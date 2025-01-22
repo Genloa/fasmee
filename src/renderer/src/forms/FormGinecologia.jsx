@@ -53,7 +53,7 @@ function FormGinecologia({ handleClose, onSubmit }) {
               aria-label="infeccion"
               {...register('infeccion')}
             />
-            <label htmlFor="Presencia de Infección:"></label>
+            <label htmlFor="infeccion">Presencia de Infección:</label>
             {errors.infeccion?.message && (
               <div className="invalid-feedback">{errors.infeccion?.message}</div>
             )}

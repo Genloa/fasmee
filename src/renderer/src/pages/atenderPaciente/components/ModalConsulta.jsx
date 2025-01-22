@@ -1,11 +1,18 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import FormNutricion from '../../../forms/FormNutricion'
+import FormGinecologia from '../../../forms/FormGinecologia'
+import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
+import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
+import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
+import FormPediatria from '../../../forms/FormPediatria'
+import FormPsiquiatria from '../../../forms/FormPsiquiatria'
 
 export default function ModalConsulta({ show, handleClose, pacienteId, usuario, handleShowToast }) {
   const [paciente, setPaciente] = useState([])
   const [mostrarTarjeta, setMostrarTarjeta] = useState(true)
   const [departamentoNombre, setDepartamentoNombre] = useState('')
+  const [selectedConsulta, setSelectedConsulta] = useState('')
 
   useEffect(() => {
     fetchPaciente()
@@ -60,6 +67,10 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
     }
   }
 
+  const handleConsultaChange = (event) => {
+    setSelectedConsulta(event.target.value)
+  }
+
   return (
     <>
       <div
@@ -89,6 +100,23 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
               >
                 {mostrarTarjeta ? 'Ocultar' : 'Mostrar'} Información Paciente
               </button>
+              {usuario.departamentoId === 5 && (
+                <div className="col form-floating mb-3 mt-3">
+                  <select
+                    className="form-control"
+                    id="floatingConsultaType"
+                    aria-label="Seleccione Tipo de Consulta"
+                    value={selectedConsulta}
+                    onChange={handleConsultaChange}
+                  >
+                    <option value="">Seleccione Tipo de Consulta</option>
+                    <option value="primera_vez">Primera vez</option>
+                    <option value="control_regular">Control regular</option>
+                    <option value="prenatal">Prenatal</option>
+                  </select>
+                  <label htmlFor="floatingConsultaType">Tipo de Consulta</label>
+                </div>
+              )}
               {mostrarTarjeta && (
                 <div className="card">
                   <div className="row g-0">
@@ -136,6 +164,20 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
               ) : (
                 'nada'
               )}
+
+              {selectedConsulta === 'primera_vez' && (
+                <FormGinecologiaPri handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+              {selectedConsulta === 'control_regular' && (
+                <FormGinecologia handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+              {selectedConsulta === 'prenatal' && (
+                <FormGinecologiaPrenatal handleClose={handleClose} onSubmit={onSubmit} />
+              )}
+              {/*
+              <FormPediatria handleClose={handleClose} onSubmit={onSubmit} />
+              <FormPsiquiatria handleClose={handleClose} onSubmit={onSubmit} />
+              <FormConsultaGeneral handleClose={handleClose} onSubmit={onSubmit} />*/}
             </div>
           </div>
         </div>

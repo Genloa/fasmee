@@ -38,7 +38,7 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="fechaPeriodo"
               {...register('fechaPeriodo')}
             />
-            <label htmlFor="Ultimo Periodo:"></label>
+            <label htmlFor="periodo">Ultimo Periodo:</label>
             {errors.fechaPeriodo?.message && (
               <div className="invalid-feedback">{errors.fechaPeriodo?.message}</div>
             )}
@@ -52,9 +52,11 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               className={getInputClassName('ciclo')}
               placeholder="ciclo"
               aria-label="ciclo"
-              {...register('ciclo')}
+              step="1"
+              min="1"
+              {...register('ciclo', { valueAsNumber: true })}
             />
-            <label htmlFor="Ciclo Mestrual:"></label>
+            <label htmlFor="ciclo">Ciclo Mestrual:</label>
             {errors.ciclo?.message && (
               <div className="invalid-feedback">{errors.ciclo?.message}</div>
             )}
@@ -72,7 +74,7 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="citologia"
               {...register('citologia')}
             />
-            <label htmlFor="Detalles Ultima Citología:"></label>
+            <label htmlFor="citologia">Detalles Ultima Citología:</label>
             {errors.citologia?.message && (
               <div className="invalid-feedback">{errors.citologia?.message}</div>
             )}
@@ -88,7 +90,7 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="mamografia"
               {...register('mamografia')}
             />
-            <label htmlFor="Detalles Ultima Mamografía:"></label>
+            <label htmlFor="mamografia">Detalles Ultima Mamografía:</label>
             {errors.mamografia?.message && (
               <div className="invalid-feedback">{errors.mamografia?.message}</div>
             )}
@@ -139,7 +141,7 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               aria-label="infeccion"
               {...register('infeccion')}
             />
-            <label htmlFor="Presencia de Infección:"></label>
+            <label htmlFor="infeccion">Presencia de Infección:</label>
             {errors.infeccion?.message && (
               <div className="invalid-feedback">{errors.infeccion?.message}</div>
             )}
