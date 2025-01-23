@@ -197,25 +197,24 @@ export default function Servicios() {
         </div>
       </div>
 
-      <>
-        <ModalRayosX
-          show={showModalRayosX}
-          handleClose={handleCloseModal}
-          departamentoNombre={nombreDepartamento}
-          usuario={usuario}
-        />
-        <ModalLaboratorios
-          show={showModalLaboratorios}
-          handleClose={handleCloseModal}
-          departamentoNombre={nombreDepartamento}
-          usuario={usuario}
-        />
-        <ModalAmbulancia
-          show={showModalAmbulancia}
-          handleClose={handleCloseModal}
-          handleShowToast={handleShowToast}
-        />
-      </>
+      <ModalRayosX
+        show={showModalRayosX}
+        handleClose={handleCloseModal}
+        departamentoNombre={nombreDepartamento}
+        usuario={usuario}
+      />
+      <ModalLaboratorios
+        show={showModalLaboratorios}
+        handleClose={handleCloseModal}
+        departamentoNombre={nombreDepartamento}
+        usuario={usuario}
+      />
+      <ModalAmbulancia
+        show={showModalAmbulancia}
+        handleClose={handleCloseModal}
+        handleShowToast={handleShowToast}
+      />
+
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         <div
           id="liveToastAmbu"

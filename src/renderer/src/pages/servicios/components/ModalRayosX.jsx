@@ -1,6 +1,6 @@
+import { Toast } from 'bootstrap'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import { Toast } from 'bootstrap'
 import FormServicio from '../../../forms/FormServicio'
 
 export default function ModalRayosX({ show, handleClose, departamentoNombre, usuario }) {
@@ -21,8 +21,16 @@ export default function ModalRayosX({ show, handleClose, departamentoNombre, usu
     detalles: ''
   }
 
-  const onSubmit = async (data /*, resetForm*/) => {
-    console.log(data, usuario)
+  const onSubmit = async (data) => {
+    try {
+      const response = await window.api.cargarResultados(data)
+      // console.log('response:', response)
+      // handleShowToast('Servicio creado exitosamente')
+      // resetForm()
+    } catch (error) {
+      console.error('Error creando servicio:', error)
+      // handleShowToast('Error creando servicio')
+    }
   }
   return (
     <>
@@ -37,7 +45,7 @@ export default function ModalRayosX({ show, handleClose, departamentoNombre, usu
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="modal-consulta-nutricion-label">
-                Registro Resultados{departamentoNombre}
+                Registro Resultados {departamentoNombre}
               </h1>
               <button
                 type="button"

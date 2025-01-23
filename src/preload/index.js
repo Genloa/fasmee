@@ -62,6 +62,9 @@ const api = {
   changeTurno: (horarioId) => ipcRenderer.invoke('changeTurno', horarioId),
   createHorario: (data) => ipcRenderer.invoke('createHorario', data),
 
+  // Casos de uso para servicios
+  cargarResultados: (data) => ipcRenderer.invoke('cargarResultados', data),
+
   // Casos de uso para inventario
   getArticulosAlmacen: () => ipcRenderer.invoke('getArticulosAlmacen'),
   getAlmacenes: () => ipcRenderer.invoke('getAlmacenes'),
