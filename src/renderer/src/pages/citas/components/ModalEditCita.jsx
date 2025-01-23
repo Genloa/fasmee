@@ -1,5 +1,5 @@
-import { useContext, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useContext, useState } from 'react'
 import FormCita from '../../../forms/FormCita'
 import { CitasPacientesContext } from '../Citas'
 
@@ -20,10 +20,7 @@ function ModalEditCita({
       const disponibilidadCita = await window.api.validateCita(data)
 
       if (disponibilidadCita) {
-        console.log(data)
-        console.log(citaSelected.id)
         const updatedCita = await window.api.updateCita(citaSelected.id, data)
-        console.log('Cita actualizada:', updatedCita)
         if (updatedCita) {
           setCitasPaciente((prevCitas) =>
             prevCitas.map((paciente) =>

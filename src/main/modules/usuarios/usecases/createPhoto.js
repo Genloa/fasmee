@@ -9,7 +9,6 @@ async function saveBase64Image(base64String, path) {
 
   try {
     await superFs.writeFile(path, base64Data, { encoding: 'base64' })
-    console.log('Imagen guardada exitosamente')
   } catch (error) {
     console.error('Error guardando la imagen:', error)
   }

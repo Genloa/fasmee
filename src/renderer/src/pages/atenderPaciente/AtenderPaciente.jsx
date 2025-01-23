@@ -16,7 +16,6 @@ export default function AtenderPaciente() {
   const [selectedPaciente, setSelectedPaciente] = useState(null)
 
   const { session } = useAuth()
-  console.log(session)
   const usuario = {
     nombre: session.user.perfil.nombres,
     apellidos: session.user.perfil.apellidos,
@@ -35,12 +34,10 @@ export default function AtenderPaciente() {
         usuario.departamentoId
       )
 
-      console.log(fetchedPacientes)
       // Ordenar los pacientes por colasMedicos[0].createdAt
       const sortedPacientes = fetchedPacientes.sort(
         (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
       )
-      console.log('colaPacientes:', sortedPacientes)
       setColaPacientes(sortedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)

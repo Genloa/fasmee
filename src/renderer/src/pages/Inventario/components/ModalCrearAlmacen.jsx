@@ -1,6 +1,6 @@
 import { Toast } from 'bootstrap'
-import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
 import FormAlmacen from '../../../forms/FormAlmacen'
 
 function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast }) {
@@ -25,9 +25,7 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast 
 
   const onSubmitAlmacen = async (data, resetForm) => {
     try {
-      console.log(data)
       const nuevoAlmacen = await window.api.createAlmacen(data)
-      console.log('Cita creada:', nuevoAlmacen)
       if (nuevoAlmacen) {
         fetchAlmacenes() // Actualizar la lista de almacenes
         handleShowToast('Almacen creado correctamente')

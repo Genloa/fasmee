@@ -10,9 +10,7 @@ export default function ModalRetirar({
 }) {
   const handleSubmit = async (data, resetForm) => {
     try {
-      console.log(data)
       const articuloActualizado = await window.api.retirarArticulo(data, articulo)
-      console.log('Articulo actualizado:', articuloActualizado)
       if (articuloActualizado) {
         fetchInventario()
         handleShowToast('Retiro realizado correctamente')

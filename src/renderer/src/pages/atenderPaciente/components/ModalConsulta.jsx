@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import FormNutricion from '../../../forms/FormNutricion'
-import FormGinecologia from '../../../forms/FormGinecologia'
-import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
-import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
 import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
+import FormGinecologia from '../../../forms/FormGinecologia'
+import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
+import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
+import FormNutricion from '../../../forms/FormNutricion'
 import FormPediatria from '../../../forms/FormPediatria'
 import FormPsiquiatria from '../../../forms/FormPsiquiatria'
 
@@ -53,7 +53,6 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
 
   const onSubmit = async (data, resetForm) => {
     try {
-      console.log(data)
       const consulta = await window.api.createHistoria(data, pacienteId, usuario)
       if (consulta) {
         handleShowToast('Consulta guardada correctamente')

@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import Select from 'react-select'
-import { useForm, Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
 import { ambulanciaSchema } from '../validations/ambulanciaSchema'
 
 function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
@@ -33,7 +33,6 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -42,7 +41,6 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
     try {
       const fetchedParamedico = await window.api.getParamedicos()
       setParamedicos(fetchedParamedico)
-      console.log('Paramedico:', fetchedParamedico)
     } catch (error) {
       console.error('Error fetching Paramedico:', error)
     }
@@ -66,7 +64,6 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
   }))
 
   const onSubmitForm = (data) => {
-    console.log(data)
     onSubmit(data, reset)
   }
 

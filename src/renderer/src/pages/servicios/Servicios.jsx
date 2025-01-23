@@ -50,7 +50,6 @@ export default function Servicios() {
       const sortedPacientes = fetchedPacientes.sort(
         (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
       )
-      console.log('colaPacientes:', sortedPacientes)
       setColaPacientes(sortedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)

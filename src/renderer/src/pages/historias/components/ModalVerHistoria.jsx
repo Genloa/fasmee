@@ -2,7 +2,6 @@ import moment from 'moment-timezone'
 import PropTypes from 'prop-types'
 
 export default function ModalVerHistoria({ show, handleClose, historiaPaciente }) {
-  console.log(historiaPaciente)
   const calcularEdad = (fechaNacimiento) => {
     let edad = moment().diff(fechaNacimiento, 'years')
 

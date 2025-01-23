@@ -22,7 +22,7 @@ export default function ModalLaboratorios({ show, handleClose, departamentoNombr
   }
 
   const onSubmit = async (data /*, resetForm*/) => {
-    console.log(data, usuario)
+    //
   }
 
   return (

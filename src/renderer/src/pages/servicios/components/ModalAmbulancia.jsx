@@ -1,6 +1,6 @@
+import { Toast } from 'bootstrap'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import { Toast } from 'bootstrap'
 import FormAmbulancia from '../../../forms/FormAmbulancia'
 
 export default function ModalAmbulancia({ show, handleClose, handleShowToast }) {
@@ -24,7 +24,6 @@ export default function ModalAmbulancia({ show, handleClose, handleShowToast }) 
 
   const onSubmit = async (data, resetForm) => {
     try {
-      console.log(data)
       const consulta = await window.api.createHistorialAmbulancia(data)
       if (consulta) {
         handleShowToast('Registro de ambulancia guardado correctamente')

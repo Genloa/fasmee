@@ -33,10 +33,8 @@ export default function ModalHistorial({ show, handleClose, articulo }) {
 
   const fetchIngresos = async () => {
     try {
-      console.log(articulo)
       const fetchedIngresos = await window.api.getIngresosArticulo(articulo.id)
       setIngresosArticulo(fetchedIngresos)
-      console.log('ingresos:', fetchedIngresos)
     } catch (error) {
       console.error('Error fetching ingresos:', error)
     }
@@ -46,12 +44,10 @@ export default function ModalHistorial({ show, handleClose, articulo }) {
     try {
       const fetchedRetiros = await window.api.getRetirosArticulo(articulo.id)
       setRetirosArticulo(fetchedRetiros)
-      console.log('retiros:', fetchedRetiros)
     } catch (error) {
       console.error('Error fetching ingresos:', error)
     }
   }
-  console.log(ingresosArticulo)
   const filteredIngresos = ingresosArticulo.filter((ingreso) => {
     const ingresoDate = new Date(ingreso.fecha_ingreso).toISOString().split('T')[0]
     return (

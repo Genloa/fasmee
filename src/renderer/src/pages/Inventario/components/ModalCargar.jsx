@@ -10,9 +10,7 @@ export default function ModalCargar({
 }) {
   const handleSubmit = async (data, resetForm) => {
     try {
-      console.log(data)
       const articuloActualizado = await window.api.cargarArticulo(data.cantidad, articulo)
-      console.log('Cita creada:', articuloActualizado)
       if (articuloActualizado) {
         fetchInventario()
         handleShowToast('Carga agregada correctamente')

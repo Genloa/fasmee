@@ -24,7 +24,6 @@ export default function ModalRayosX({ show, handleClose, departamentoNombre, usu
   const onSubmit = async (data) => {
     try {
       const response = await window.api.cargarResultados(data)
-      // console.log('response:', response)
       // handleShowToast('Servicio creado exitosamente')
       // resetForm()
     } catch (error) {

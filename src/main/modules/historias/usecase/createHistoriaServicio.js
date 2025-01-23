@@ -3,9 +3,6 @@ import { ColaPacientes, Historia } from '../../../singletons/database/schema' //
 
 ipcMain.handle('createHistoriaServicio', async (event, data) => {
   try {
-    console.clear()
-    console.log('datos-----------------', data)
-
     const HistoriaPaciente = await Historia.create({
       perfilId: data.usuarioId,
       pacienteId: data.pacienteId,

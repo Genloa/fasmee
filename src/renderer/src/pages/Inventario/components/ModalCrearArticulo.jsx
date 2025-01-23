@@ -1,6 +1,6 @@
 import { Toast } from 'bootstrap'
-import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useContext, useEffect, useState } from 'react'
 import FormArticulo from '../../../forms/FormArticulo'
 import { InventarioContext } from '../Inventario'
 
@@ -28,9 +28,7 @@ function ModalCrearArticulo({ show, handleClose, fetchInventario, handleShowToas
 
   const onSubmitArticulo = async (data, resetForm) => {
     try {
-      console.log(data)
       const nuevoArticulo = await window.api.createArticulo(data)
-      console.log('Cita creada:', nuevoArticulo)
       if (nuevoArticulo) {
         setInventario([...inventario, nuevoArticulo])
         fetchInventario()

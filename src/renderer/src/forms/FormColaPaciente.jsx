@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, Controller } from 'react-hook-form'
-import { colaPacienteSchema } from '../validations/colaPacienteSchema'
-import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { colaPacienteSchema } from '../validations/colaPacienteSchema'
 
 function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mode, handleClose }) {
   const [pacientes, setPacientes] = useState([])
@@ -40,7 +40,6 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -86,7 +85,6 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
   return (
     <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="pacienteId"
@@ -115,7 +113,6 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="departamentoId"
@@ -147,7 +144,6 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
       </div>
       {defaultValues.departamentoId !== 1 && (
         <div className="row mt-4">
-          {' '}
           <div className="col">
             <Controller
               name="medicoId"
@@ -184,8 +180,7 @@ function FormColaPaciente({ onSubmit, defaultValues, departamentos, medicos, mod
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}

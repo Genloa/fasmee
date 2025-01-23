@@ -37,11 +37,9 @@ function ModalCrearCita({
 
   const onSubmitCita = async (data, resetForm) => {
     try {
-      console.log(data)
       const disponibilidadCita = await window.api.validateCita(data)
       if (disponibilidadCita) {
         const nuevaCita = await window.api.createCita(data)
-        console.log('Cita creada:', nuevaCita)
         if (nuevaCita) {
           setCitasPaciente([...citasPacientes, nuevaCita])
           fetchCitasPacientes()

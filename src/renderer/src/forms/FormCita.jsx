@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, Controller } from 'react-hook-form'
-import { citaSchema } from '../validations/citaSchema'
-import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { citaSchema } from '../validations/citaSchema'
 
 function FormCita({
   onSubmit,
@@ -49,7 +49,6 @@ function FormCita({
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -121,7 +120,6 @@ function FormCita({
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="pacienteId"
@@ -150,7 +148,6 @@ function FormCita({
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="departamentoId"
@@ -181,7 +178,6 @@ function FormCita({
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
         <div className="col">
           <Controller
             name="medicoId"
@@ -217,8 +213,7 @@ function FormCita({
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}
