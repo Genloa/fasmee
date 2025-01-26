@@ -58,7 +58,7 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               {...register('tension')}
             />
             <label className="z-0" htmlFor="tension">
-              Tension:{' '}
+              Tension:
             </label>
             {errors.tension?.message && (
               <div className="invalid-feedback">{errors.tension?.message}</div>
@@ -77,7 +77,7 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               {...register('diagnostico')}
             />
             <label className="z-0" htmlFor="diagnostico">
-              Detalles de la consulta:{' '}
+              Detalles de la consulta:
             </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
@@ -96,7 +96,7 @@ function FormConsultaGeneral({ handleClose, onSubmit }) {
               {...register('tratamiento')}
             />
             <label className="z-0" htmlFor="tratamiento">
-              Tratamiento:{' '}
+              Tratamiento:
             </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>

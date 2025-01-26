@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 import { ginecologiaPreSchema } from '../validations/ginecologiaSchema'
 
 function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
@@ -96,7 +96,7 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               {...register('eco')}
             />
             <label className="z-0" htmlFor="eco">
-              Detalles de Eco:{' '}
+              Detalles de Eco:
             </label>
             {errors.eco?.message && <div className="invalid-feedback">{errors.eco?.message}</div>}
           </div>
@@ -131,7 +131,7 @@ function FormGinecologiaPrenatal({ handleClose, onSubmit }) {
               {...register('tratamiento')}
             />
             <label className="z-0" htmlFor="tratamiento">
-              Tratamiento:{' '}
+              Tratamiento:
             </label>
             {errors.tratamiento?.message && (
               <div className="invalid-feedback">{errors.tratamiento?.message}</div>

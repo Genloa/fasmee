@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 import { psiquiatriaSchema } from '../validations/psiquiatriaSchema'
 
 function FormPsiquiatria({ handleClose, onSubmit }) {
@@ -58,7 +58,7 @@ function FormPsiquiatria({ handleClose, onSubmit }) {
               {...register('diagnostico')}
             />
             <label className="z-0" htmlFor="diagnostico">
-              Observaciones Generales:{' '}
+              Observaciones Generales:
             </label>
             {errors.diagnostico?.message && (
               <div className="invalid-feedback">{errors.diagnostico?.message}</div>
@@ -94,7 +94,7 @@ function FormPsiquiatria({ handleClose, onSubmit }) {
               {...register('recomendaciones')}
             />
             <label className="z-0" htmlFor="recomendaciones">
-              Recomendaciones:{' '}
+              Recomendaciones:
             </label>
             {errors.recomendaciones?.message && (
               <div className="invalid-feedback">{errors.recomendaciones?.message}</div>

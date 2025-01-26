@@ -171,7 +171,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                     <div className="col-md-8">
                       <div className="card-body">
                         <h5 className="card-title">
-                          {selectedPaciente.nombres?.toUpperCase()}{' '}
+                          {selectedPaciente.nombres?.toUpperCase()}
                           {selectedPaciente.apellidos?.toUpperCase()}
                         </h5>
                         <div className="row">

@@ -72,10 +72,10 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast 
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
       {show && <div className="modal-backdrop fade show"></div>}
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
-        {' '}
+
         <div
           id="liveToastCrear"
           className="toast"
@@ -83,20 +83,20 @@ function ModalCrearAlmacen({ show, handleClose, fetchAlmacenes, handleShowToast 
           aria-live="assertive"
           aria-atomic="true"
         >
-          {' '}
+
           <div className="toast-header">
-            {' '}
-            <strong className="me-auto">Notificación</strong>{' '}
+
+            <strong className="me-auto">Notificación</strong>
             <button
               type="button"
               className="btn-close"
               data-bs-dismiss="toast"
               aria-label="Close"
-            ></button>{' '}
-          </div>{' '}
-          <div className="toast-body">{toastMessage}</div>{' '}
-        </div>{' '}
-      </div>{' '}
+            ></button>
+          </div>
+          <div className="toast-body">{toastMessage}</div>
+        </div>
+      </div>
     </>
   )
 }

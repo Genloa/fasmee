@@ -114,7 +114,7 @@ function ModalCrearCola({
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
       {show && <div className="modal-backdrop fade show"></div>}
     </>
   )

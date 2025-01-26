@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { useForm } from 'react-hook-form'
 import { ginecologiaPriSchema } from '../validations/ginecologiaSchema'
 
 function FormGinecologiaPri({ handleClose, onSubmit }) {
@@ -117,7 +117,7 @@ function FormGinecologiaPri({ handleClose, onSubmit }) {
               {...register('embarazos')}
             />
             <label className="z-0" htmlFor="embarazos">
-              Antecedentes de Embarazos:{' '}
+              Antecedentes de Embarazos:
             </label>
             {errors.embarazos?.message && (
               <div className="invalid-feedback">{errors.embarazos?.message}</div>

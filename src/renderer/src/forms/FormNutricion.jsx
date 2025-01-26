@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import PropTypes from 'prop-types'
 import { useForm } from 'react-hook-form'
 import { nutricionSchema } from '../validations/nutricionSchema'
-import PropTypes from 'prop-types'
 
 function FormNutricion({ handleClose, onSubmit }) {
   const {
@@ -57,7 +57,7 @@ function FormNutricion({ handleClose, onSubmit }) {
               {...register('tension')}
             />
             <label className="z-0" htmlFor="tension">
-              Tension{' '}
+              Tension
             </label>
             {errors.tension?.message && (
               <div className="invalid-feedback">{errors.tension?.message}</div>
