@@ -4,7 +4,7 @@ import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
 import Dash from '../../components/layouts/Dash'
 
-import momentDate from '../../../../main/utils/momentDate'
+import momentDate, { formatDateWithMoment } from '../../../../main/utils/momentDate'
 import Can from '../../helpers/can'
 import ModalVerHistoria from './components/ModalVerHistoria'
 
@@ -42,6 +42,7 @@ export default function Historias() {
   const fetchHistoriasPacientes = async () => {
     try {
       const fetchedHistoriasPacientes = await window.api.getHistoriasPacientes()
+      console.log('fetchedHistoriasPacientes:', fetchedHistoriasPacientes)
       setHistoriasPacientes(fetchedHistoriasPacientes)
     } catch (error) {
       console.error('Error fetching historias pacientes:', error)
@@ -84,8 +85,7 @@ export default function Historias() {
   const pagesVisited = currentPage * usersPerPage
 
   const [searchDate, setSearchDate] = useState(() => {
-    const today = new Date()
-    return today.toISOString().split('T')[0] // Formato YYYY-MM-DD
+    return momentDate(new Date(), 'YYYY-MM-DD')
   })
 
   const [searchDepartamentoName, setSearchDepartamentoName] = useState('')
@@ -157,10 +157,11 @@ export default function Historias() {
   const filteredHistoriasPacientes = historiasPacientes.flatMap((paciente) =>
     paciente.historialMedico
       .filter((historia) => {
-        const historiaPacienteDate = momentDate(historia.fecha_atencion, 'YYYY-MM-DD')
+        const historiaPacienteDate = formatDateWithMoment(historia.fecha_atencion)
         const departamentoId = getDepartamentoIdByName(searchDepartamentoName)
         const medicoId = getMedicoIdByName(searchMedicoName)
         const pacienteId = getPacienteIdByName(searchPacienteName)
+
         return (
           (!searchDate || historiaPacienteDate === searchDate) &&
           (!searchDepartamentoName || historia.departamentoId === departamentoId) &&

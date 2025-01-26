@@ -1,19 +1,24 @@
 import { ipcMain } from 'electron'
-import { Perfil,  Historia } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Historia, Perfil, Archivo } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('getHistoriasPacientes', async () => {
   try {
-    const historiasPacientes = await Perfil.findAll({
+    const perfiles = await Perfil.findAll({
       include: [
         {
           model: Historia,
-          as: 'historialMedico' // Alias de la asociación
+          as: 'historialMedico',
+          include: [
+            {
+              model: Archivo,
+              as: 'archivos'
+            }
+          ]
         }
       ]
     })
 
-    const pacientesSerializables = historiasPacientes.map((historiaPaciente) => historiaPaciente.toJSON())
-    return pacientesSerializables
+    return perfiles.map((perfil) => perfil.toJSON())
   } catch (error) {
     console.error('Error fetching users:', error)
     throw error
