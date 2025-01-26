@@ -498,7 +498,16 @@ if (sequelize instanceof Sequelize) {
       },
       path: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        get() {
+          // retorna la imagen de perfil en base64 si existe
+          if (this.getDataValue('path')) {
+            let imageBase64 = superFs.readFileSync(this.getDataValue('path'), 'base64')
+            return `data:image/jpeg;base64,${imageBase64}`
+          }
+
+          return null
+        }
       }
     },
     {

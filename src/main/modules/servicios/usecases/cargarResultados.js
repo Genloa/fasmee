@@ -1,7 +1,7 @@
 import superFs from '@supercharge/fs'
 import { ipcMain } from 'electron'
 import path from 'path'
-import { Archivos, Historia } from '../../../singletons/database/schema'
+import { Archivo, Historia } from '../../../singletons/database/schema'
 import momentDate, { formatDateWithMoment } from '../../../utils/momentDate'
 import saveBase64Image from '../../../utils/saveBase64Image'
 
@@ -31,11 +31,13 @@ ipcMain.handle('cargarResultados', async (event, args) => {
 
     let archivoBase64 = superFs.readFileSync(args.archivoPath, { encoding: 'base64' })
 
-    let archivoPathFinal = path.join(archivoPath, `${historia.id}.jpeg`)
+    let randomName = Math.random().toString(36).substring(7)
+
+    let archivoPathFinal = path.join(archivoPath, `${randomName}.jpeg`)
 
     await saveBase64Image(archivoBase64, archivoPathFinal)
 
-    await Archivos.create({
+    await Archivo.create({
       historiaId: historia.id,
       descripcion: args.detalles,
       path: archivoPathFinal

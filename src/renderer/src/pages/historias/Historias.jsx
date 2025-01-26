@@ -42,7 +42,6 @@ export default function Historias() {
   const fetchHistoriasPacientes = async () => {
     try {
       const fetchedHistoriasPacientes = await window.api.getHistoriasPacientes()
-      console.log('fetchedHistoriasPacientes:', fetchedHistoriasPacientes)
       setHistoriasPacientes(fetchedHistoriasPacientes)
     } catch (error) {
       console.error('Error fetching historias pacientes:', error)

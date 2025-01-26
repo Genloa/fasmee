@@ -125,6 +125,20 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                     <h5 className="mt-4">Detalles:</h5>
                     <p>{historiaPaciente.diagnostico}</p>
                   </div>
+                  <div>
+                    <h5 className="mt-4">Multimedia</h5>
+                    <div className="row">
+                      {historiaPaciente.archivos.map((archivo) => (
+                        <div className="col-md-3" key={archivo.id}>
+                          <img
+                            src={archivo.path}
+                            className="img-fluid"
+                            alt="Foto del historiaPaciente"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
