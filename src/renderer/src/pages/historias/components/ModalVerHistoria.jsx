@@ -2,7 +2,6 @@ import moment from 'moment-timezone'
 import PropTypes from 'prop-types'
 
 export default function ModalVerHistoria({ show, handleClose, historiaPaciente }) {
-  console.log(historiaPaciente)
   const calcularEdad = (fechaNacimiento) => {
     let edad = moment().diff(fechaNacimiento, 'years')
 
@@ -52,7 +51,7 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                         />
                       </div>
                       <h5 className="card-title mt-3 text-center">
-                        {historiaPaciente.nombres?.toUpperCase()}{' '}
+                        {historiaPaciente.nombres?.toUpperCase()}
                         {historiaPaciente.apellidos?.toUpperCase()}
                       </h5>
                       <div className="row mt-2  border-top pt-2">
@@ -61,7 +60,6 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                             <b> Cédula:</b> {historiaPaciente.cedula}
                           </p>
                           <p className="card-text border-top pt-1">
-                            {' '}
                             <b>Telefono: </b> {historiaPaciente.telefono}
                           </p>
                         </div>
@@ -71,7 +69,6 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                             {calcularEdad(historiaPaciente?.fecha_nacimiento)}
                           </p>
                           <p className="card-text border-top pt-1">
-                            {' '}
                             <b>Correo: </b>
                             {historiaPaciente.correo}
                           </p>
@@ -86,7 +83,6 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                   </div>
                   <div className="row">
                     <div className="col">
-                      {' '}
                       <p>Departamento: {historiaPaciente.departamentoName} </p>
                     </div>
                     <div className="col">
@@ -102,7 +98,6 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                   {historiaPaciente.departamentoId === 4 && (
                     <div className="row border-bottom">
                       <div className="col">
-                        {' '}
                         <p>Peso: {historiaPaciente.peso_paciente} </p>
                       </div>
                       <div className="col">
@@ -129,6 +124,20 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                   <div>
                     <h5 className="mt-4">Detalles:</h5>
                     <p>{historiaPaciente.diagnostico}</p>
+                  </div>
+                  <div>
+                    <h5 className="mt-4">Multimedia</h5>
+                    <div className="row">
+                      {historiaPaciente.archivos.map((archivo) => (
+                        <div className="col-md-3" key={archivo.id}>
+                          <img
+                            src={archivo.path}
+                            className="img-fluid"
+                            alt="Foto del historiaPaciente"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>

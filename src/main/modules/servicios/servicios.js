@@ -1,0 +1,1 @@
+import './usecases/cargarResultados'

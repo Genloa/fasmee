@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import FormNutricion from '../../../forms/FormNutricion'
-import FormGinecologia from '../../../forms/FormGinecologia'
-import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
-import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import pacienteImg from '../../../assets/img/paciente.jpg'
 import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
+import FormGinecologia from '../../../forms/FormGinecologia'
+import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
+import FormGinecologiaPri from '../../../forms/FormGinecologiaPri'
+import FormNutricion from '../../../forms/FormNutricion'
 import FormPediatria from '../../../forms/FormPediatria'
 import FormPsiquiatria from '../../../forms/FormPsiquiatria'
-import { useForm, Controller } from 'react-hook-form'
-import Select from 'react-select'
 
 export default function ModalEmergencia({ show, handleClose, usuario, handleShowToast }) {
   const { control, reset } = useForm()
@@ -25,9 +26,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
   const fetchPacientes = async () => {
     try {
       const fetchedPacientes = await window.api.getPacientes()
-      console.log(fetchedPacientes)
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -63,7 +62,6 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
       const consulta = await window.api.createHistoria(data, selectedPaciente.id, usuario)
       if (consulta) {
         handleShowToast('Consulta guardada correctamente')
@@ -166,7 +164,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                   <div className="row g-0">
                     <div className="col-md-4">
                       <img
-                        src={selectedPaciente.profilePhotoPath}
+                        src={selectedPaciente.profilePhotoPath ?? pacienteImg}
                         className="img-fluid rounded-start"
                         alt="Foto del paciente"
                       />
@@ -174,7 +172,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                     <div className="col-md-8">
                       <div className="card-body">
                         <h5 className="card-title">
-                          {selectedPaciente.nombres?.toUpperCase()}{' '}
+                          {selectedPaciente.nombres?.toUpperCase()}
                           {selectedPaciente.apellidos?.toUpperCase()}
                         </h5>
                         <div className="row">

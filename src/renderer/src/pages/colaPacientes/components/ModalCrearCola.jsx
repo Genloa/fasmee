@@ -1,8 +1,8 @@
 import { Toast } from 'bootstrap'
-import { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import { ColaPacientesContext } from '../ColaPacientes'
+import { useContext, useEffect, useState } from 'react'
 import FormColaPaciente from '../../../forms/FormColaPaciente'
+import { ColaPacientesContext } from '../ColaPacientes'
 
 function ModalCrearCola({
   show,
@@ -33,11 +33,9 @@ function ModalCrearCola({
     departamentoId: 0,
     medicoId: 0
   }
-  console.log('hoy', new Date().toLocaleDateString())
 
   const onSubmitCola = async (data, resetForm) => {
     try {
-      console.log(data)
       const verificarCita = await window.api.getCitasPacientes()
 
       let citaValida = verificarCita.some(
@@ -55,7 +53,6 @@ function ModalCrearCola({
           ...data,
           medicoId: [1, 9, 10, 15].includes(data.departamentoId) ? null : data.medicoId // Asignar null si el departamento es 1, 9, 10 o 15
         })
-        console.log('Cola creada:', nuevaCola)
         if (nuevaCola) {
           setColaPacientes([...ColaPacientes, nuevaCola]) // Usar ColaPacientes en lugar de colaPacientes
           fetchColaPacientes()
@@ -117,7 +114,7 @@ function ModalCrearCola({
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
       {show && <div className="modal-backdrop fade show"></div>}
     </>
   )

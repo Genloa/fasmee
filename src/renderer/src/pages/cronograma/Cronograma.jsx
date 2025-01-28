@@ -185,7 +185,7 @@ function Cronograma() {
           <thead>
             <tr>
               <th className="text-center" scope="col">
-                Doctor
+                Personal medico
               </th>
               {obtenerRangoDeSemana(new Date().getFullYear(), mesSelected, semanaSelected).map(
                 (fecha, i) => {

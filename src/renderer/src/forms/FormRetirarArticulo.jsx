@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
 import PropTypes from 'prop-types'
+import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import Select from 'react-select'
 import { retirarArticuloSchema } from '../validations/retirarArticuloSchema'
-import { useEffect, useState } from 'react'
 
 function FormRetirarArticulo({ onSubmit, defaultValues, handleClose }) {
   const [medicos, setMedicos] = useState([])
@@ -48,7 +48,6 @@ function FormRetirarArticulo({ onSubmit, defaultValues, handleClose }) {
     try {
       const fetchedMedicos = await window.api.getMedicos()
       setMedicos(fetchedMedicos)
-      console.log('Medicos:', fetchedMedicos)
     } catch (error) {
       console.error('Error fetching Medicos:', error)
     }
@@ -83,7 +82,7 @@ function FormRetirarArticulo({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
+
         <div className="col">
           <Controller
             name="medicoId"

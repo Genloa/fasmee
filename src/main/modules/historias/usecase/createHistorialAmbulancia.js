@@ -3,9 +3,6 @@ import { Historia } from '../../../singletons/database/schema' // Asegúrate de 
 
 ipcMain.handle('createHistorialAmbulancia', async (event, data) => {
   try {
-    console.clear()
-    console.log('datos-----------------', data)
-
     const HistoriaPaciente = await Historia.create({
       perfilId: data.paramedicoId,
       pacienteId: data.pacienteId,

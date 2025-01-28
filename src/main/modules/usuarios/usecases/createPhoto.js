@@ -2,18 +2,7 @@ import superFs from '@supercharge/fs'
 import { ipcMain } from 'electron'
 import path from 'path'
 import { Perfil } from '../../../singletons/database/schema'
-
-async function saveBase64Image(base64String, path) {
-  // Esto elimina el prefijo del tipo de archivo si existe
-  const base64Data = base64String.replace(/^data:image\/jpeg;base64,/, '')
-
-  try {
-    await superFs.writeFile(path, base64Data, { encoding: 'base64' })
-    console.log('Imagen guardada exitosamente')
-  } catch (error) {
-    console.error('Error guardando la imagen:', error)
-  }
-}
+import saveBase64Image from '../../../utils/saveBase64Image'
 
 ipcMain.handle('createPhoto', async (event, { perfilId, photoBase64 }) => {
   try {

@@ -10,7 +10,6 @@ export default function ModalEliminar({
   const handleDelete = async () => {
     try {
       const articuloActualizado = await window.api.deleteArticulo(articulo.id)
-      console.log('Articulo actualizado:', articuloActualizado)
       if (articuloActualizado) {
         fetchInventario()
         handleShowToast('Articulo eliminado correctamente')

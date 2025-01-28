@@ -1,6 +1,6 @@
+import { Toast } from 'bootstrap'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
-import { Toast } from 'bootstrap'
 import FormServicio from '../../../forms/FormServicio'
 
 export default function ModalLaboratorios({ show, handleClose, departamentoNombre, usuario }) {
@@ -22,8 +22,9 @@ export default function ModalLaboratorios({ show, handleClose, departamentoNombr
   }
 
   const onSubmit = async (data /*, resetForm*/) => {
-    console.log(data, usuario)
+    //
   }
+
   return (
     <>
       <div

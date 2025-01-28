@@ -50,7 +50,6 @@ export default function Servicios() {
       const sortedPacientes = fetchedPacientes.sort(
         (a, b) => new Date(a.colasMedicos[0].createdAt) - new Date(b.colasMedicos[0].createdAt)
       )
-      console.log('colaPacientes:', sortedPacientes)
       setColaPacientes(sortedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
@@ -197,25 +196,24 @@ export default function Servicios() {
         </div>
       </div>
 
-      <>
-        <ModalRayosX
-          show={showModalRayosX}
-          handleClose={handleCloseModal}
-          departamentoNombre={nombreDepartamento}
-          usuario={usuario}
-        />
-        <ModalLaboratorios
-          show={showModalLaboratorios}
-          handleClose={handleCloseModal}
-          departamentoNombre={nombreDepartamento}
-          usuario={usuario}
-        />
-        <ModalAmbulancia
-          show={showModalAmbulancia}
-          handleClose={handleCloseModal}
-          handleShowToast={handleShowToast}
-        />
-      </>
+      <ModalRayosX
+        show={showModalRayosX}
+        handleClose={handleCloseModal}
+        departamentoNombre={nombreDepartamento}
+        usuario={usuario}
+      />
+      <ModalLaboratorios
+        show={showModalLaboratorios}
+        handleClose={handleCloseModal}
+        departamentoNombre={nombreDepartamento}
+        usuario={usuario}
+      />
+      <ModalAmbulancia
+        show={showModalAmbulancia}
+        handleClose={handleCloseModal}
+        handleShowToast={handleShowToast}
+      />
+
       <div className="toast-container position-fixed bottom-0 end-0 p-3">
         <div
           id="liveToastAmbu"

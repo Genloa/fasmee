@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import Select from 'react-select'
-import { servicioSchema } from '../validations/servicioSchema'
-import { useForm, Controller } from 'react-hook-form'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { servicioSchema } from '../validations/servicioSchema'
 
 function FormServicio({ onSubmit, defaultValues, handleClose }) {
   const [pacientes, setPacientes] = useState([])
@@ -13,7 +13,6 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
     control,
     setValue,
     trigger,
-
     formState: { errors, dirtyFields },
     reset
   } = useForm({
@@ -31,7 +30,6 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
     try {
       const fetchedPacientes = await window.api.getPacientes()
       setPacientes(fetchedPacientes)
-      console.log('Pacientes:', fetchedPacientes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -49,21 +47,8 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
     label: paciente.cedula
   }))
 
-  const onSubmitForm = (data) => {
-    console.log(data)
-    onSubmit(data, reset)
-  }
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setValue('archivo', file.path)
-      trigger('archivo')
-    }
-  }
-
   return (
-    <form className="row g-3" onSubmit={handleSubmit(onSubmitForm)}>
+    <form className="row g-3" onSubmit={handleSubmit(onSubmit)}>
       <div className="row mt-4">
         <div className="col">
           <Controller
@@ -73,7 +58,6 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
             render={({ field }) => (
               <div>
                 <Select
-                  class="form-select"
                   {...field}
                   options={pacienteOptions}
                   placeholder="Buscar Paciente"
@@ -101,15 +85,9 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
               className={getInputClassName('fechaMuestra')}
               id="floatingDate"
               placeholder="fechaMuestra"
-              {...register('fechaMuestra', {
-                onChange: (e) => {
-                  setValue('fechaMuestra', e.target.value)
-                  trigger('fechaMuestra') // Validar en tiempo real
-                }
-              })}
+              {...register('fechaMuestra')}
             />
             <label className="z-0" htmlFor="floatingDate">
-              {' '}
               fecha de realización
             </label>
             {errors.fechaMuestra?.message && (
@@ -123,13 +101,7 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
             className={getInputClassName('archivo')}
             id="archivo"
             placeholder="Subir archivo"
-            onChange={handleFileChange}
-            {...register('archivo', {
-              required: 'El archivo es requerido',
-              validate: {
-                size: (value) => value.size <= 1048576 || 'El archivo debe ser menor a 1MB'
-              }
-            })}
+            {...register('archivo')}
           />
           {errors.archivo?.message && (
             <div className="invalid-feedback">{errors.archivo?.message}</div>

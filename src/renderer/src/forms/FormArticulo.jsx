@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, Controller } from 'react-hook-form'
-import { articuloSchema } from '../validations/articuloSchema'
-import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import Select from 'react-select'
+import { articuloSchema } from '../validations/articuloSchema'
 
 function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false }) {
   const [almacenes, setAlmacenes] = useState([])
@@ -30,7 +30,6 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
     try {
       const fetchedAlmacenes = await window.api.getAlmacenes()
       setAlmacenes(fetchedAlmacenes)
-      console.log('Almacenes:', fetchedAlmacenes)
     } catch (error) {
       console.error('Error fetching pacientes:', error)
     }
@@ -40,7 +39,6 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
     value: almacen.id,
     label: `Cubiculo ${almacen.cubiculo} ${almacen.descripcion}`
   }))
-  console.log(almacenes)
 
   const getInputClassName = (fieldName) => {
     if (!dirtyFields[fieldName]) {
@@ -101,7 +99,7 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
       </div>
       {!hideNombre && (
         <div className="row mt-4">
-          {' '}
+
           <div className="col">
             <Controller
               name="almacenId"
@@ -137,8 +135,8 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           Guardar

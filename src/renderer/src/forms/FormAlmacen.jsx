@@ -73,8 +73,7 @@ function FormAlmacen({ onSubmit, defaultValues, mode, handleClose }) {
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}

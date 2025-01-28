@@ -88,7 +88,7 @@ export default function ModalEditPaciente({ paciente, handleCloseModalEditPacien
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="modalTitleId">
-              Editar paciente {paciente?.nombres} {paciente?.apellidos}{' '}
+              Editar paciente {paciente?.nombres} {paciente?.apellidos}
               {tipoPaciente == 'T' ? 'Trabajador' : 'Beneficiario'}
             </h5>
             <button

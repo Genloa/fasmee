@@ -30,7 +30,6 @@ ipcMain.handle('retirarArticulo', async (event, { dataR, data }) => {
       }
     )
 
-    console.log('Articulo actualizado:----------------', articulo)
     const articuloSerializables = articuloActualizado.toJSON()
     return articuloSerializables
   } catch (error) {

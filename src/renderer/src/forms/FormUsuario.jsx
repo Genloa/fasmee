@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, Controller } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 
-import Select from 'react-select'
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import Select from 'react-select'
 import { resolveSchema } from '../validations/userSchema'
 
 function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
@@ -229,7 +229,7 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
         </div>
       </div>
       <div className="row mt-4">
-        {' '}
+
         <div className="col">
           <Controller
             name="departamentoId"
@@ -267,8 +267,8 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-          {' '}
-          Cancelar{' '}
+
+          Cancelar
         </button>
         <button type="submit" className="btn btn-primary">
           {mode === 'edit' ? 'Actualizar' : 'Guardar'}
