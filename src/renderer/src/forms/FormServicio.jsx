@@ -146,7 +146,9 @@ function FormServicio({ onSubmit, defaultValues, handleClose }) {
               aria-label="detalles"
               {...register('detalles')}
             />
-            <label htmlFor="detalles">Informe Resultado</label>
+            <label className="z-0" htmlFor="detalles">
+              Informe Resultado
+            </label>
             {errors.detalles?.message && (
               <div className="invalid-feedback">{errors.detalles?.message}</div>
             )}
