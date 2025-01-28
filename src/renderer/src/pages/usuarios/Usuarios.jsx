@@ -8,7 +8,7 @@ import { Controller, useForm } from 'react-hook-form'
 import ReactPaginate from 'react-paginate'
 import Select from 'react-select'
 import Dash from '../../components/layouts/Dash'
-import Can from '../../helpers/can'
+import Can from '../../helpers/Can'
 import { resolveSchema } from '../../validations/userSchema'
 import ModalCrearUsuario from './components/ModalCrearUsuario'
 
@@ -716,6 +716,7 @@ export function TableUsers({ handleShowToast }) {
               <th scope="col">Nombre y Apellido</th>
               <th scope="col">Usuario</th>
               <th scope="col">Rol</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>{displayUsers}</tbody>
