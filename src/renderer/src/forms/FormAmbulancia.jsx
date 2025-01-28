@@ -141,7 +141,6 @@ function FormAmbulancia({ onSubmit, defaultValues, handleClose }) {
               })}
             />
             <label className="z-0" htmlFor="floatingDate">
-
               fecha de Uso
             </label>
             {errors.fechaUso?.message && (

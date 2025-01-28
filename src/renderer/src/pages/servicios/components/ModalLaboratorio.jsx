@@ -21,8 +21,18 @@ export default function ModalLaboratorios({ show, handleClose, departamentoNombr
     detalles: ''
   }
 
-  const onSubmit = async (data /*, resetForm*/) => {
-    //
+  const onSubmit = async (data) => {
+    try {
+      data.perfilId = usuario.id
+      data.departamentoId = usuario.departamentoId
+      data.archivoPath = data.archivo[0].path
+
+      await window.api.cargarResultados(data)
+
+      handleClose()
+    } catch (error) {
+      console.error('Error creando servicio:', error)
+    }
   }
 
   return (

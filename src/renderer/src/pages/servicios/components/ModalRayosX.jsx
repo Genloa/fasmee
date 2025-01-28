@@ -30,12 +30,8 @@ export default function ModalRayosX({ show, handleClose, departamentoNombre, usu
       await window.api.cargarResultados(data)
 
       handleClose()
-
-      // handleShowToast('Servicio creado exitosamente')
-      // resetForm()
     } catch (error) {
       console.error('Error creando servicio:', error)
-      // handleShowToast('Error creando servicio')
     }
   }
   return (

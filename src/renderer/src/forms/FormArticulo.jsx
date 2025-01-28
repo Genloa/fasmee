@@ -99,7 +99,6 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
       </div>
       {!hideNombre && (
         <div className="row mt-4">
-
           <div className="col">
             <Controller
               name="almacenId"
@@ -135,7 +134,6 @@ function FormArticulo({ onSubmit, defaultValues, handleClose, hideNombre = false
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-
           Cancelar
         </button>
         <button type="submit" className="btn btn-primary">

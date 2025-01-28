@@ -82,7 +82,6 @@ function FormRetirarArticulo({ onSubmit, defaultValues, handleClose }) {
         </div>
       </div>
       <div className="row mt-4">
-
         <div className="col">
           <Controller
             name="medicoId"

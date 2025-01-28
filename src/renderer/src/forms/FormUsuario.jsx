@@ -229,7 +229,6 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
         </div>
       </div>
       <div className="row mt-4">
-
         <div className="col">
           <Controller
             name="departamentoId"
@@ -267,7 +266,6 @@ function FormUsuario({ onSubmit, defaultValues, mode, handleClose, isEdit }) {
           data-bs-dismiss="modal"
           onClick={handleClose}
         >
-
           Cancelar
         </button>
         <button type="submit" className="btn btn-primary">

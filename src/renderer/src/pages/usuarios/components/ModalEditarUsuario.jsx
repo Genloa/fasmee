@@ -53,7 +53,7 @@ function ModalEditarUsuario({ show, handleClose, usuarioSelected, handleShowToas
           <div className="modal-content">
             <div className="modal-header bg-primary text-white">
               <h1 className="modal-title fs-5" id="modal-create-usuario-label">
-               Usuario {usuarioSelected.perfil?.nombres} {usuarioSelected.perfil?.apellidos}
+                Usuario {usuarioSelected.perfil?.nombres} {usuarioSelected.perfil?.apellidos}
               </h1>
               <button
                 type="button"
