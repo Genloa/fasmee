@@ -2,6 +2,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { createContext, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
+import pacienteImg from '../../assets/img/paciente.jpg'
 import Dash from '../../components/layouts/Dash'
 
 import momentDate, { formatDateWithMoment } from '../../../../main/utils/momentDate'
@@ -42,6 +43,7 @@ export default function Historias() {
   const fetchHistoriasPacientes = async () => {
     try {
       const fetchedHistoriasPacientes = await window.api.getHistoriasPacientes()
+
       setHistoriasPacientes(fetchedHistoriasPacientes)
     } catch (error) {
       console.error('Error fetching historias pacientes:', error)
@@ -178,7 +180,7 @@ export default function Historias() {
         correo: paciente.correo,
         departamentoName: getDepartamentoNameById(historia.departamentoId),
         medicoName: getMedicoNameById(historia.perfilId),
-        foto: paciente.profilePhotoPath,
+        foto: paciente.profilePhotoPath ?? pacienteImg,
         fecha_nacimiento: paciente.fecha_nacimiento
       }))
   )

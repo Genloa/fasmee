@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { Historia, Perfil, Archivo } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
+import { Archivo, Historia, Perfil } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 
 ipcMain.handle('getHistoriasPacientes', async () => {
   try {

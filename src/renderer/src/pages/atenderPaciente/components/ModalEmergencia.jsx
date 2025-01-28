@@ -2,6 +2,7 @@ import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import Select from 'react-select'
+import pacienteImg from '../../../assets/img/paciente.jpg'
 import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
 import FormGinecologia from '../../../forms/FormGinecologia'
 import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
@@ -163,7 +164,7 @@ export default function ModalEmergencia({ show, handleClose, usuario, handleShow
                   <div className="row g-0">
                     <div className="col-md-4">
                       <img
-                        src={selectedPaciente.profilePhotoPath}
+                        src={selectedPaciente.profilePhotoPath ?? pacienteImg}
                         className="img-fluid rounded-start"
                         alt="Foto del paciente"
                       />

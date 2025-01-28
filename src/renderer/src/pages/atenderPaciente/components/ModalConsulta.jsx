@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react'
+import pacienteImg from '../../../assets/img/paciente.jpg'
 import FormConsultaGeneral from '../../../forms/FormConsultaGeneral'
 import FormGinecologia from '../../../forms/FormGinecologia'
 import FormGinecologiaPrenatal from '../../../forms/FormGinecologiaPrenatal'
@@ -123,7 +124,7 @@ export default function ModalConsulta({ show, handleClose, pacienteId, usuario, 
                   <div className="row g-0">
                     <div className="col-md-4">
                       <img
-                        src={paciente.profilePhotoPath}
+                        src={paciente.profilePhotoPath ?? pacienteImg}
                         className="img-fluid rounded-start"
                         alt="Foto del paciente"
                       />
