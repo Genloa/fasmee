@@ -30,9 +30,9 @@ function Login() {
     setShowAlert(true)
   }
 
-  const handleRunSeeders = async () => {
-    await window.api.runSeeders()
-  }
+  // const handleRunSeeders = async () => {
+  //   await window.api.runSeeders()
+  // }
 
   return (
     <div className="vh-100 bg-primary flex-column justify-content-center aling-item-center">
@@ -95,9 +95,9 @@ function Login() {
               <button type="submit" className="btn btn-danger">
                 Ingresar
               </button>
-              <button type="button" onClick={handleRunSeeders} className="btn btn-danger">
+              {/* <button type="button" onClick={handleRunSeeders} className="btn btn-danger">
                 Seeders
-              </button>
+              </button> */}
             </form>
           </div>
         </div>

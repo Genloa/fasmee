@@ -310,6 +310,7 @@ export function TableUsers({ handleShowToast }) {
         </td>
         <td>{user.username}</td>
         <td>{user.perfil.roles.map((rol) => rol.nombre).join(', ')}</td>
+        <td>{user.perfil.departamento.nombre}</td>
         <td className="text-end">
           <Can permission="usuarios.changeRole">
             <button
@@ -716,6 +717,7 @@ export function TableUsers({ handleShowToast }) {
               <th scope="col">Nombre y Apellido</th>
               <th scope="col">Usuario</th>
               <th scope="col">Rol</th>
+              <th scope="col">Departamento</th>
               <th></th>
             </tr>
           </thead>

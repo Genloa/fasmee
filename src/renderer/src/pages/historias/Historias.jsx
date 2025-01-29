@@ -6,7 +6,7 @@ import pacienteImg from '../../assets/img/paciente.jpg'
 import Dash from '../../components/layouts/Dash'
 
 import momentDate, { formatDateWithMoment } from '../../../../main/utils/momentDate'
-import Can from '../../helpers/can'
+import Can from '../../helpers/Can'
 import ModalVerHistoria from './components/ModalVerHistoria'
 
 const HistoriasPacientesContext = createContext({

@@ -51,7 +51,7 @@ export default function ModalVerHistoria({ show, handleClose, historiaPaciente }
                         />
                       </div>
                       <h5 className="card-title mt-3 text-center">
-                        {historiaPaciente.nombres?.toUpperCase()}
+                        {historiaPaciente.nombres?.toUpperCase()}{' '}
                         {historiaPaciente.apellidos?.toUpperCase()}
                       </h5>
                       <div className="row mt-2  border-top pt-2">

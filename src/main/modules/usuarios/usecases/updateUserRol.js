@@ -1,6 +1,12 @@
 import { ipcMain } from 'electron'
 import db from '../../../singletons/database/database'
-import { Perfil, Rol, RolOnPerfil, Usuario } from '../../../singletons/database/schema'
+import {
+  Departamento,
+  Perfil,
+  Rol,
+  RolOnPerfil,
+  Usuario
+} from '../../../singletons/database/schema'
 
 ipcMain.handle('updateUserRol', async (event, { perfilId, rolId }) => {
   const t = await db.getConnection().transaction()
@@ -37,6 +43,10 @@ ipcMain.handle('updateUserRol', async (event, { perfilId, rolId }) => {
           {
             model: Rol,
             as: 'roles'
+          },
+          {
+            model: Departamento,
+            as: 'departamento'
           }
         ]
       },
