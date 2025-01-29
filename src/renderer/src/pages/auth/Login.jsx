@@ -35,7 +35,7 @@ function Login() {
   }
 
   return (
-    <div className="vh-100 bg-primary flex-column  justify-content-center aling-item-center">
+    <div className="vh-100 bg-primary flex-column justify-content-center aling-item-center">
       <div className="pt-4">
         <img src={fasmeeIcon} className="rounded mx-auto d-block" alt="" />
       </div>

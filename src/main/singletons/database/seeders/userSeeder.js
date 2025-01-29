@@ -31,12 +31,12 @@ async function othersUsersSeeder() {
         telefono: '0' + faker.number.int(100000000, 999999999),
         enteId: entes[between(0, entes.length)].id,
         perfilMedico: {
-          patologias: 'a',
-          medicamentos: 'b',
-          alergias: 'c',
-          cirugias: 'd',
-          peso: 'e',
-          altura: 'f'
+          patologias: 'Rinitis, Gastritis, Migraña',
+          medicamentos: 'Loratadina, Omeprazol, Sumatriptán',
+          alergias: 'Ampicilina, Penicilina',
+          cirugias: 'reconstrucción de ligamento cruzado anterior',
+          peso: parseFloat((Math.random() * (200 - 50) + 50).toFixed(2)),
+          altura: parseFloat((Math.random() * (2 - 1.5) + 1.5).toFixed(2))
         }
       },
       {
@@ -55,16 +55,16 @@ async function othersUsersSeeder() {
         apellidos: faker.person.lastName(),
         fecha_nacimiento: momentDate(faker.date.past(50, new Date(2000, 0, 1))),
         tipo_cedula: 'V',
-        cedula: faker.number.int(1000000, 99999999),
+        cedula: Math.floor(Math.random() * (40000000 - 5000000 + 1)) + 5000000,
         correo: faker.internet.email(),
         telefono: '0' + faker.number.int(100000000, 999999999),
         perfilMedico: {
-          patologias: 'a',
-          medicamentos: 'b',
-          alergias: 'c',
-          cirugias: 'd',
-          peso: 'e',
-          altura: 'f'
+          patologias: 'Ninguna',
+          medicamentos: 'Ninguno',
+          alergias: 'Ninguna',
+          cirugias: 'Ninguna',
+          peso: parseFloat((Math.random() * (200 - 50) + 50).toFixed(2)),
+          altura: parseFloat((Math.random() * (2 - 1.5) + 1.5).toFixed(2))
         }
       },
       {
@@ -87,12 +87,12 @@ async function othersUsersSeeder() {
         correo: faker.internet.email(),
         telefono: '0' + faker.number.int(100000000, 999999999),
         perfilMedico: {
-          patologias: 'a',
-          medicamentos: 'b',
-          alergias: 'c',
-          cirugias: 'd',
-          peso: 'e',
-          altura: 'f'
+          patologias: 'Diabetes, Hipertensión, Asma',
+          medicamentos: 'Insulina, Losartan, Salbutamol',
+          alergias: 'Ninguna',
+          cirugias: 'Extirpación de vesícula, Apendicectomía',
+          peso: parseFloat((Math.random() * (150 - 50) + 50).toFixed(2)),
+          altura: parseFloat((Math.random() * (2 - 1.5) + 1.5).toFixed(2))
         }
       },
       {
