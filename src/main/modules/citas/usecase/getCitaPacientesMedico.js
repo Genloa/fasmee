@@ -1,22 +1,15 @@
 import { ipcMain } from 'electron'
 import { Perfil, Cita } from '../../../singletons/database/schema' // Asegúrate de importar todos los modelos necesarios
 import { Op } from 'sequelize'
+import moment from 'moment-timezone'
 
 ipcMain.handle('getCitaPacientesMedico', async (event, { medicoId, departamentoId }) => {
   try {
-    const today = new Date()
-    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
-    const endOfToday = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate(),
-      23,
-      59,
-      59,
-      999
-    )
+    const today = moment().tz('America/Caracas').toDate()
+    const startOfToday = moment(today).startOf('day').toDate()
+    const endOfToday = moment(today).endOf('day').toDate()
 
-    const citaPacientes = await Perfil.findAll({
+    const perfiles = await Perfil.findAll({
       include: [
         {
           model: Cita,
@@ -32,7 +25,9 @@ ipcMain.handle('getCitaPacientesMedico', async (event, { medicoId, departamentoI
       ]
     })
 
-    const pacientesSerializables = citaPacientes.map((citaPaciente) => citaPaciente.toJSON())
+    console.log('perfiles:', perfiles)
+
+    const pacientesSerializables = perfiles.map((citaPaciente) => citaPaciente.toJSON())
     return pacientesSerializables
   } catch (error) {
     console.error('Error fetching users:', error)

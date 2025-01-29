@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Toast } from 'bootstrap'
 import { useEffect, useState } from 'react'
 import Dash from '../../components/layouts/Dash'
-import Can from '../../helpers/can'
+import Can from '../../helpers/Can'
 import { useAuth } from '../../hooks/useAuth'
 import ModalConsulta from './components/ModalConsulta'
 import ModalEmergencia from './components/ModalEmergencia'
@@ -19,7 +19,7 @@ export default function AtenderPaciente() {
   const usuario = {
     nombre: session.user.perfil.nombres,
     apellidos: session.user.perfil.apellidos,
-    id: session.user.id,
+    id: session.user.perfil.id,
     departamentoId: session.user.perfil.departamentoId
   }
   useEffect(() => {

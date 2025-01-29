@@ -23,7 +23,7 @@ export default function Servicios() {
   const usuario = {
     nombre: session.user.perfil.nombres,
     apellidos: session.user.perfil.apellidos,
-    id: session.user.id,
+    id: session.user.perfil.id,
     departamentoId: session.user.perfil.departamentoId
   }
 
